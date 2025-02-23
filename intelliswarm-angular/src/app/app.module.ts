@@ -5,13 +5,9 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { HomeComponent } from './home/home.component';
-// import { AboutComponent } from './about/about.component';
-
-// Import the newly created components
 import { ServicesComponent } from './services/services.component';
 import { CaseStudiesComponent } from './case-studies/case-studies.component';
 import { ContactComponent } from './contact/contact.component';
-
 import { HeroComponent } from './hero/hero.component';
 import { FeaturesComponent } from './features/features.component';
 import { ProductsComponent } from './products/products.component';
@@ -22,13 +18,12 @@ import { ProductsComponent } from './products/products.component';
     HeaderComponent,
     FooterComponent,
     HomeComponent,
-    // AboutComponent
     ServicesComponent,
     CaseStudiesComponent,
     ContactComponent,
     HeroComponent,
-    FeaturesComponent,
-    ProductsComponent
+    FeaturesComponent
+    // ProductsComponent
   ],
   imports: [
     BrowserModule,
