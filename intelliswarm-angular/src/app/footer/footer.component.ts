@@ -10,8 +10,8 @@ import { Router } from '@angular/router';
         <p class="copyright">&copy; 2025 IntelliSwarm</p>
         <div class="social-links">
           <a href="https://github.com/intelliswarm-ai" target="_blank">GitHub</a>
-          <a href="https://twitter.com/intelliswarm" target="_blank">Twitter</a>
-          <a href="https://linkedin.com/company/intelliswarm" target="_blank">LinkedIn</a>
+          <a href="https://twitter.com/intelliswarm-ai" target="_blank">Twitter</a>
+          <a href="https://linkedin.com/company/intelliswarm-ai" target="_blank">LinkedIn</a>
         </div>
       </div>
     </footer>

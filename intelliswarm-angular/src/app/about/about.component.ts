@@ -10,12 +10,12 @@ import { Component } from '@angular/core';
       
       <section class="mission">
         <h2>Our Mission</h2>
-        <p>To empower organizations with intelligent automation solutions that transform business processes and enhance productivity.</p>
+        <p>{{ mission }}</p>
       </section>
 
       <section class="vision">
         <h2>Our Vision</h2>
-        <p>Creating a world where AI-driven workflows seamlessly integrate with human expertise to achieve unprecedented efficiency and innovation.</p>
+        <p>{{ vision }}</p>
       </section>
     </div>
   `,
@@ -49,4 +49,7 @@ import { Component } from '@angular/core';
     }
   `]
 })
-export class AboutComponent {}
+export class AboutComponent {
+  mission: string = 'At IntelliSwarm, we harness the power of AI-driven agentic workflows to revolutionize business operations, enabling seamless automation, intelligent decision-making, and optimized collaboration between humans and AI. Our mission is to empower organizations with autonomous, adaptive, and scalable AI solutions that enhance efficiency, drive innovation, and unlock new levels of productivity. By integrating cutting-edge AI orchestration, we transform complexity into streamlined intelligence—helping businesses operate smarter, faster, and with greater agility in an ever-evolving digital landscape.';
+  vision: string = 'To pioneer a future where AI-driven agentic workflows seamlessly integrate into every industry, enabling businesses to operate with unparalleled efficiency, intelligence, and autonomy. We envision a world where AI agents collaborate dynamically with humans, transforming complex processes into effortless automation, fostering innovation, and unlocking limitless potential. By continuously advancing AI orchestration, we strive to redefine productivity, making intelligent, self-optimizing workflows the standard for modern enterprises.';
+}

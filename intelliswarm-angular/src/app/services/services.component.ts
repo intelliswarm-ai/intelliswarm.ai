@@ -120,7 +120,7 @@ import { RouterModule } from '@angular/router';
 
       &:hover {
         transform: translateY(-5px);
-        border-color: #14F195;
+        border-color: #4a90e2;
         background: rgba(255, 255, 255, 0.03);
       }
     }
