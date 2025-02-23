@@ -1,11 +1,17 @@
 import { Component } from '@angular/core';
+import { trigger, style, animate, transition } from '@angular/animations';
 
 @Component({
   selector: 'app-hero',
-  imports: [],
   templateUrl: './hero.component.html',
-  styleUrl: './hero.component.scss'
+  styleUrls: ['./hero.component.scss'],
+  animations: [
+    trigger('fadeIn', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('1000ms ease-out', style({ opacity: 1 }))
+      ])
+    ])
+  ]
 })
-export class HeroComponent {
-
-}
+export class HeroComponent {}
