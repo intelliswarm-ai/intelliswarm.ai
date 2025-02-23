@@ -4,26 +4,38 @@ import { Component } from '@angular/core';
   selector: 'app-home',
   standalone: true,
   template: `
-    <div class="home-container">
-      <section class="hero">
-        <h1>Welcome to IntelliSwarm</h1>
-        <p>Empowering your business with intelligent AI agents</p>
-      </section>
+    <div class="hero-section">
+      <div class="container">
+        <h1>Transform Your Workflow with AI</h1>
+        <p class="subtitle">Empower your business with intelligent agentic solutions that streamline operations and boost productivity</p>
+        <div class="cta-buttons">
+          <button class="primary-btn">Get Started</button>
+          <button class="secondary-btn">Learn More</button>
+        </div>
+      </div>
+    </div>
 
-      <section class="features">
-        <div class="feature-card">
-          <h2>AI Automation</h2>
-          <p>Streamline your workflows with intelligent automation solutions</p>
+    <div class="features-section">
+      <div class="container">
+        <h2>Why Choose IntelliSwarm</h2>
+        <div class="feature-grid">
+          <div class="feature-card">
+            <span class="material-icons">auto_awesome</span>
+            <h3>Intelligent Automation</h3>
+            <p>Leverage AI-powered agents to automate complex workflows with precision</p>
+          </div>
+          <div class="feature-card">
+            <span class="material-icons">integration_instructions</span>
+            <h3>Seamless Integration</h3>
+            <p>Easily integrate with your existing tools and systems</p>
+          </div>
+          <div class="feature-card">
+            <span class="material-icons">insights</span>
+            <h3>Advanced Analytics</h3>
+            <p>Gain valuable insights with real-time monitoring and reporting</p>
+          </div>
         </div>
-        <div class="feature-card">
-          <h2>Smart Analytics</h2>
-          <p>Gain valuable insights with our advanced analytics platform</p>
-        </div>
-        <div class="feature-card">
-          <h2>Agent Collaboration</h2>
-          <p>Enable seamless collaboration between AI agents</p>
-        </div>
-      </section>
+      </div>
     </div>
   `,
   styleUrl: './home.component.scss'
