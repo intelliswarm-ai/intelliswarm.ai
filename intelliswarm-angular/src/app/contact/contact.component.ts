@@ -7,9 +7,9 @@ import { Component } from '@angular/core';
     <div class="contact-container">
       <h1>Contact Us</h1>
       <div class="contact-info">
-        <p><span class="material-icons">email</span> info&#64;intelliswarm.com</p>
-        <p><span class="material-icons">location_on</span> Our Location</p>
-        <p><span class="material-icons">phone</span> +1 (555) 123-4567</p>
+        <p><span class="material-icons">email</span> info&#64;intelliswarm.ai</p>
+        <p><span class="material-icons">location_on</span> Geneva, Switzerland</p>
+        <p><span class="material-icons">phone</span> +41 (079) 542-2249</p>
       </div>
     </div>
   `,
@@ -41,6 +41,12 @@ import { Component } from '@angular/core';
           color: #2d3741;
         }
       }
+    }
+
+    .header-links {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
   `]
 })

@@ -5,7 +5,7 @@ import { Component } from '@angular/core';
   standalone: true,
   template: `
     <div class="about-container">
-      <h1>About IntelliSwarm</h1>
+      <h1>About IntelliSwarm.ai</h1>
       <p>We are pioneering the future of workflow automation through our innovative Agentic Workflow Platform.</p>
       
       <section class="mission">
