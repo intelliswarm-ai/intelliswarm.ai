@@ -8,6 +8,11 @@
     align-items: center;
     justify-content: center;
   
+
+    .hero-text {
+        color: #fff; /* white */
+      }
+      
     .overlay {
       background: rgba(0, 0, 0, 0.5);
       padding: 2rem;
@@ -26,6 +31,7 @@
         margin-bottom: 2rem;
         color: #fff;
       }
+
   
       .cta-btn {
         padding: 0.75rem 1.5rem;
