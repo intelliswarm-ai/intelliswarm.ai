@@ -1,0 +1,53 @@
+<div class="pricing-area">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <h2 class="title-2">Select a <span>Pricing Plan</span></h2>
+        <div class="pricing-tab">
+          <button
+            [class.active]="planType === 'monthly'"
+            (click)="handleButtonClick('monthly', $event)"
+          >
+            Monthly
+          </button>
+          <button
+            [class.active]="planType === 'yearly'"
+            (click)="handleButtonClick('yearly', $event)"
+          >
+            Yearly
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="row gy-4">
+      <div class="col-md-4" *ngFor="let item of pricingItems; let i = index">
+        <div class="pricing-item">
+          <h3 [innerHTML]="item.name"></h3>
+          <p>{{ item.description }}</p>
+          <h4>
+            <span>{{
+              planType === "monthly" ? item.monthlyPrice : item.yearlyPrice
+            }}</span>
+            <sub>{{ planType === "monthly" ? "/m" : "/y" }}</sub>
+          </h4>
+          <p>{{ item.pauseCancelText }}</p>
+          <div class="pricing-button">
+            <button>Start Trial</button>
+            <button>Subscribe</button>
+          </div>
+          <ul>
+            <li *ngFor="let feature of item.features">
+              <img
+                src="../../../assets/img/check.svg"
+                alt="check"
+                width="24"
+                height="24"
+              />
+              {{ feature }}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
