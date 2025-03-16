@@ -1,0 +1,39 @@
+<div class="services-container">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <h1>
+      {{mainTitle.start}}<span class="gradient-text">{{mainTitle.gradient}}</span>
+    </h1>
+    <p class="hero-description">Build powerful AI assistants tailored to your specific needs with our comprehensive service offerings. Transform your workflow with intelligent automation and seamless integration.</p>
+  </section>
+
+  <!-- AI Assistant Services Grid -->
+  <div class="services-grid">
+    <div class="service-card" *ngFor="let service of aiAssistantServices">
+      <h3>{{service.title}}</h3>
+      <ul>
+        <li *ngFor="let feature of service.features">{{feature}}</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- AI Agentic Solutions Section -->
+  <section class="agentic-solutions">
+    <h2>AI Agentic Solutions</h2>
+    <p class="section-description">Comprehensive AI solutions for modern enterprises. Transform your business with intelligent agentic workflows.</p>
+    
+    <div class="solutions-grid">
+      <div class="solution-card" *ngFor="let solution of agenticSolutions">
+        <div class="icon-wrapper">
+          <span class="material-icons">{{solution.icon}}</span>
+        </div>
+        <div class="solution-content">
+          <h3>{{solution.title}}</h3>
+          <ul>
+            <li *ngFor="let feature of solution.features">{{feature}}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+</div> 

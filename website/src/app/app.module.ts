@@ -29,6 +29,7 @@ import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { PricingComponent } from './pages/pricing/pricing.component';
 import { PrivacyPolicyComponent } from './pages/privacy-policy/privacy-policy.component';
 import { TermsOfServiceComponent } from './pages/terms-of-service/terms-of-service.component';
+import { ServicesComponent } from './components/services/services.component';
 
 @NgModule({
   declarations: [
@@ -54,6 +55,7 @@ import { TermsOfServiceComponent } from './pages/terms-of-service/terms-of-servi
     PricingComponent,
     PrivacyPolicyComponent,
     TermsOfServiceComponent,
+    ServicesComponent,
   ],
   imports: [BrowserModule, ReactiveFormsModule, AppRoutingModule],
   providers: [provideClientHydration()],

@@ -1,0 +1,247 @@
+:root {
+    --dark-bg: #13101f;
+    --primary-color: #a14bdf;
+    --secondary-color: #333;
+    --text-color: #fff;
+    --gradient-start: #8f45d9;
+    --gradient-mid: #e355a7;
+    --gradient-end: #ff7a5c;
+}
+
+body {
+    background-color: var(--dark-bg);
+    color: var(--text-color);
+    font-family: 'Arial', sans-serif;
+}
+
+.hero-section {
+    text-align: center;
+    padding: 80px 20px;
+}
+
+h1 {
+    font-size: 4rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.gradient-text {
+    background: linear-gradient(90deg, var(--gradient-start), var(--gradient-mid), var(--gradient-end));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.hero-section p {
+    font-size: 1.2rem;
+    max-width: 800px;
+    margin: 0 auto 40px;
+    opacity: 0.8;
+}
+
+.cta-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.btn {
+    padding: 12px 30px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.primary-btn {
+    background: linear-gradient(90deg, var(--gradient-start), var(--gradient-mid));
+    color: var(--text-color);
+}
+
+.secondary-btn {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-color);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Chat Example Styles */
+.chat-example {
+    max-width: 800px;
+    margin: 60px auto;
+}
+
+.chat-container {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.chat-message {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 15px;
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.message-content {
+    flex: 1;
+}
+
+.message-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.user-name, .assistant-name {
+    font-weight: bold;
+}
+
+.timestamp {
+    font-size: 0.8rem;
+    opacity: 0.6;
+}
+
+.assistant .avatar {
+    background: linear-gradient(90deg, var(--gradient-start), var(--gradient-mid));
+}
+
+.assistant-name {
+    color: var(--gradient-mid);
+}
+
+/* Services Section Styles */
+.services-section {
+    text-align: center;
+    padding: 80px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.services-section h2 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+.section-description {
+    font-size: 1.2rem;
+    max-width: 800px;
+    margin: 0 auto 60px;
+    opacity: 0.8;
+}
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 30px;
+}
+
+.service-card {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 30px;
+    text-align: left;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.service-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.service-icon {
+    margin-bottom: 20px;
+}
+
+.service-icon .material-icons {
+    font-size: 3rem;
+    background: linear-gradient(90deg, var(--gradient-start), var(--gradient-mid));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.service-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+}
+
+.service-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.service-card li {
+    position: relative;
+    padding-left: 25px;
+    margin-bottom: 10px;
+    opacity: 0.8;
+}
+
+.service-card li:before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--gradient-mid);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .services-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Core Services Section Styles */
+.core-services-section {
+    text-align: center;
+    padding: 80px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    background: linear-gradient(180deg, 
+        rgba(143, 69, 217, 0.05) 0%,
+        rgba(227, 85, 167, 0.05) 100%);
+    border-radius: 20px;
+}
+
+.core-services-section h2 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    background: linear-gradient(90deg, var(--gradient-start), var(--gradient-mid));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    display: inline-block;
+}
+
+/* Use existing .services-grid, .service-card styles from the previous section */
+
+/* Add subtle distinction for core services cards */
+.core-services-section .service-card {
+    border: 1px solid rgba(143, 69, 217, 0.1);
+}
+
+.core-services-section .service-card:hover {
+    border-color: rgba(143, 69, 217, 0.3);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .core-services-section {
+        padding: 40px 20px;
+        margin: 20px;
+    }
+} 

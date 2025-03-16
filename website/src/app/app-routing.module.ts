@@ -9,6 +9,8 @@ import { PricingComponent } from './pages/pricing/pricing.component';
 import { PrivacyPolicyComponent } from './pages/privacy-policy/privacy-policy.component';
 import { TermsOfServiceComponent } from './pages/terms-of-service/terms-of-service.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
+import { ServicesComponent } from './components/services/services.component';
+
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'contact', component: ContactComponent },
@@ -18,6 +20,7 @@ const routes: Routes = [
   { path: 'pricing', component: PricingComponent },
   { path: 'privacy-policy', component: PrivacyPolicyComponent },
   { path: 'terms-of-service', component: TermsOfServiceComponent },
+  { path: 'services', component: ServicesComponent },
   { path: '**', component: NotFoundComponent },
 ];
 
