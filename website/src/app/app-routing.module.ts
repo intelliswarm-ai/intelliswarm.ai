@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { HomeComponent } from './pages/home/home.component';
+import { HomeComponent } from './components/home/home.component';
 import { ContactComponent } from './pages/contact/contact.component';
 import { ConversationsComponent } from './pages/conversations/conversations.component';
 import { ExamplesComponent } from './pages/examples/examples.component';
@@ -12,7 +12,8 @@ import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { ServicesComponent } from './components/services/services.component';
 
 const routes: Routes = [
-  { path: '', component: HomeComponent },
+  { path: '', redirectTo: '/home', pathMatch: 'full' },
+  { path: 'home', component: HomeComponent },
   { path: 'contact', component: ContactComponent },
   { path: 'conversations', component: ConversationsComponent },
   { path: 'examples', component: ExamplesComponent },
@@ -21,7 +22,7 @@ const routes: Routes = [
   { path: 'privacy-policy', component: PrivacyPolicyComponent },
   { path: 'terms-of-service', component: TermsOfServiceComponent },
   { path: 'services', component: ServicesComponent },
-  { path: '**', component: NotFoundComponent },
+  { path: '**', redirectTo: '/home' },
 ];
 
 @NgModule({

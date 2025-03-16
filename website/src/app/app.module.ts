@@ -23,7 +23,7 @@ import { SolutionComponent } from './components/solution/solution.component';
 import { ContactComponent } from './pages/contact/contact.component';
 import { ConversationsComponent } from './pages/conversations/conversations.component';
 import { ExamplesComponent } from './pages/examples/examples.component';
-import { HomeComponent } from './pages/home/home.component';
+import { HomeComponent } from './components/home/home.component';
 import { IntegrationsComponent } from './pages/integrations/integrations.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { PricingComponent } from './pages/pricing/pricing.component';
