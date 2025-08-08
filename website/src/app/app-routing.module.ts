@@ -10,6 +10,7 @@ import { PrivacyPolicyComponent } from './pages/privacy-policy/privacy-policy.co
 import { TermsOfServiceComponent } from './pages/terms-of-service/terms-of-service.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { ServicesComponent } from './components/services/services.component';
+import { ChatPageComponent } from './pages/chat/chat.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -22,6 +23,7 @@ const routes: Routes = [
   { path: 'privacy-policy', component: PrivacyPolicyComponent },
   { path: 'terms-of-service', component: TermsOfServiceComponent },
   { path: 'services', component: ServicesComponent },
+  { path: 'chat', component: ChatPageComponent },
   { path: '**', redirectTo: '/home' },
 ];
 

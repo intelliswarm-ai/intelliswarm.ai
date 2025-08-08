@@ -88,9 +88,8 @@ export class LlmChatService {
     });
 
     try {
-      // For now, use a local processing approach
-      // In production, this would call Ollama, OpenAI, or another LLM API
-      const response = await this.processMessage(userMessage);
+      // Use RAG backend for enhanced responses
+      const response = await this.callRAGBackend(userMessage);
       
       // Add assistant response
       this.addMessage({
@@ -168,31 +167,31 @@ export class LlmChatService {
     this.messagesSubject.next([]);
   }
 
-  // Method to integrate with external LLM APIs (Ollama, OpenAI, etc.)
-  private async callExternalLLM(prompt: string): Promise<string> {
-    // Example implementation for Ollama local API
+  // Method to integrate with RAG backend
+  private async callRAGBackend(message: string): Promise<string> {
     try {
-      const response = await fetch('http://localhost:11434/api/generate', {
+      const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'mistral', // or another model
-          prompt: `${this.resumeContext}\n\nUser Question: ${prompt}\n\nResponse:`,
-          stream: false
+          message: message,
+          conversation_history: this.messagesSubject.value.slice(-10) // Last 10 messages for context
         })
       });
 
       if (response.ok) {
         const data = await response.json();
-        return data.response || 'Sorry, I couldn\'t generate a response.';
+        return data.message || 'Sorry, I couldn\'t generate a response.';
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'API request failed');
       }
     } catch (error) {
-      console.error('LLM API call failed:', error);
+      console.error('RAG Backend API call failed:', error);
+      // Fallback to rule-based responses
+      return this.processMessage(message);
     }
-
-    // Fallback to rule-based responses
-    return this.processMessage(prompt);
   }
 }

@@ -31,6 +31,7 @@ import { PrivacyPolicyComponent } from './pages/privacy-policy/privacy-policy.co
 import { TermsOfServiceComponent } from './pages/terms-of-service/terms-of-service.component';
 import { ServicesComponent } from './components/services/services.component';
 import { ResumeChatComponent } from './components/resume-chat/resume-chat.component';
+import { ChatPageComponent } from './pages/chat/chat.component';
 
 @NgModule({
   declarations: [
@@ -58,6 +59,7 @@ import { ResumeChatComponent } from './components/resume-chat/resume-chat.compon
     TermsOfServiceComponent,
     ServicesComponent,
     ResumeChatComponent,
+    ChatPageComponent,
   ],
   imports: [BrowserModule, ReactiveFormsModule, FormsModule, AppRoutingModule],
   providers: [provideClientHydration()],
