@@ -9,49 +9,18 @@
     <div class="cta-buttons">
       <a routerLink="/contact" class="btn-primary">Get Started</a>
       <a routerLink="/pricing" class="btn-secondary">View Pricing</a>
+      <a href="https://github.com/intelliswarm-ai" target="_blank" rel="noopener noreferrer" class="btn-outline">
+        <span class="material-icons">code</span>
+        Open Source Projects
+      </a>
     </div>
   </section>
 
   <section class="chat-demo">
-    <div class="chat-container">
-      <div class="chat-message user">
-        <div class="avatar">You</div>
-        <div class="message">
-          <span class="time">1:17 PM</span>
-          <p>What was the revenue generated during the Black Friday Sale 2022 campaign?</p>
-        </div>
-      </div>
-
-      <div class="chat-message assistant">
-        <div class="avatar">Assistify</div>
-        <div class="message">
-          <span class="time">1:17 PM</span>
-          <p>The revenue generated during the Black Friday Sale 2022 campaign was $20,000.</p>
-        </div>
-      </div>
-
-      <div class="chat-message user">
-        <div class="avatar">You</div>
-        <div class="message">
-          <span class="time">1:17 PM</span>
-          <p>What was the open rate for the Black Friday Sale 2022 campaign?</p>
-        </div>
-      </div>
-
-      <div class="chat-message assistant">
-        <div class="avatar">Assistify</div>
-        <div class="message">
-          <span class="time">1:17 PM</span>
-          <p>The open rate for the Black Friday Sale 2022 campaign was 25%.</p>
-        </div>
-      </div>
-
-      <div class="chat-input">
-        <input type="text" placeholder="Type your message">
-        <button class="send-button">
-          <span class="material-icons">send</span>
-        </button>
-      </div>
+    <div class="chat-introduction">
+      <h2>Ask Me About My Experience</h2>
+      <p>Interactive AI assistant powered by my professional background and IntelliSwarm.ai projects. Ask about my technical skills, project experience, or anything related to AI/ML development.</p>
     </div>
+    <app-resume-chat></app-resume-chat>
   </section>
 </div> 

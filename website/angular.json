@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "assistify": {
+    "intelliswarm-website": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -23,7 +23,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/assistify",
+            "outputPath": "dist/intelliswarm-website",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -75,10 +75,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "assistify:build:production"
+              "buildTarget": "intelliswarm-website:build:production"
             },
             "development": {
-              "buildTarget": "assistify:build:development"
+              "buildTarget": "intelliswarm-website:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -86,7 +86,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "assistify:build"
+            "buildTarget": "intelliswarm-website:build"
           }
         },
         "test": {
@@ -109,5 +109,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }

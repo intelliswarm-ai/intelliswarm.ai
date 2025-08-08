@@ -126,4 +126,70 @@ export class ServicesComponent {
       ]
     }
   ];
+
+  openSourceProjects = [
+    {
+      name: 'inbox-sentinel',
+      description: 'Local-first phishing detection with orchestrated ML (and optional LLMs)',
+      technology: 'Python',
+      url: 'https://github.com/intelliswarm-ai/inbox-sentinel',
+      icon: 'security'
+    },
+    {
+      name: 'hire-compass',
+      description: 'AI-powered resume-to-vacancy matcher for in-house HR (300-role scale)',
+      technology: 'Python',
+      url: 'https://github.com/intelliswarm-ai/hire-compass',
+      icon: 'people'
+    },
+    {
+      name: 'swift-kyc',
+      description: 'Multi-agent AI system for automated KYC verification, document processing, and compliance workflows',
+      technology: 'Python',
+      url: 'https://github.com/intelliswarm-ai/swift-kyc',
+      icon: 'verified_user'
+    },
+    {
+      name: 'mail-pilot',
+      description: 'Guiding you through your inbox with AI and voice',
+      technology: 'Python',
+      url: 'https://github.com/intelliswarm-ai/mail-pilot',
+      icon: 'mail'
+    },
+    {
+      name: 'swarm-trade',
+      description: 'Many agents. One trading objective',
+      technology: 'Python',
+      url: 'https://github.com/intelliswarm-ai/swarm-trade',
+      icon: 'trending_up'
+    },
+    {
+      name: 'swarm-ai',
+      description: 'Java multi-agent orchestration with Spring AI—agents, tasks, memory, tools, and telemetry out of the box',
+      technology: 'Java',
+      url: 'https://github.com/intelliswarm-ai/swarm-ai',
+      icon: 'memory'
+    },
+    {
+      name: 'intelli-vision',
+      description: 'Object detection realtime',
+      technology: 'Python',
+      url: 'https://github.com/intelliswarm-ai/intelli-vision',
+      icon: 'visibility'
+    },
+    {
+      name: 'phish-llm-trainer',
+      description: 'Phishing email detection system using DistilBERT',
+      technology: 'Python',
+      url: 'https://github.com/intelliswarm-ai/phish-llm-trainer',
+      icon: 'model_training'
+    },
+    {
+      name: 'vuln-patcher',
+      description: 'Automated vulnerability scout & patch bot – pulls advisories (CVE, GHSA, OSV …) then opens pull-requests that fix what it finds',
+      technology: 'Java',
+      url: 'https://github.com/intelliswarm-ai/vuln-patcher',
+      icon: 'build'
+    }
+  ];
 } 

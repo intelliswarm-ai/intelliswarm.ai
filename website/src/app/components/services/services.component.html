@@ -36,4 +36,36 @@
       </div>
     </div>
   </section>
+
+  <!-- Open Source Projects Section -->
+  <section class="open-source-section">
+    <h2>Open Source Projects</h2>
+    <p class="section-description">Explore our open-source contributions on GitHub. These projects showcase our commitment to building AI solutions for the community.</p>
+    
+    <div class="projects-grid">
+      <div class="project-card" *ngFor="let project of openSourceProjects">
+        <div class="project-header">
+          <div class="icon-wrapper">
+            <span class="material-icons">{{project.icon}}</span>
+          </div>
+          <div class="project-info">
+            <h3>{{project.name}}</h3>
+            <span class="tech-badge">{{project.technology}}</span>
+          </div>
+        </div>
+        <p class="project-description">{{project.description}}</p>
+        <a [href]="project.url" target="_blank" rel="noopener noreferrer" class="github-link">
+          <span class="material-icons">open_in_new</span>
+          View on GitHub
+        </a>
+      </div>
+    </div>
+    
+    <div class="github-cta">
+      <p>Want to contribute or explore more?</p>
+      <a href="https://github.com/intelliswarm-ai" target="_blank" rel="noopener noreferrer" class="btn-primary">
+        Visit Our GitHub Organization
+      </a>
+    </div>
+  </section>
 </div> 

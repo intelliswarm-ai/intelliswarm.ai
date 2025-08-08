@@ -1,5 +1,5 @@
 {
-  "name": "assistify",
+  "name": "intelliswarm-website",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:assistify": "node dist/assistify/server/server.mjs"
+    "serve:ssr:intelliswarm-website": "node dist/intelliswarm-website/server/server.mjs"
   },
   "private": true,
   "dependencies": {
