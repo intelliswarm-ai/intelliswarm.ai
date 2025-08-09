@@ -1,0 +1,101 @@
+.chat-page-container {
+  min-height: 100vh;
+  background: #13101f;
+  padding: 80px 20px 40px;
+
+  .page-header {
+    max-width: 1000px;
+    margin: 0 auto 40px;
+    text-align: center;
+
+    h1 {
+      font-size: 42px;
+      font-weight: 500;
+      margin-bottom: 16px;
+      background: linear-gradient(90deg, #8f45d9, #e355a7);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .page-description {
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.7);
+      max-width: 700px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+  }
+
+  .chat-wrapper {
+    max-width: 1000px;
+    margin: 0 auto 60px;
+  }
+
+  .chat-features {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+
+    h3 {
+      font-size: 24px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 32px;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 24px;
+    }
+
+    .feature {
+      background: linear-gradient(145deg, rgba(143, 69, 217, 0.1), rgba(227, 85, 167, 0.1));
+      border-radius: 12px;
+      padding: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+        border-color: rgba(143, 69, 217, 0.3);
+      }
+
+      .material-icons {
+        font-size: 32px;
+        color: #8f45d9;
+        margin-bottom: 12px;
+      }
+
+      h4 {
+        font-size: 16px;
+        font-weight: 500;
+        color: var(--text-primary);
+        margin-bottom: 8px;
+      }
+
+      p {
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.6);
+        margin: 0;
+        font-style: italic;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .chat-page-container {
+    padding: 80px 16px 40px;
+
+    .page-header h1 {
+      font-size: 32px;
+    }
+
+    .chat-features .features-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+  }
+}

@@ -1,0 +1,29 @@
+/* Pricing Page Styles */
+.mt-192 {
+  margin-top: 192px;
+}
+
+.mb-192 {
+  margin-bottom: 192px;
+}
+
+/* Ensure proper spacing between components */
+app-page-hero {
+  display: block;
+}
+
+app-price {
+  display: block;
+}
+
+app-faq {
+  display: block;
+}
+
+app-brand {
+  display: block;
+}
+
+app-newsletter {
+  display: block;
+}

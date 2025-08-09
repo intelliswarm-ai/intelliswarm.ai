@@ -3,7 +3,7 @@ import {
   BrowserModule,
   provideClientHydration,
 } from '@angular/platform-browser';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -30,6 +30,8 @@ import { PricingComponent } from './pages/pricing/pricing.component';
 import { PrivacyPolicyComponent } from './pages/privacy-policy/privacy-policy.component';
 import { TermsOfServiceComponent } from './pages/terms-of-service/terms-of-service.component';
 import { ServicesComponent } from './components/services/services.component';
+import { ResumeChatComponent } from './components/resume-chat/resume-chat.component';
+import { ChatPageComponent } from './pages/chat/chat.component';
 
 @NgModule({
   declarations: [
@@ -56,8 +58,10 @@ import { ServicesComponent } from './components/services/services.component';
     PrivacyPolicyComponent,
     TermsOfServiceComponent,
     ServicesComponent,
+    ResumeChatComponent,
+    ChatPageComponent,
   ],
-  imports: [BrowserModule, ReactiveFormsModule, AppRoutingModule],
+  imports: [BrowserModule, ReactiveFormsModule, FormsModule, AppRoutingModule],
   providers: [provideClientHydration()],
   bootstrap: [AppComponent],
 })

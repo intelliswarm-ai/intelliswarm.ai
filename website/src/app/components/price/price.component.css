@@ -1,0 +1,237 @@
+/* Pricing Area Styles */
+.pricing-area {
+  padding: 80px 0;
+}
+
+.title-2 {
+  font-size: 48px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #ffffff;
+}
+
+.title-2 span {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.pricing-subtitle {
+  font-size: 20px;
+  text-align: center;
+  color: #e2e8f0;
+  margin-bottom: 60px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+/* Pricing Items */
+.pricing-item {
+  background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+  padding: 50px 40px;
+  border-radius: 24px;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  height: 100%;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  backdrop-filter: blur(10px);
+}
+
+.pricing-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 30px 100px rgba(0, 0, 0, 0.25);
+}
+
+.pricing-item h3 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.pricing-item p {
+  font-size: 16px;
+  color: #64748b;
+  margin-bottom: 30px;
+  text-align: center;
+  line-height: 1.6;
+}
+
+.pricing-item h4 {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.pricing-item h4 span {
+  font-size: 48px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.pricing-item h4 sub {
+  font-size: 18px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.pricing-item .engagementText {
+  font-size: 14px;
+  color: #cbd5e1;
+  text-align: center;
+  margin-bottom: 30px;
+  font-style: italic;
+}
+
+/* Pricing Buttons */
+.pricing-button {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 40px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+  background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: #667eea;
+  border: 2px solid #667eea;
+  padding: 14px 32px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background: #667eea;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+/* Features List */
+.pricing-item ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.pricing-item li {
+  display: flex;
+  align-items: center;
+  padding: 12px 0;
+  font-size: 16px;
+  color: #475569;
+  line-height: 1.5;
+}
+
+.pricing-item li img {
+  margin-right: 15px;
+  flex-shrink: 0;
+}
+
+/* Popular Pricing Item */
+.pricing-item.popular {
+  border: 2px solid #667eea;
+  box-shadow: 0 25px 80px rgba(102, 126, 234, 0.2);
+  transform: scale(1.02);
+}
+
+.pricing-item.popular:hover {
+  transform: scale(1.02) translateY(-5px);
+  box-shadow: 0 30px 100px rgba(102, 126, 234, 0.3);
+}
+
+/* Popular Badge */
+.pricing-item .popular-badge {
+  position: absolute;
+  top: -10px;
+  right: 20px;
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 15px rgba(240, 147, 251, 0.4);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .title-2 {
+    font-size: 36px;
+  }
+  
+  .pricing-subtitle {
+    font-size: 18px;
+    margin-bottom: 40px;
+  }
+  
+  .pricing-item {
+    padding: 40px 30px;
+  }
+  
+  .pricing-item h3 {
+    font-size: 24px;
+  }
+  
+  .pricing-item h4 span {
+    font-size: 36px;
+  }
+}
+
+@media (max-width: 576px) {
+  .pricing-area {
+    padding: 60px 0;
+  }
+  
+  .title-2 {
+    font-size: 32px;
+  }
+  
+  .pricing-item {
+    padding: 35px 25px;
+  }
+  
+  .pricing-button {
+    gap: 12px;
+  }
+  
+  .btn-primary,
+  .btn-secondary {
+    padding: 14px 28px;
+    font-size: 15px;
+  }
+}

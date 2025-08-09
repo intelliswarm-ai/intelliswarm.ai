@@ -1,0 +1,121 @@
+version: '3.8'
+
+services:
+  # Angular Frontend
+  frontend:
+    build:
+      context: ./website
+      dockerfile: Dockerfile
+    ports:
+      - "4200:4200"
+    environment:
+      - NODE_ENV=development
+      - API_URL=http://localhost:3000
+    volumes:
+      - ./website:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+      - ollama
+    networks:
+      - intelliswarm-network
+
+  # Backend API for RAG
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - OLLAMA_URL=http://ollama:11434
+      - CHROMA_URL=http://chromadb:8000
+      - NODE_ENV=development
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+      - ./data/resume:/app/data
+    depends_on:
+      - chromadb
+      - ollama
+    networks:
+      - intelliswarm-network
+
+  # Ollama LLM Service
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    environment:
+      - OLLAMA_KEEP_ALIVE=24h
+      - OLLAMA_HOST=0.0.0.0:11434
+    networks:
+      - intelliswarm-network
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    profiles:
+      - gpu
+
+  # Ollama CPU version
+  ollama-cpu:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    environment:
+      - OLLAMA_KEEP_ALIVE=24h
+      - OLLAMA_HOST=0.0.0.0:11434
+    networks:
+      - intelliswarm-network
+    restart: unless-stopped
+    profiles:
+      - cpu
+
+  # ChromaDB Vector Database
+  chromadb:
+    image: chromadb/chroma:latest
+    ports:
+      - "8000:8000"
+    volumes:
+      - chroma_data:/chroma/chroma
+    environment:
+      - CHROMA_SERVER_HOST=0.0.0.0
+      - CHROMA_SERVER_HTTP_PORT=8000
+    networks:
+      - intelliswarm-network
+    restart: unless-stopped
+
+  # Resume Data Loader (runs once to populate ChromaDB)
+  data-loader:
+    build:
+      context: ./scripts
+      dockerfile: Dockerfile.loader
+    environment:
+      - CHROMA_URL=http://chromadb:8000
+      - OLLAMA_URL=http://ollama:11434
+    volumes:
+      - ./data/resume:/app/data
+    depends_on:
+      - chromadb
+      - ollama
+    networks:
+      - intelliswarm-network
+    profiles:
+      - data-setup
+
+volumes:
+  ollama_data:
+  chroma_data:
+
+networks:
+  intelliswarm-network:
+    driver: bridge

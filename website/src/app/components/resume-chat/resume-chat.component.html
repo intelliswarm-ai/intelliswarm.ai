@@ -1,0 +1,72 @@
+<div class="resume-chat-container">
+  <div class="chat-header">
+    <div class="chat-title">
+      <span class="material-icons">psychology</span>
+      <h3>AI Assistant</h3>
+    </div>
+    <button class="clear-btn" (click)="clearChat()" title="Clear chat">
+      <span class="material-icons">refresh</span>
+    </button>
+  </div>
+
+  <div class="chat-messages" #messagesContainer>
+    <div 
+      *ngFor="let message of messages" 
+      class="message"
+      [ngClass]="{'user-message': message.role === 'user', 'assistant-message': message.role === 'assistant'}">
+      
+      <div class="message-avatar">
+        <span class="material-icons" *ngIf="message.role === 'user'">person</span>
+        <span class="material-icons" *ngIf="message.role === 'assistant'">smart_toy</span>
+      </div>
+      
+      <div class="message-content">
+        <div class="message-header">
+          <span class="message-author">
+            {{ message.role === 'user' ? 'You' : 'IntelliSwarm AI' }}
+          </span>
+          <span class="message-time">{{ formatTime(message.timestamp) }}</span>
+        </div>
+        <div class="message-text">{{ message.content }}</div>
+      </div>
+    </div>
+
+    <div *ngIf="isLoading" class="message assistant-message">
+      <div class="message-avatar">
+        <span class="material-icons">smart_toy</span>
+      </div>
+      <div class="message-content">
+        <div class="message-header">
+          <span class="message-author">IntelliSwarm AI</span>
+          <span class="message-time">{{ getCurrentTime() }}</span>
+        </div>
+        <div class="typing-indicator">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-input">
+    <div class="input-container">
+      <textarea
+        [(ngModel)]="currentMessage"
+        (keypress)="onKeyPress($event)"
+        placeholder="Ask me about my experience, projects, or technical skills..."
+        [disabled]="isLoading"
+        rows="1">
+      </textarea>
+      <button 
+        class="send-btn"
+        (click)="sendMessage()"
+        [disabled]="!currentMessage.trim() || isLoading">
+        <span class="material-icons">send</span>
+      </button>
+    </div>
+    <div class="input-hint">
+      Press Enter to send • Shift + Enter for new line
+    </div>
+  </div>
+</div>
