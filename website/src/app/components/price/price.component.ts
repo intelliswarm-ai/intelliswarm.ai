@@ -6,49 +6,54 @@ import { Component } from '@angular/core';
   styleUrls: ['./price.component.css'],
 })
 export class PriceComponent {
-  planType: string = 'monthly';
-
   pricingItems: any[] = [
     {
-      name: 'Starter',
-      description: 'Perfect for individuals.',
-      monthlyPrice: '$9',
-      yearlyPrice: '$99',
-      pauseCancelText: 'Pause or cancel anytime',
+      name: 'Community Support',
+      description: 'Free open-source support for developers and small teams.',
+      price: 'Free',
+      priceSubtext: 'Open Source',
+      engagementText: 'Community-driven support via GitHub',
+      isPopular: false,
       features: [
-        'Team members: 1',
-        'Users: Unlimited',
-        'Integrations: Unlimited',
-        'Total message: 150',
-        'Assistants: 2',
+        'GitHub Issues & Discussions',
+        'Documentation & Examples',
+        'Community Forum Access',
+        'Basic Troubleshooting',
+        'Regular Updates & Releases',
       ],
     },
     {
-      name: 'Business <img src="assets/img/pro-btn.svg" alt="pro">',
-      description: 'Perfect for small businesses.',
-      monthlyPrice: '$29',
-      yearlyPrice: '$269',
-      pauseCancelText: 'Pause or cancel anytime',
+      name: 'Professional Support <img src="assets/img/pro-btn.svg" alt="pro">',
+      description: 'Dedicated support for growing organizations.',
+      price: 'From $2,500',
+      priceSubtext: '/month',
+      engagementText: 'Annual engagement with dedicated support',
+      isPopular: true,
       features: [
-        'Team members: 3',
-        'Users: Unlimited',
-        'Integrations: Unlimited',
-        'Total message: 650',
-        'Assistants: 5',
+        'Priority Support Response (4-8 hours)',
+        'Custom Implementation Guidance',
+        'Training & Workshops',
+        'Performance Optimization',
+        'Integration Support',
+        'Monthly Check-ins',
       ],
     },
     {
-      name: 'Professional',
-      description: 'Perfect for larger businesses.',
-      monthlyPrice: '$59',
-      yearlyPrice: '$699',
-      pauseCancelText: 'Pause or cancel anytime',
+      name: 'Enterprise Solutions',
+      description: 'Full-service implementation for large enterprises.',
+      price: 'Custom Pricing',
+      priceSubtext: 'Enterprise',
+      engagementText: 'Tailored solutions and dedicated team',
+      isPopular: false,
       features: [
-        'Team members: 10',
-        'Users: Unlimited',
-        'Integrations: Unlimited',
-        'Total message: 1650',
-        'Assistants: 12',
+        'Dedicated Support Engineer',
+        'Custom Development & Integration',
+        'On-site Training & Workshops',
+        'Performance Audits & Optimization',
+        '24/7 Emergency Support',
+        'Quarterly Business Reviews',
+        'Custom Feature Development',
+        'Compliance & Security Reviews',
       ],
     },
   ];
@@ -60,7 +65,8 @@ export class PriceComponent {
   }
 
   handleButtonClick(type: string, button: any): void {
-    this.planType = type;
-    this.togglePricing(type, button);
+    // This function is no longer needed as pricingItems is static
+    // this.planType = type;
+    // this.togglePricing(type, button);
   }
 }

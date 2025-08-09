@@ -1,0 +1,14 @@
+.footer-logo {
+  margin-bottom: 15px;
+}
+
+.footer-logo .logo-text {
+  font-size: 28px;
+  font-weight: 700;
+  background: linear-gradient(90deg, #a570ff 0%, #ff6eb2 50%, #ffad66 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-decoration: none;
+  display: inline-block;
+}
