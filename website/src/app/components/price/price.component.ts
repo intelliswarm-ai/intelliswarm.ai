@@ -25,7 +25,7 @@ export class PriceComponent {
     {
       name: 'Professional Support <img src="assets/img/pro-btn.svg" alt="pro">',
       description: 'Dedicated support for growing organizations.',
-      price: 'From $2,500',
+              price: 'From $500',
       priceSubtext: '/month',
       engagementText: 'Annual engagement with dedicated support',
       isPopular: true,
