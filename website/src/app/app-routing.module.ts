@@ -11,6 +11,8 @@ import { TermsOfServiceComponent } from './pages/terms-of-service/terms-of-servi
 import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { ServicesComponent } from './components/services/services.component';
 import { ChatPageComponent } from './pages/chat/chat.component';
+import { BenchmarksComponent } from './pages/benchmarks/benchmarks.component';
+import { DocsComponent } from './pages/docs/docs.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -24,6 +26,8 @@ const routes: Routes = [
   { path: 'terms-of-service', component: TermsOfServiceComponent },
   { path: 'services', component: ServicesComponent },
   { path: 'chat', component: ChatPageComponent },
+  { path: 'benchmarks', component: BenchmarksComponent },
+  { path: 'docs', component: DocsComponent },
   { path: '**', redirectTo: '/home' },
 ];
 

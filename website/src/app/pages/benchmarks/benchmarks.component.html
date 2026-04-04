@@ -1,0 +1,131 @@
+<div class="benchmarks-container">
+  <section class="hero-section">
+    <div class="hero-content">
+      <h1 class="hero-title">Framework <span class="gradient-text">Benchmarks</span></h1>
+      <p class="hero-description">
+        SwarmAI evaluates itself using its own agent orchestration capabilities.
+        The Framework Value Score tracks quality across releases.
+      </p>
+    </div>
+  </section>
+
+  <!-- Value Score -->
+  <section class="score-section">
+    <div class="score-card" [class.pass]="valueScore >= 70" [class.fail]="valueScore < 70">
+      <div class="score-big">{{valueScore}}</div>
+      <div class="score-label">Framework Value Score</div>
+      <div class="score-gate" [class.pass]="valueScore >= 70">
+        Release Gate: {{ valueScore >= 70 ? 'PASSED' : 'BLOCKED' }}
+      </div>
+    </div>
+    <div class="score-meta">
+      <div class="meta-item">
+        <span class="meta-value">{{passRate}}%</span>
+        <span class="meta-label">Pass Rate</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-value">{{totalScenarios - failedScenarios}}/{{totalScenarios}}</span>
+        <span class="meta-label">Scenarios Passed</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-value">{{version}}</span>
+        <span class="meta-label">Version</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Category Breakdown -->
+  <section class="category-section">
+    <h2>Category Breakdown</h2>
+    <div class="category-grid">
+      <div *ngFor="let cat of categories" class="category-card">
+        <div class="category-score">{{cat.score}}</div>
+        <div class="category-name">{{cat.name}}</div>
+        <div class="category-meta">Weight: {{cat.weight}} | {{cat.scenarios}} scenarios</div>
+        <div class="category-bar">
+          <div class="category-bar-fill" [style.width.%]="cat.score"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Competitive Comparison -->
+  <section class="comparison-section">
+    <h2>Competitive Comparison</h2>
+    <p class="section-subtitle">Feature comparison against major multi-agent frameworks</p>
+    <div class="table-wrapper">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Framework</th>
+            <th>Language</th>
+            <th>Self-Improving</th>
+            <th>Governance</th>
+            <th>Budget Tracking</th>
+            <th>Multi-Tenant</th>
+            <th>YAML DSL</th>
+            <th>Built-in Tools</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let c of competitors" [class.highlight]="c.name === 'SwarmAI'">
+            <td><strong>{{c.name}}</strong></td>
+            <td>{{c.language}}</td>
+            <td [class.yes]="c.selfImproving" [class.no]="!c.selfImproving">{{c.selfImproving ? 'Yes' : 'No'}}</td>
+            <td [class.yes]="c.governance" [class.no]="!c.governance">{{c.governance ? 'Yes' : 'No'}}</td>
+            <td [class.yes]="c.budget" [class.no]="!c.budget">{{c.budget ? 'Yes' : 'No'}}</td>
+            <td [class.yes]="c.multiTenant" [class.no]="!c.multiTenant">{{c.multiTenant ? 'Yes' : 'No'}}</td>
+            <td [class.yes]="c.yamlDsl" [class.no]="!c.yamlDsl">{{c.yamlDsl ? 'Yes' : 'No'}}</td>
+            <td>{{c.tools}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Scenario Details -->
+  <section class="scenarios-section">
+    <h2>Scenario Results</h2>
+    <div class="table-wrapper">
+      <table class="scenarios-table">
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Scenario</th>
+            <th>Score</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let s of scenarios">
+            <td><span class="category-badge">{{s.category}}</span></td>
+            <td>{{s.name}}</td>
+            <td>{{s.score}}</td>
+            <td [class.pass]="s.passed" [class.fail]="!s.passed">{{s.passed ? 'PASS' : 'FAIL'}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Methodology -->
+  <section class="methodology-section">
+    <h2>Methodology</h2>
+    <div class="methodology-content">
+      <p>
+        The Framework Value Score is computed by the <strong>swarmai-eval</strong> module,
+        which runs 15 automated scenarios across 4 categories. Each scenario exercises a
+        specific framework capability end-to-end and scores it on a 0-100 rubric.
+      </p>
+      <p>
+        Category weights: Core (25%), Orchestration (25%), Enterprise (20%), Resilience (15%), DSL (15%).
+        A score &ge; 70 is required to pass the release gate. Regressions &gt; 5 points trigger
+        automatic alerts.
+      </p>
+      <p>
+        The eval swarm runs nightly on the main branch and on every release tag.
+        Results are stored in <code>eval-results/history.json</code> and published here automatically.
+      </p>
+    </div>
+  </section>
+</div>

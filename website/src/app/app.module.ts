@@ -32,6 +32,8 @@ import { TermsOfServiceComponent } from './pages/terms-of-service/terms-of-servi
 import { ServicesComponent } from './components/services/services.component';
 import { ResumeChatComponent } from './components/resume-chat/resume-chat.component';
 import { ChatPageComponent } from './pages/chat/chat.component';
+import { BenchmarksComponent } from './pages/benchmarks/benchmarks.component';
+import { DocsComponent } from './pages/docs/docs.component';
 
 @NgModule({
   declarations: [
@@ -60,6 +62,8 @@ import { ChatPageComponent } from './pages/chat/chat.component';
     ServicesComponent,
     ResumeChatComponent,
     ChatPageComponent,
+    BenchmarksComponent,
+    DocsComponent,
   ],
   imports: [BrowserModule, ReactiveFormsModule, FormsModule, AppRoutingModule],
   providers: [provideClientHydration()],

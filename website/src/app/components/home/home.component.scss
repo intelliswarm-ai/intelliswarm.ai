@@ -262,4 +262,51 @@
   .hero-description {
     font-size: 1.1rem;
   }
-} 
+}
+
+// Code Section
+.code-section {
+  .code-block {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: 12px;
+    padding: 24px;
+    overflow-x: auto;
+    max-width: 700px;
+    margin: 0 auto;
+
+    pre { margin: 0; }
+    code {
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 0.85rem;
+      color: #e2e8f0;
+      line-height: 1.7;
+    }
+  }
+}
+
+// CTA Section
+.cta-section {
+  padding-bottom: 80px;
+}
+
+// Secondary button
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.1rem;
+  background: rgba(255, 255, 255, 0.08);
+  color: #cbd5e1;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+  }
+}

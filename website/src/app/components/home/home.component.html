@@ -3,82 +3,190 @@
   <section class="hero-section">
     <div class="hero-content">
       <div class="hero-badge">
-        <span class="badge-icon">🚀</span>
-        <span>Java Multi-Agent Framework</span>
+        <span class="badge-icon">&#x1F680;</span>
+        <span>Enterprise-Grade AI Agent Orchestration</span>
       </div>
-      
+
       <h1 class="hero-title">
-        SwarmAI <span class="gradient-text">Framework</span>
+        Build Intelligent <span class="gradient-text">Agent Workflows</span> in Java
       </h1>
-      
+
       <p class="hero-description">
-        Build sophisticated AI workflows with Java multi-agent orchestration. 
-        Powered by Spring AI with agents, tasks, memory, and tools out of the box.
+        The only self-improving, multi-agent orchestration framework for Java.
+        7 process types, YAML DSL, built-in governance, budget tracking, and 24 tools.
+        Powered by Spring AI &amp; Spring Boot.
       </p>
-      
+
       <div class="hero-actions">
         <a href="https://github.com/intelliswarm-ai/swarm-ai" target="_blank" rel="noopener noreferrer" class="btn-primary">
           <span class="material-icons">rocket_launch</span>
           Get Started
         </a>
+        <a routerLink="/docs" class="btn-secondary">
+          <span class="material-icons">menu_book</span>
+          Documentation
+        </a>
       </div>
-      
+
       <div class="hero-stats">
         <div class="stat-item">
-          <span class="stat-number">Java 21+</span>
-          <span class="stat-label">Runtime</span>
+          <span class="stat-number">1,013+</span>
+          <span class="stat-label">Tests Passing</span>
         </div>
         <div class="stat-item">
-          <span class="stat-number">Spring AI</span>
-          <span class="stat-label">Powered</span>
+          <span class="stat-number">9</span>
+          <span class="stat-label">Modules</span>
         </div>
         <div class="stat-item">
-          <span class="stat-number">MIT</span>
-          <span class="stat-label">License</span>
+          <span class="stat-number">24</span>
+          <span class="stat-label">Built-in Tools</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">Java 21</span>
+          <span class="stat-label">Spring Boot 3.4</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- SwarmAI Features Section -->
+  <!-- Process Types Section -->
   <section class="features-section">
     <div class="section-header">
-      <h2>Why Choose SwarmAI?</h2>
-      <p>Enterprise-grade multi-agent orchestration built for scale and reliability</p>
+      <h2>7 Process Types</h2>
+      <p>From simple sequential pipelines to self-improving swarms with dynamic skill generation</p>
     </div>
-    
+
     <div class="features-grid">
       <div class="feature-card">
-        <div class="feature-icon">
-          <span class="material-icons">hub</span>
-        </div>
-        <h3>Multi-Agent Orchestration</h3>
-        <p>Create and manage multiple AI agents working together to solve complex problems with intelligent coordination.</p>
+        <div class="feature-icon"><span class="material-icons">linear_scale</span></div>
+        <h3>Sequential</h3>
+        <p>Tasks run in dependency order, each receiving prior outputs as context.</p>
       </div>
-      
       <div class="feature-card">
-        <div class="feature-icon">
-          <span class="material-icons">schedule</span>
-        </div>
-        <h3>Flexible Task Management</h3>
-        <p>Define complex task dependencies and execution flows with sequential and hierarchical processes.</p>
+        <div class="feature-icon"><span class="material-icons">fork_right</span></div>
+        <h3>Parallel</h3>
+        <p>Independent tasks run concurrently in layers with automatic synchronization.</p>
       </div>
-      
       <div class="feature-card">
-        <div class="feature-icon">
-          <span class="material-icons">memory</span>
-        </div>
-        <h3>Memory & Knowledge</h3>
-        <p>Built-in support for agent memory and knowledge bases with Redis and PostgreSQL integration.</p>
+        <div class="feature-icon"><span class="material-icons">account_tree</span></div>
+        <h3>Hierarchical</h3>
+        <p>Manager agent creates plans, delegates to workers, and synthesizes results.</p>
       </div>
-      
       <div class="feature-card">
-        <div class="feature-icon">
-          <span class="material-icons">build</span>
-        </div>
-        <h3>Spring AI Integration</h3>
-        <p>Support for OpenAI, Anthropic, Ollama, and other LLM providers with Spring Boot enterprise features.</p>
+        <div class="feature-icon"><span class="material-icons">loop</span></div>
+        <h3>Iterative</h3>
+        <p>Execute, review, refine loop until the reviewer approves or max iterations reached.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><span class="material-icons">auto_fix_high</span></div>
+        <h3>Self-Improving</h3>
+        <p>Generates new skills at runtime when capability gaps are detected. RL-powered decisions.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><span class="material-icons">hub</span></div>
+        <h3>Swarm</h3>
+        <p>Distributed fan-out with parallel self-improving agents per target.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><span class="material-icons">layers</span></div>
+        <h3>Composite</h3>
+        <p>Chain any processes into a pipeline: Parallel &rarr; Hierarchical &rarr; Iterative.</p>
       </div>
     </div>
   </section>
-</div> 
+
+  <!-- Enterprise Features Section -->
+  <section class="features-section enterprise-section">
+    <div class="section-header">
+      <h2>Enterprise Ready</h2>
+      <p>Production-grade features that differentiate SwarmAI from personal AI assistants</p>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon"><span class="material-icons">admin_panel_settings</span></div>
+        <h3>Governance Gates</h3>
+        <p>Human-in-the-loop approval checkpoints pause workflows for review before sensitive operations.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><span class="material-icons">account_balance_wallet</span></div>
+        <h3>Budget Tracking</h3>
+        <p>Real-time token and cost tracking with HARD_STOP or WARN enforcement per workflow.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><span class="material-icons">groups</span></div>
+        <h3>Multi-Tenancy</h3>
+        <p>Tenant-isolated memory, knowledge, quotas, and budgets for enterprise deployments.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><span class="material-icons">security</span></div>
+        <h3>RBAC &amp; Permissions</h3>
+        <p>Role-based access control with tool permission levels: READ_ONLY, WORKSPACE_WRITE, DANGEROUS.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><span class="material-icons">monitor_heart</span></div>
+        <h3>Observability</h3>
+        <p>Correlation IDs, structured logging, decision tracing, Prometheus metrics, and health checks.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><span class="material-icons">shield</span></div>
+        <h3>Circuit Breaker</h3>
+        <p>resilience4j circuit breaker and retry on all LLM calls. Graceful degradation under failure.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Code Example Section -->
+  <section class="features-section code-section">
+    <div class="section-header">
+      <h2>Define Workflows in YAML or Java</h2>
+      <p>Zero-code YAML DSL or type-safe Java builders &mdash; your choice</p>
+    </div>
+    <div class="code-block">
+      <pre><code>swarm:
+  process: SELF_IMPROVING
+  budget:
+    maxTokens: 500000
+    maxCostUsd: 5.00
+    onExceeded: WARN
+
+  agents:
+    researcher:
+      role: "Research Analyst"
+      goal: "Find accurate data"
+      tools: [web-search, sec-filings]
+      permissionMode: READ_ONLY
+
+    writer:
+      role: "Report Writer"
+      goal: "Write executive reports"
+
+  tasks:
+    research:
+      description: "Research {{'{{topic}}'}}"
+      agent: researcher
+    report:
+      description: "Write report from findings"
+      agent: writer
+      dependsOn: [research]</code></pre>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="features-section cta-section">
+    <div class="section-header">
+      <h2>Start Building Today</h2>
+      <p>Open source core &bull; Enterprise features with BSL license &bull; Spring Boot native</p>
+    </div>
+    <div class="hero-actions" style="justify-content: center;">
+      <a href="https://github.com/intelliswarm-ai/swarm-ai" target="_blank" class="btn-primary">
+        <span class="material-icons">code</span>
+        View on GitHub
+      </a>
+      <a routerLink="/benchmarks" class="btn-secondary">
+        <span class="material-icons">speed</span>
+        See Benchmarks
+      </a>
+    </div>
+  </section>
+</div>

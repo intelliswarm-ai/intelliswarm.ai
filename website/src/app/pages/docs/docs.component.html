@@ -1,0 +1,64 @@
+<div class="docs-container">
+  <section class="hero-section">
+    <div class="hero-content">
+      <h1 class="hero-title"><span class="gradient-text">Documentation</span></h1>
+      <p class="hero-description">
+        Everything you need to build, deploy, and scale AI agent workflows with SwarmAI.
+      </p>
+    </div>
+  </section>
+
+  <!-- Quick Links -->
+  <section class="docs-grid-section">
+    <div class="docs-grid">
+      <a *ngFor="let section of sections"
+         [href]="section.link" target="_blank" rel="noopener noreferrer"
+         class="doc-card">
+        <div class="doc-icon">
+          <span class="material-icons">{{section.icon}}</span>
+        </div>
+        <div class="doc-content">
+          <span class="doc-tag">{{section.tag}}</span>
+          <h3>{{section.title}}</h3>
+          <p>{{section.description}}</p>
+        </div>
+        <span class="material-icons doc-arrow">arrow_forward</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Module Reference -->
+  <section class="modules-section">
+    <h2>Module Reference</h2>
+    <p class="section-subtitle">SwarmAI is organized into 8 focused Maven modules</p>
+    <div class="modules-grid">
+      <div *ngFor="let mod of modules" class="module-card">
+        <code class="module-name">{{mod.name}}</code>
+        <p class="module-desc">{{mod.description}}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Start -->
+  <section class="quickstart-section">
+    <h2>Quick Start</h2>
+    <div class="code-block">
+      <pre><code>&lt;!-- Add to your pom.xml --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;ai.intelliswarm&lt;/groupId&gt;
+    &lt;artifactId&gt;swarmai-core&lt;/artifactId&gt;
+    &lt;version&gt;1.0.0-SNAPSHOT&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+    </div>
+    <div class="quickstart-actions">
+      <a href="https://github.com/intelliswarm-ai/swarm-ai" target="_blank" class="btn-primary">
+        <span class="material-icons">code</span>
+        View Source
+      </a>
+      <a href="https://github.com/intelliswarm-ai/swarm-ai/blob/main/GETTING_STARTED.md" target="_blank" class="btn-secondary">
+        <span class="material-icons">school</span>
+        Full Tutorial
+      </a>
+    </div>
+  </section>
+</div>
