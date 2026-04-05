@@ -1,7 +1,7 @@
 <app-page-hero
-  [title]="'Terms of'"
-  [subtitle]="'Service'"
-  [content]="'Last Updated: August 22, 2023'"
+  [title]="'Software'"
+  [subtitle]="'License'"
+  [content]="'SwarmAI Framework Licensing — MIT License'"
 ></app-page-hero>
 <div class="policy-area mt-192">
   <div class="container">
@@ -13,174 +13,401 @@
             data-bs-toggle="pill"
             data-bs-target="#pillOne"
           >
-            Welcome to IntelliSwarm AI
+            License Overview
           </button>
           <button
             class="nav-link"
             data-bs-toggle="pill"
             data-bs-target="#pillTwo"
           >
-            Account Terms
+            MIT License — Full Text
           </button>
           <button
             class="nav-link"
             data-bs-toggle="pill"
             data-bs-target="#pillThree"
           >
-            Company Terms
+            What You Can Do
           </button>
           <button
             class="nav-link"
             data-bs-toggle="pill"
             data-bs-target="#pillFour"
           >
-            Account Activation
+            Enterprise Module
+          </button>
+          <button
+            class="nav-link"
+            data-bs-toggle="pill"
+            data-bs-target="#pillFive"
+          >
+            Frameworks Using Similar Licenses
+          </button>
+          <button
+            class="nav-link"
+            data-bs-toggle="pill"
+            data-bs-target="#pillSix"
+          >
+            Contribution Terms
+          </button>
+          <button
+            class="nav-link"
+            data-bs-toggle="pill"
+            data-bs-target="#pillSeven"
+          >
+            FAQ
           </button>
         </div>
       </div>
       <div class="col-md-8">
         <div class="tab-content">
+
+          <!-- License Overview -->
           <div class="tab-pane fade show active" id="pillOne" role="tabpanel">
-            <h3>Welcome to IntelliSwarm AI</h3>
+            <h3>License Overview</h3>
             <p>
-              This IntelliSwarm AI Services Agreement (“Agreement”) is a legal
-              agreement between IntelliSwarm AI Inc. (“IntelliSwarm AI”, “us”, or “we”) and
-              the entity or person (“you”, “your”, or “user”) who registered on
-              the IntelliSwarm AI signup page to utilize our hiring services,
-              assessment services, and other business solutions that may be
-              offered by IntelliSwarm AI and its affiliated entities (each, a
-              “Service”). This Agreement outlines the terms of service that
-              govern your usage of the Services. If any aspect of this Agreement
-              is unclear to you, please reach out to us before commencing use of
-              the Services.
+              SwarmAI is released under the <strong>MIT License</strong> — one of the most permissive and
+              widely used open-source licenses. You are free to use, copy, modify, merge, publish, distribute,
+              sublicense, and sell copies of SwarmAI with virtually no restrictions.
+            </p>
+            <p>
+              The MIT License is the same license used by React, Angular, Vue.js, Node.js, Ruby on Rails,
+              .NET, jQuery, and thousands of other foundational projects. It is the most popular open-source
+              license on GitHub.
             </p>
 
-            <p>
-              Access or use of any Services is contingent upon your acceptance
-              and adherence to all stipulated terms and conditions in this
-              Agreement.
-            </p>
-
-            <p>
-              Usage Data: Information on how you use IntelliSwarm AI, like the
-              features you interact with, frequency, duration of interactions,
-              and any errors or crashes.
-            </p>
-
-            <p>
-              Device Information: Details about the device you use to access
-              IntelliSwarm AI, such as device type, operating system, browser, and IP
-              address.
-            </p>
+            <h3>Module Licensing Summary</h3>
+            <table style="width:100%; border-collapse:collapse; margin: 16px 0;">
+              <thead>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.15);">
+                  <th style="text-align:left; padding:10px; color: rgba(255,255,255,0.9);">Module</th>
+                  <th style="text-align:left; padding:10px; color: rgba(255,255,255,0.9);">License</th>
+                  <th style="text-align:left; padding:10px; color: rgba(255,255,255,0.9);">Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                  <td style="padding:10px;">swarmai-core</td>
+                  <td style="padding:10px;">MIT</td>
+                  <td style="padding:10px;">Agents, tasks, processes, state, skills, memory, governance</td>
+                </tr>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                  <td style="padding:10px;">swarmai-tools</td>
+                  <td style="padding:10px;">MIT</td>
+                  <td style="padding:10px;">24 built-in tools</td>
+                </tr>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                  <td style="padding:10px;">swarmai-dsl</td>
+                  <td style="padding:10px;">MIT</td>
+                  <td style="padding:10px;">YAML DSL parser &amp; compiler</td>
+                </tr>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                  <td style="padding:10px;">swarmai-rl</td>
+                  <td style="padding:10px;">MIT</td>
+                  <td style="padding:10px;">Reinforcement learning: bandits, Thompson sampling</td>
+                </tr>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                  <td style="padding:10px;">swarmai-eval</td>
+                  <td style="padding:10px;">MIT</td>
+                  <td style="padding:10px;">Self-evaluation &amp; competitive benchmarks</td>
+                </tr>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                  <td style="padding:10px;">swarmai-self-improving</td>
+                  <td style="padding:10px;">MIT</td>
+                  <td style="padding:10px;">10% investment pipeline &amp; Community Ledger</td>
+                </tr>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                  <td style="padding:10px;">swarmai-enterprise</td>
+                  <td style="padding:10px;">MIT (license-key gated)</td>
+                  <td style="padding:10px;">Code is MIT; features require a license key to activate</td>
+                </tr>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                  <td style="padding:10px;">swarmai-bom</td>
+                  <td style="padding:10px;">MIT</td>
+                  <td style="padding:10px;">Bill of Materials for dependency alignment</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
+
+          <!-- MIT License Full Text -->
           <div class="tab-pane fade" id="pillTwo" role="tabpanel">
-            <h3>Account Terms</h3>
-            <p>
-              In order to access and make use of the Services, you must complete
-              the registration process for an IntelliSwarm AI account (“Account”).
-              Successful completion of your Account registration mandates the
-              provision of your full legal name, a valid email address, and any
-              other information marked as mandatory. IntelliSwarm AI reserves the
-              right to decline your Account application or terminate an existing
-              Account at our sole discretion, without the obligation to provide
-              a reason.
-            </p>
+            <h3>MIT License — Full Text</h3>
+            <div style="background: rgba(0,0,0,0.3); padding: 24px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.8; color: rgba(255,255,255,0.8);">
+              <p style="margin-bottom:16px;">MIT License</p>
+              <p style="margin-bottom:16px;">Copyright (c) 2025 IntelliSwarm.ai</p>
+              <p style="margin-bottom:16px;">
+                Permission is hereby granted, free of charge, to any person obtaining a copy
+                of this software and associated documentation files (the "Software"), to deal
+                in the Software without restriction, including without limitation the rights
+                to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+                copies of the Software, and to permit persons to whom the Software is
+                furnished to do so, subject to the following conditions:
+              </p>
+              <p style="margin-bottom:16px;">
+                The above copyright notice and this permission notice shall be included in all
+                copies or substantial portions of the Software.
+              </p>
+              <p>
+                THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+                IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+                FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+                AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+                LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+                OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+                SOFTWARE.
+              </p>
+            </div>
 
+            <h3>What MIT Means in Practice</h3>
             <p>
-              You must be of legal age (18 years or older) or meet the age of
-              majority in your jurisdiction, whichever is higher, to open an
-              Account and utilize the Services. By accepting Services provided
-              by IntelliSwarm AI, you affirm that the purpose is business-related and
-              not intended for personal, household, or familial use.
-            </p>
-
-            <p>
-              You acknowledge that the email address you provide upon Account
-              creation, or any subsequent updates, will serve as the primary
-              mode of communication between you and IntelliSwarm AI (“Primary Email
-              Address”). Maintenance of the Primary Email Address is your
-              responsibility, and it must be capable of both sending and
-              receiving messages. Email correspondence from your Primary Email
-              Address will serve as the valid means of authentication.
-            </p>
-
-            <p>
-              The security of your password lies with you. IntelliSwarm AI shall not
-              be held liable for any losses or damages arising from your failure
-              to maintain the security of your Account and password.
-            </p>
-
-            <p>
-              Technical assistance related to the Services is exclusively
-              available to IntelliSwarm AI Users. Queries regarding the Terms of
-              Service should be directed to IntelliSwarm AI Support.
-            </p>
-
-            <p>
-              You agree not to reproduce, duplicate, copy, sell, resell, or
-              exploit any part of the Service, the Services&apos; use, or access
-              without explicit written permission from IntelliSwarm AI. You also agree
-              not to circumvent, work around, or bypass technical limitations of
-              the Services, nor to utilize tools to activate disabled features
-              or functionalities, or engage in decompiling, disassembling, or
-              reverse engineering the Services. Accessing the Services or
-              monitoring materials or information using automated means like
-              robots, spiders, or scrapers is prohibited.
-            </p>
-
-            <p>
-              You understand that your Materials may be transmitted without
-              encryption and may involve (a) transmission across diverse
-              networks and (b) adjustments to comply with technical requisites
-              of connected networks or devices. “Materials” refer to Your
-              Trademarks, copyrighted content, any products or services offered
-              via the Services (including descriptions and prices), as well as
-              any photos, images, videos, graphics, textual content, audio
-              files, code, information, or other data supplied by you or your
-              affiliates to IntelliSwarm AI or its affiliates.
+              The MIT License requires only two things: (1) include the copyright notice and license
+              text in copies of the software, and (2) the software is provided "as is" without warranty.
+              That's it. There are no restrictions on commercial use, modification, distribution, or
+              sublicensing.
             </p>
           </div>
+
+          <!-- What You Can Do -->
           <div class="tab-pane fade" id="pillThree" role="tabpanel">
-            <h3>Company Terms</h3>
+            <h3>What You Can Do</h3>
             <p>
-              To establish a new company through your IntelliSwarm AI account, you
-              must provide: organization location details, a valid email
-              address, and any other mandatory information. IntelliSwarm AI retains
-              the right to reject organization applications or terminate
-              existing organizations at our sole discretion, without the need
-              for explanation.
+              Under the MIT License, you have maximum freedom. Here is what is explicitly permitted:
+            </p>
+
+            <h3 style="color: #4caf50;">Commercial Use</h3>
+            <p>
+              Use SwarmAI in commercial products, SaaS platforms, enterprise deployments, and revenue-generating
+              services with no restrictions. Build products that compete with us if you want — the license permits it.
+            </p>
+
+            <h3 style="color: #4caf50;">Modification</h3>
+            <p>
+              Fork, modify, extend, and customize SwarmAI in any way. Remove features, add features,
+              change the architecture — the code is yours to work with.
+            </p>
+
+            <h3 style="color: #4caf50;">Distribution</h3>
+            <p>
+              Distribute SwarmAI as part of your product, as a standalone package, or as a modified fork.
+              You can distribute it under a different license as long as you include the original MIT copyright notice.
+            </p>
+
+            <h3 style="color: #4caf50;">Private Use</h3>
+            <p>
+              Use SwarmAI internally without any obligation to share your modifications or report usage.
+              Internal production workloads, research, prototyping — all unrestricted.
+            </p>
+
+            <h3 style="color: #4caf50;">Sublicensing</h3>
+            <p>
+              Include SwarmAI in your own project and sublicense it under your own terms. The only
+              requirement is preserving the copyright notice.
+            </p>
+
+            <h3>The One Requirement</h3>
+            <p>
+              Include the MIT copyright notice and permission notice in all copies or substantial portions
+              of the Software. This is standard practice — most build tools handle this automatically.
             </p>
           </div>
+
+          <!-- Enterprise Module -->
           <div class="tab-pane fade" id="pillFour" role="tabpanel">
-            <h3>Account Activation</h3>
+            <h3>Enterprise Module</h3>
             <p>
-              The individual signing up for the Service by creating an Account
-              will be considered the contracting party (“Company Owner”) for the
-              purpose of our Terms of Service and will be authorized to utilize
-              any corresponding Account provided to the Company Owner in
-              connection with the Service. Ensuring the visibility of the
-              Company Owner&apos;s name (including the legal name of the owning
-              company, if applicable) on the company&apos;s website is your
-              responsibility.
+              The <code>swarmai-enterprise</code> module is MIT-licensed like the rest of the framework.
+              The source code is fully available and readable. However, the enterprise features are
+              <strong>gated by a license key</strong> — they require a valid key to activate at runtime.
             </p>
 
+            <h3>How License Gating Works</h3>
             <p>
-              If you are registering for the Services on behalf of your
-              employer, your employer shall be deemed the organization Owner. If
-              registering for the Services on behalf of your employer, you must
-              use your employer-issued email address, and you confirm that you
-              possess the authority to bind your employer to our Terms of
-              Service.
+              The enterprise module includes a <code>LicenseManager</code> and <code>LicenseValidator</code>
+              that check for a valid license key at startup. Without a key, the enterprise features
+              (multi-tenancy, deep RL, advanced governance) remain inactive. The core framework works fully without it.
+            </p>
+            <p>
+              <code style="display:block; background: rgba(0,0,0,0.3); padding: 12px; border-radius: 8px; color: #e355a7;">
+                swarmai.enterprise.license-key=YOUR_LICENSE_KEY
+              </code>
             </p>
 
+            <h3>What Enterprise Includes</h3>
+            <ul style="color: rgba(255,255,255,0.7); line-height: 2;">
+              <li>Multi-tenancy with tenant-isolated memory, knowledge, quotas, and budgets</li>
+              <li>Deep reinforcement learning (DQN neural networks) for policy optimization</li>
+              <li>Advanced governance with fine-grained RBAC</li>
+              <li>Audit logging and compliance trail</li>
+              <li>Priority support and SLA guarantees</li>
+            </ul>
+
+            <h3>Open Core Model</h3>
             <p>
-              An IntelliSwarm AI company can only be affiliated with a single Company
-              Owner. A Company Owner may have multiple IntelliSwarm AI companies.
-              “Company” refers to the online company (whether hosted on
-              IntelliSwarm AI&apos;s platform or a third-party website) or physical
-              retail location(s) linked to the Account.
+              This approach is known as "open core" — the core framework is fully open source and permissively
+              licensed, while commercial features are gated by a license key. This is the same model used by
+              GitLab (MIT core + proprietary EE features), Grafana (AGPLv3 core + Enterprise license),
+              and many other successful open-source companies.
+            </p>
+            <p>
+              For enterprise licensing inquiries,
+              <a routerLink="/contact" style="color:#8f45d9;">contact our team</a> or email
+              <a href="mailto:enterprise@intelliswarm.ai" style="color:#8f45d9;">enterprise&#64;intelliswarm.ai</a>.
             </p>
           </div>
+
+          <!-- Frameworks Using Similar Licenses -->
+          <div class="tab-pane fade" id="pillFive" role="tabpanel">
+            <h3>Frameworks Using MIT or Similar Licenses</h3>
+            <p>
+              SwarmAI's MIT license places it among the most permissively licensed frameworks in the ecosystem.
+              Here is how other major AI and Java frameworks are licensed:
+            </p>
+
+            <h3>MIT License (Same as SwarmAI)</h3>
+            <p>
+              <strong>Spring AI</strong> — The AI framework that SwarmAI is built on. Apache 2.0 licensed (equally permissive). Part of the Spring ecosystem by Broadcom.
+            </p>
+            <p>
+              <strong>LangChain / LangGraph</strong> — MIT licensed. The most popular Python agent orchestration framework. Used as the basis for LangGraph's agent workflows.
+            </p>
+            <p>
+              <strong>AutoGen (Microsoft)</strong> — MIT licensed. Microsoft's multi-agent conversation framework.
+            </p>
+            <p>
+              <strong>React, Angular, Vue.js</strong> — All MIT licensed. The three dominant frontend frameworks that power the modern web.
+            </p>
+            <p>
+              <strong>Node.js</strong> — MIT licensed. The JavaScript runtime that runs the web.
+            </p>
+
+            <h3>Apache 2.0 (Equally Permissive)</h3>
+            <p>
+              <strong>Spring Boot / Spring Framework</strong> — Apache 2.0. The Java ecosystem SwarmAI is built on. Apache 2.0 and MIT are both permissive licenses with nearly identical freedoms.
+            </p>
+            <p>
+              <strong>Semantic Kernel (Microsoft)</strong> — MIT licensed. Microsoft's AI orchestration SDK for .NET and Java.
+            </p>
+            <p>
+              <strong>Apache Kafka</strong> — Apache 2.0. The event streaming platform.
+            </p>
+
+            <h3>More Restrictive Licenses (for comparison)</h3>
+            <p>
+              <strong>CrewAI</strong> — MIT licensed for the core, but CrewAI Enterprise is proprietary. Similar open-core model to SwarmAI.
+            </p>
+            <p>
+              <strong>HashiCorp Terraform</strong> — BSL 1.1 (Business Source License). Cannot be offered as a competing hosted service. More restrictive than MIT.
+            </p>
+            <p>
+              <strong>MongoDB</strong> — SSPL (Server Side Public License). Requires anyone offering it as a service to open-source their entire stack. Significantly more restrictive than MIT.
+            </p>
+            <p>
+              <strong>Elasticsearch</strong> — SSPL + Elastic License 2.0. Cannot be offered as a managed service. More restrictive than MIT.
+            </p>
+            <p>
+              <strong>Redis</strong> — RSALv2 + SSPLv1 since 2024. Source-available but not OSI-approved open source. More restrictive than MIT.
+            </p>
+
+            <h3>Why MIT?</h3>
+            <p>
+              We chose MIT because we believe the best way to build adoption for SwarmAI is to remove every
+              possible barrier. MIT imposes zero restrictions on how you use the code. This is a deliberate
+              choice — we compete on the quality of the framework and the value of our enterprise features
+              and support, not on licensing restrictions.
+            </p>
+          </div>
+
+          <!-- Contribution Terms -->
+          <div class="tab-pane fade" id="pillSix" role="tabpanel">
+            <h3>Contribution Terms</h3>
+            <p>
+              We welcome contributions to SwarmAI. By submitting a contribution (pull request, patch, or
+              improvement data via the self-improvement pipeline), you agree to the following terms:
+            </p>
+
+            <h3>Code Contributions (Pull Requests)</h3>
+            <p>
+              All code contributions are made under the <strong>MIT License</strong> — the same license
+              as the rest of the project. By submitting a pull request, you:
+            </p>
+            <ul style="color: rgba(255,255,255,0.7); line-height: 2;">
+              <li>License your contribution under the MIT License</li>
+              <li>Confirm that you have the right to make the contribution and that it does not violate any third-party rights</li>
+              <li>Understand that your contribution becomes part of the SwarmAI project and will be distributed under the MIT License</li>
+            </ul>
+
+            <h3>Self-Improvement Data Contributions</h3>
+            <p>
+              Improvement data submitted through the <a routerLink="/contribute" style="color:#8f45d9;">/contribute</a>
+              page or via the telemetry pipeline is treated as anonymized framework intelligence:
+            </p>
+            <ul style="color: rgba(255,255,255,0.7); line-height: 2;">
+              <li>Improvement exports contain only anonymized structural patterns — no workflow content, no user data, no proprietary information</li>
+              <li>Submitted improvements may be incorporated into any version of SwarmAI</li>
+              <li>Contributors are credited in the Community Investment Ledger</li>
+              <li>IntelliSwarm AI does not claim ownership of your workflows, data, or business logic — only the anonymized improvement patterns</li>
+            </ul>
+          </div>
+
+          <!-- FAQ -->
+          <div class="tab-pane fade" id="pillSeven" role="tabpanel">
+            <h3>Licensing FAQ</h3>
+
+            <h3>Can I use SwarmAI in my commercial product?</h3>
+            <p>
+              Yes, with no restrictions. The MIT License explicitly permits commercial use. You can build
+              products, sell services, and generate revenue using SwarmAI.
+            </p>
+
+            <h3>Can I use SwarmAI at my company for internal workflows?</h3>
+            <p>
+              Yes, without any restrictions. Internal use — including production workloads, automation,
+              and AI-powered business processes — is fully permitted regardless of company size.
+            </p>
+
+            <h3>Can I fork SwarmAI and modify it?</h3>
+            <p>
+              Yes. You can fork, modify, create derivative works, and distribute them under your own
+              terms. The only requirement is including the original MIT copyright notice.
+            </p>
+
+            <h3>Can I offer SwarmAI as a hosted service?</h3>
+            <p>
+              Yes. Unlike BSL or SSPL-licensed frameworks, the MIT License imposes no restrictions on
+              offering SwarmAI as a hosted or managed service. You are free to do so.
+            </p>
+
+            <h3>Do I need to open-source my code if I use SwarmAI?</h3>
+            <p>
+              No. MIT is not a copyleft license. You have no obligation to share your modifications,
+              release your source code, or disclose that you use SwarmAI.
+            </p>
+
+            <h3>What about the enterprise module?</h3>
+            <p>
+              The enterprise module code is MIT-licensed and publicly available. However, the enterprise
+              features require a valid license key to activate. The code is readable and auditable — the
+              license key simply gates runtime activation of the advanced features (multi-tenancy, deep RL,
+              advanced governance).
+            </p>
+
+            <h3>Does the 10% self-improvement data I contribute become proprietary?</h3>
+            <p>
+              No. Improvement data you submit is anonymized structural patterns only. It becomes part of
+              the framework's intelligence artifacts which are distributed with every SwarmAI release under
+              the MIT License. You retain full ownership of your workflows, data, and business logic.
+            </p>
+
+            <h3>How does this compare to other AI frameworks?</h3>
+            <p>
+              SwarmAI is among the most permissively licensed AI agent frameworks available. LangChain, AutoGen,
+              and Semantic Kernel also use MIT. Some frameworks (like certain CrewAI components) are more
+              restrictive. Enterprise database systems like MongoDB (SSPL) and Elasticsearch (Elastic License)
+              are significantly more restrictive.
+            </p>
+          </div>
+
         </div>
       </div>
     </div>
