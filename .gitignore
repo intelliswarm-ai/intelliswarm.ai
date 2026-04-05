@@ -52,6 +52,9 @@ chroma_data/
 # Backend contributions (contain user-submitted data)
 backend/contributions/*.json
 
+# Internal docs (deployment guides, credentials, internal procedures)
+docs/internal/
+
 # Claude Code
 /.claude/settings.local.json
 
