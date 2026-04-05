@@ -1,0 +1,102 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: IntelliSwarm.ai Serverless Backend (Zurich — eu-central-2)
+
+Globals:
+  Function:
+    Timeout: 15
+    Runtime: nodejs18.x
+    MemorySize: 128
+    Environment:
+      Variables:
+        STORAGE_BACKEND: dynamodb
+        NEWS_TABLE: !Ref NewsTable
+        CONTRIBUTIONS_TABLE: !Ref ContributionsTable
+
+Resources:
+  HttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      StageName: prod
+      CorsConfiguration:
+        AllowOrigins:
+          - "https://intelliswarm.ai"
+          - "https://www.intelliswarm.ai"
+          - "http://localhost:4200"
+        AllowMethods:
+          - GET
+          - POST
+          - OPTIONS
+        AllowHeaders:
+          - Content-Type
+
+  ApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: lambda.handler
+      CodeUri: .
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref NewsTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ContributionsTable
+      Events:
+        Health:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /api/health
+            Method: GET
+        GetNews:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /api/news
+            Method: GET
+        PostNews:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /api/news
+            Method: POST
+        PostContribute:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /api/contribute
+            Method: POST
+        GetContributions:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /api/contributions
+            Method: GET
+
+  NewsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: intelliswarm-news
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+
+  ContributionsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: intelliswarm-contributions
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: trackingId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: trackingId
+          KeyType: HASH
+
+Outputs:
+  ApiUrl:
+    Description: API Gateway endpoint
+    Value: !Sub "https://${HttpApi}.execute-api.${AWS::Region}.amazonaws.com/prod"

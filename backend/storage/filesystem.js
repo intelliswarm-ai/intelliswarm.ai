@@ -1,0 +1,50 @@
+const fs = require('fs');
+const path = require('path');
+
+/**
+ * Filesystem-based storage for local/VPS/Docker deployments.
+ */
+
+function createNewsFileStorage(filePath) {
+  return {
+    async getAll() {
+      return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    },
+    async put(item) {
+      const news = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+      news.push(item);
+      fs.writeFileSync(filePath, JSON.stringify(news, null, 2));
+    },
+  };
+}
+
+function createContributionFileStorage(dirPath) {
+  if (!fs.existsSync(dirPath)) {
+    fs.mkdirSync(dirPath, { recursive: true });
+  }
+
+  return {
+    async save(contribution) {
+      const filename = `${contribution.trackingId}.json`;
+      fs.writeFileSync(
+        path.join(dirPath, filename),
+        JSON.stringify(contribution, null, 2)
+      );
+    },
+    async list() {
+      const files = fs.readdirSync(dirPath).filter((f) => f.endsWith('.json'));
+      return files.map((f) => {
+        const data = JSON.parse(fs.readFileSync(path.join(dirPath, f), 'utf8'));
+        return {
+          trackingId: data.trackingId,
+          receivedAt: data.receivedAt,
+          organizationName: data.organizationName,
+          improvementsCount: data.improvementsCount,
+          frameworkVersion: data.frameworkVersion,
+        };
+      });
+    },
+  };
+}
+
+module.exports = { createNewsFileStorage, createContributionFileStorage };

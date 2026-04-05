@@ -1,0 +1,44 @@
+# =============================================================================
+# Input Variables
+# =============================================================================
+
+variable "aws_region" {
+  description = "Primary AWS region for Lambda, DynamoDB, and API Gateway"
+  type        = string
+  default     = "eu-central-2"
+}
+
+variable "domain_name" {
+  description = "Root domain name (must match Route 53 hosted zone)"
+  type        = string
+  default     = "intelliswarm.ai"
+}
+
+variable "github_token" {
+  description = "GitHub personal access token (for CI/CD integrations, if needed)"
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
+variable "environment" {
+  description = "Deployment environment label (e.g. production, staging)"
+  type        = string
+  default     = "production"
+
+  validation {
+    condition     = contains(["production", "staging", "development"], var.environment)
+    error_message = "Environment must be one of: production, staging, development."
+  }
+}
+
+variable "alert_email" {
+  description = "Email address for billing alerts and budget notifications"
+  type        = string
+}
+
+variable "monthly_budget_usd" {
+  description = "Monthly AWS budget limit in USD (alerts at 50%, 80%, 100%)"
+  type        = number
+  default     = 10
+}
