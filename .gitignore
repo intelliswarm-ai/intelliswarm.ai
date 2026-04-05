@@ -1,0 +1,62 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Build output
+dist/
+tmp/
+out-tsc/
+bazel-out/
+*.js.map
+
+# Angular
+.angular/cache
+.sass-cache/
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials.json
+
+# IDE
+.idea/
+.vscode/
+*.sublime-workspace
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Coverage & testing
+coverage/
+testem.log
+.nyc_output/
+
+# Docker volumes
+ollama_data/
+chroma_data/
+
+# Backend contributions (contain user-submitted data)
+backend/contributions/*.json
+
+# Claude Code
+/.claude/settings.local.json
+
+# Terraform
+*.tfstate
+*.tfstate.backup
+.terraform/
+.terraform.lock.hcl

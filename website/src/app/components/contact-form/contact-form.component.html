@@ -2,22 +2,17 @@
   <div class="container">
     <div class="row">
       <div class="col-md-12">
-        <h2 class="title-2">Get <span>in Touch</span></h2>
+        <h2 class="title-2">{{ 'CONTACT.TITLE_1' | translate }} <span>{{ 'CONTACT.TITLE_2' | translate }}</span></h2>
       </div>
       <div class="col-md-12 col-lg-6">
         <div class="contact-content">
           <div class="contact-logo">
             <span class="logo-text">IntelliSwarm.ai</span>
           </div>
-          <p>
-            IntelliSwarm.ai has revolutionized our AI development workflow with their 
-            comprehensive multi-agent frameworks and intelligent automation tools. Their 
-            open-source ecosystem provides enterprise-grade solutions that scale from 
-            development to production seamlessly.
-          </p>
-          <h3>AI Development Team</h3>
-          <h4>Technology Innovation Lab</h4>
-          <h5>Building the future of intelligent systems</h5>
+          <p>{{ 'CONTACT.DESCRIPTION' | translate }}</p>
+          <h3>{{ 'CONTACT.TEAM' | translate }}</h3>
+          <h4>{{ 'CONTACT.LAB' | translate }}</h4>
+          <h5>{{ 'CONTACT.TAGLINE' | translate }}</h5>
           <div class="contact-brand">
             <img src="../../../assets/img/brand/1.png" alt="brand" />
             <img src="../../../assets/img/brand/2.png" alt="brand" />
@@ -30,73 +25,33 @@
       </div>
       <div class="col-md-12 col-lg-6">
         <div class="contact-form">
-          <h2>Quick Responses Await!</h2>
-          <p>
-            Connect with us! Feel free to ask any questions or share your
-            thoughts. We&lsquo;ll respond promptly.
-          </p>
+          <h2>{{ 'CONTACT.FORM_TITLE' | translate }}</h2>
+          <p>{{ 'CONTACT.FORM_DESC' | translate }}</p>
 
           <form [formGroup]="contactForm" (ngSubmit)="handleSubmit()">
             <div class="form-group">
               <div class="input-group">
-                <input
-                  type="text"
-                  placeholder="First Name*"
-                  formControlName="firstName"
-                />
-                <input
-                  type="text"
-                  placeholder="Last Name*"
-                  formControlName="lastName"
-                />
+                <input type="text" [placeholder]="'CONTACT.FIRST_NAME' | translate" formControlName="firstName" />
+                <input type="text" [placeholder]="'CONTACT.LAST_NAME' | translate" formControlName="lastName" />
               </div>
               <div class="input-group">
-                <input
-                  type="text"
-                  placeholder="Company Name*"
-                  formControlName="companyName"
-                />
-                <input
-                  type="text"
-                  placeholder="Job Title*"
-                  formControlName="jobTitle"
-                />
+                <input type="text" [placeholder]="'CONTACT.COMPANY_NAME' | translate" formControlName="companyName" />
+                <input type="text" [placeholder]="'CONTACT.JOB_TITLE' | translate" formControlName="jobTitle" />
               </div>
               <div class="input-group">
-                <input
-                  type="text"
-                  placeholder="Email Address*"
-                  formControlName="emailAddress"
-                />
-                <input
-                  type="text"
-                  placeholder="Phone Number*"
-                  formControlName="phoneNumber"
-                />
+                <input type="text" [placeholder]="'CONTACT.EMAIL' | translate" formControlName="emailAddress" />
+                <input type="text" [placeholder]="'CONTACT.PHONE' | translate" formControlName="phoneNumber" />
               </div>
-              <input
-                type="text"
-                placeholder="How can we help?"
-                formControlName="message"
-              />
+              <input type="text" [placeholder]="'CONTACT.MESSAGE' | translate" formControlName="message" />
             </div>
             <div class="form-check">
-              <input
-                type="checkbox"
-                class="form-check-input"
-                id="flexCheckDefault"
-                formControlName="agreedTerms"
-              />
+              <input type="checkbox" class="form-check-input" id="flexCheckDefault" formControlName="agreedTerms" />
               <label class="form-check-label" for="flexCheckDefault">
-                I read and accept terms and conditions, privacy policy.
+                {{ 'CONTACT.AGREE_TERMS' | translate }}
               </label>
             </div>
-            <button
-              type="submit"
-              class="btn btn-primary"
-              [disabled]="!contactForm.valid"
-            >
-              Submit
+            <button type="submit" class="btn btn-primary" [disabled]="!contactForm.valid">
+              {{ 'CONTACT.SUBMIT' | translate }}
             </button>
           </form>
         </div>

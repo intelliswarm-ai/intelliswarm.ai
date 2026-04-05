@@ -10,18 +10,39 @@
 
     <!-- Center - Navigation -->
     <nav class="nav-links">
-      <a routerLink="/home" routerLinkActive="active">Home</a>
-      <a routerLink="/docs" routerLinkActive="active">Docs</a>
-      <a routerLink="/benchmarks" routerLinkActive="active">Benchmarks</a>
-      <a routerLink="/examples" routerLinkActive="active">Examples</a>
-      <a routerLink="/pricing" routerLinkActive="active">Pricing</a>
-      <a routerLink="/contribute" routerLinkActive="active">Contribute</a>
-      <a routerLink="/contact" routerLinkActive="active">Contact</a>
+      <a routerLink="/home" routerLinkActive="active">{{ 'NAV.HOME' | translate }}</a>
+      <a routerLink="/docs" routerLinkActive="active">{{ 'NAV.DOCS' | translate }}</a>
+      <a routerLink="/benchmarks" routerLinkActive="active">{{ 'NAV.BENCHMARKS' | translate }}</a>
+      <a routerLink="/examples" routerLinkActive="active">{{ 'NAV.EXAMPLES' | translate }}</a>
+      <a routerLink="/news" routerLinkActive="active">{{ 'NAV.NEWS' | translate }}</a>
+      <a routerLink="/pricing" routerLinkActive="active">{{ 'NAV.PRICING' | translate }}</a>
+      <a routerLink="/contribute" routerLinkActive="active">{{ 'NAV.CONTRIBUTE' | translate }}</a>
+      <a routerLink="/contact" routerLinkActive="active">{{ 'NAV.CONTACT' | translate }}</a>
     </nav>
 
-    <!-- Right side - Get Started button -->
-    <div class="cta-button">
-      <a href="https://github.com/intelliswarm-ai/swarm-ai" target="_blank" rel="noopener noreferrer" class="get-started-btn">Get Started</a>
+    <!-- Right side - Language Selector + Get Started -->
+    <div class="right-actions">
+      <div class="lang-selector" (clickOutside)="closeLangMenu()">
+        <button class="lang-toggle" (click)="toggleLangMenu()">
+          <span class="lang-flag">{{ currentLang.flag }}</span>
+          <span class="lang-code">{{ currentLang.code | uppercase }}</span>
+          <span class="lang-arrow">&#9662;</span>
+        </button>
+        <div class="lang-dropdown" *ngIf="isLangMenuOpen">
+          <button
+            *ngFor="let lang of languages"
+            class="lang-option"
+            [class.active]="lang.code === currentLang.code"
+            (click)="switchLanguage(lang)"
+          >
+            <span class="lang-flag">{{ lang.flag }}</span>
+            <span class="lang-label">{{ lang.label }}</span>
+          </button>
+        </div>
+      </div>
+      <div class="cta-button">
+        <a href="https://github.com/intelliswarm-ai/swarm-ai" target="_blank" rel="noopener noreferrer" class="get-started-btn">{{ 'NAV.GET_STARTED' | translate }}</a>
+      </div>
     </div>
   </div>
 </header>

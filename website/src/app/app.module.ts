@@ -4,6 +4,13 @@ import {
   provideClientHydration,
 } from '@angular/platform-browser';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+}
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -35,6 +42,7 @@ import { ChatPageComponent } from './pages/chat/chat.component';
 import { BenchmarksComponent } from './pages/benchmarks/benchmarks.component';
 import { DocsComponent } from './pages/docs/docs.component';
 import { ContributeComponent } from './pages/contribute/contribute.component';
+import { NewsComponent } from './pages/news/news.component';
 
 @NgModule({
   declarations: [
@@ -66,8 +74,23 @@ import { ContributeComponent } from './pages/contribute/contribute.component';
     BenchmarksComponent,
     DocsComponent,
     ContributeComponent,
+    NewsComponent,
   ],
-  imports: [BrowserModule, ReactiveFormsModule, FormsModule, AppRoutingModule],
+  imports: [
+    BrowserModule,
+    ReactiveFormsModule,
+    FormsModule,
+    HttpClientModule,
+    TranslateModule.forRoot({
+      defaultLanguage: 'en',
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient],
+      },
+    }),
+    AppRoutingModule,
+  ],
   providers: [provideClientHydration()],
   bootstrap: [AppComponent],
 })

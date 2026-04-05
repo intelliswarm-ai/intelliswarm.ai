@@ -1,0 +1,101 @@
+<div class="news-container page-content">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <h1>
+      <span>{{ 'NEWS.TITLE' | translate }}</span>
+    </h1>
+    <p class="hero-description">{{ 'NEWS.DESCRIPTION' | translate }}</p>
+  </section>
+
+  <!-- Category Filters -->
+  <section class="filters-section">
+    <button
+      class="filter-btn"
+      [class.active]="activeCategory === 'all'"
+      (click)="filterByCategory('all')"
+    >
+      {{ 'NEWS.ALL' | translate }}
+    </button>
+    <button
+      *ngFor="let cat of categories"
+      class="filter-btn"
+      [class.active]="activeCategory === cat"
+      (click)="filterByCategory(cat)"
+    >
+      {{ getCategoryLabel(cat) }}
+    </button>
+  </section>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="loading">
+    <p>{{ 'NEWS.LOADING' | translate }}</p>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-state" *ngIf="error">
+    <p>{{ error }}</p>
+  </div>
+
+  <!-- News Timeline -->
+  <section class="news-timeline" *ngIf="!loading && !error">
+    <div
+      class="news-card"
+      *ngFor="let item of filteredNews"
+      [class.expanded]="expandedId === item.id"
+    >
+      <div class="news-card-header" (click)="toggleExpand(item.id)">
+        <div class="news-meta">
+          <span class="news-category" [attr.data-category]="item.category">
+            <span class="material-icons">{{ getCategoryIcon(item.category) }}</span>
+            {{ getCategoryLabel(item.category) }}
+          </span>
+          <span class="news-date">{{ item.date }}</span>
+        </div>
+        <h3 class="news-title">{{ item.title }}</h3>
+        <p class="news-summary">{{ item.summary }}</p>
+        <div class="news-tags">
+          <span class="tag" *ngFor="let tag of item.tags">{{ tag }}</span>
+        </div>
+      </div>
+
+      <!-- Expanded Content -->
+      <div class="news-card-body" *ngIf="expandedId === item.id">
+        <div class="news-content">
+          <p *ngFor="let paragraph of item.content.split('\n\n')">{{ paragraph }}</p>
+        </div>
+        <div class="news-actions">
+          <a
+            *ngIf="isInternal(item.link)"
+            [routerLink]="item.link"
+            class="news-link"
+          >
+            <span class="material-icons">arrow_forward</span>
+            {{ 'NEWS.LEARN_MORE' | translate }}
+          </a>
+          <a
+            *ngIf="!isInternal(item.link)"
+            [href]="item.link"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="news-link"
+          >
+            <span class="material-icons">open_in_new</span>
+            {{ 'NEWS.VIEW_GITHUB' | translate }}
+          </a>
+        </div>
+      </div>
+
+      <!-- Expand Indicator -->
+      <div class="expand-indicator" (click)="toggleExpand(item.id)">
+        <span class="material-icons">
+          {{ expandedId === item.id ? 'expand_less' : 'expand_more' }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="filteredNews.length === 0">
+      <p>{{ 'NEWS.EMPTY' | translate }}</p>
+    </div>
+  </section>
+</div>

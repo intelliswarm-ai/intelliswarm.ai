@@ -4,46 +4,44 @@
     <div class="hero-content">
       <div class="hero-badge">
         <span class="badge-icon">&#x1F680;</span>
-        <span>Enterprise-Grade AI Agent Orchestration</span>
+        <span>{{ 'HOME.BADGE' | translate }}</span>
       </div>
 
       <h1 class="hero-title">
-        Build Intelligent <span class="gradient-text">Agent Workflows</span> in Java
+        {{ 'HOME.TITLE_1' | translate }} <span class="gradient-text">{{ 'HOME.TITLE_2' | translate }}</span> {{ 'HOME.TITLE_3' | translate }}
       </h1>
 
       <p class="hero-description">
-        The only self-improving, multi-agent orchestration framework for Java.
-        7 process types, YAML DSL, built-in governance, budget tracking, and 24 tools.
-        Powered by Spring AI &amp; Spring Boot.
+        {{ 'HOME.DESCRIPTION' | translate }}
       </p>
 
       <div class="hero-actions">
         <a href="https://github.com/intelliswarm-ai/swarm-ai" target="_blank" rel="noopener noreferrer" class="btn-primary">
           <span class="material-icons">rocket_launch</span>
-          Get Started
+          {{ 'HOME.GET_STARTED' | translate }}
         </a>
         <a routerLink="/docs" class="btn-secondary">
           <span class="material-icons">menu_book</span>
-          Documentation
+          {{ 'HOME.DOCUMENTATION' | translate }}
         </a>
       </div>
 
       <div class="hero-stats">
         <div class="stat-item">
-          <span class="stat-number">1,013+</span>
-          <span class="stat-label">Tests Passing</span>
+          <span class="stat-number">{{ 'HOME.STAT_TESTS' | translate }}</span>
+          <span class="stat-label">{{ 'HOME.STAT_TESTS_LABEL' | translate }}</span>
         </div>
         <div class="stat-item">
-          <span class="stat-number">9</span>
-          <span class="stat-label">Modules</span>
+          <span class="stat-number">{{ 'HOME.STAT_MODULES' | translate }}</span>
+          <span class="stat-label">{{ 'HOME.STAT_MODULES_LABEL' | translate }}</span>
         </div>
         <div class="stat-item">
-          <span class="stat-number">24</span>
-          <span class="stat-label">Built-in Tools</span>
+          <span class="stat-number">{{ 'HOME.STAT_TOOLS' | translate }}</span>
+          <span class="stat-label">{{ 'HOME.STAT_TOOLS_LABEL' | translate }}</span>
         </div>
         <div class="stat-item">
-          <span class="stat-number">Java 21</span>
-          <span class="stat-label">Spring Boot 3.4</span>
+          <span class="stat-number">{{ 'HOME.STAT_JAVA' | translate }}</span>
+          <span class="stat-label">{{ 'HOME.STAT_JAVA_LABEL' | translate }}</span>
         </div>
       </div>
     </div>
@@ -52,45 +50,45 @@
   <!-- Process Types Section -->
   <section class="features-section">
     <div class="section-header">
-      <h2>7 Process Types</h2>
-      <p>From simple sequential pipelines to self-improving swarms with dynamic skill generation</p>
+      <h2>{{ 'HOME.PROCESS_TITLE' | translate }}</h2>
+      <p>{{ 'HOME.PROCESS_SUBTITLE' | translate }}</p>
     </div>
 
     <div class="features-grid">
       <div class="feature-card">
         <div class="feature-icon"><span class="material-icons">linear_scale</span></div>
-        <h3>Sequential</h3>
-        <p>Tasks run in dependency order, each receiving prior outputs as context.</p>
+        <h3>{{ 'HOME.PROCESS_SEQUENTIAL' | translate }}</h3>
+        <p>{{ 'HOME.PROCESS_SEQUENTIAL_DESC' | translate }}</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon"><span class="material-icons">fork_right</span></div>
-        <h3>Parallel</h3>
-        <p>Independent tasks run concurrently in layers with automatic synchronization.</p>
+        <h3>{{ 'HOME.PROCESS_PARALLEL' | translate }}</h3>
+        <p>{{ 'HOME.PROCESS_PARALLEL_DESC' | translate }}</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon"><span class="material-icons">account_tree</span></div>
-        <h3>Hierarchical</h3>
-        <p>Manager agent creates plans, delegates to workers, and synthesizes results.</p>
+        <h3>{{ 'HOME.PROCESS_HIERARCHICAL' | translate }}</h3>
+        <p>{{ 'HOME.PROCESS_HIERARCHICAL_DESC' | translate }}</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon"><span class="material-icons">loop</span></div>
-        <h3>Iterative</h3>
-        <p>Execute, review, refine loop until the reviewer approves or max iterations reached.</p>
+        <h3>{{ 'HOME.PROCESS_ITERATIVE' | translate }}</h3>
+        <p>{{ 'HOME.PROCESS_ITERATIVE_DESC' | translate }}</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon"><span class="material-icons">auto_fix_high</span></div>
-        <h3>Self-Improving</h3>
-        <p>Generates new skills at runtime when capability gaps are detected. RL-powered decisions.</p>
+        <h3>{{ 'HOME.PROCESS_SELF_IMPROVING' | translate }}</h3>
+        <p>{{ 'HOME.PROCESS_SELF_IMPROVING_DESC' | translate }}</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon"><span class="material-icons">hub</span></div>
-        <h3>Swarm</h3>
-        <p>Distributed fan-out with parallel self-improving agents per target.</p>
+        <h3>{{ 'HOME.PROCESS_SWARM' | translate }}</h3>
+        <p>{{ 'HOME.PROCESS_SWARM_DESC' | translate }}</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon"><span class="material-icons">layers</span></div>
-        <h3>Composite</h3>
-        <p>Chain any processes into a pipeline: Parallel &rarr; Hierarchical &rarr; Iterative.</p>
+        <h3>{{ 'HOME.PROCESS_COMPOSITE' | translate }}</h3>
+        <p>{{ 'HOME.PROCESS_COMPOSITE_DESC' | translate }}</p>
       </div>
     </div>
   </section>
@@ -98,40 +96,40 @@
   <!-- Enterprise Features Section -->
   <section class="features-section enterprise-section">
     <div class="section-header">
-      <h2>Enterprise Ready</h2>
-      <p>Production-grade features that differentiate SwarmAI from personal AI assistants</p>
+      <h2>{{ 'HOME.ENTERPRISE_TITLE' | translate }}</h2>
+      <p>{{ 'HOME.ENTERPRISE_SUBTITLE' | translate }}</p>
     </div>
 
     <div class="features-grid">
       <div class="feature-card">
         <div class="feature-icon"><span class="material-icons">admin_panel_settings</span></div>
-        <h3>Governance Gates</h3>
-        <p>Human-in-the-loop approval checkpoints pause workflows for review before sensitive operations.</p>
+        <h3>{{ 'HOME.ENTERPRISE_GOVERNANCE' | translate }}</h3>
+        <p>{{ 'HOME.ENTERPRISE_GOVERNANCE_DESC' | translate }}</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon"><span class="material-icons">account_balance_wallet</span></div>
-        <h3>Budget Tracking</h3>
-        <p>Real-time token and cost tracking with HARD_STOP or WARN enforcement per workflow.</p>
+        <h3>{{ 'HOME.ENTERPRISE_BUDGET' | translate }}</h3>
+        <p>{{ 'HOME.ENTERPRISE_BUDGET_DESC' | translate }}</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon"><span class="material-icons">groups</span></div>
-        <h3>Multi-Tenancy</h3>
-        <p>Tenant-isolated memory, knowledge, quotas, and budgets for enterprise deployments.</p>
+        <h3>{{ 'HOME.ENTERPRISE_MULTI_TENANCY' | translate }}</h3>
+        <p>{{ 'HOME.ENTERPRISE_MULTI_TENANCY_DESC' | translate }}</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon"><span class="material-icons">security</span></div>
-        <h3>RBAC &amp; Permissions</h3>
-        <p>Role-based access control with tool permission levels: READ_ONLY, WORKSPACE_WRITE, DANGEROUS.</p>
+        <h3>{{ 'HOME.ENTERPRISE_RBAC' | translate }}</h3>
+        <p>{{ 'HOME.ENTERPRISE_RBAC_DESC' | translate }}</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon"><span class="material-icons">monitor_heart</span></div>
-        <h3>Observability</h3>
-        <p>Correlation IDs, structured logging, decision tracing, Prometheus metrics, and health checks.</p>
+        <h3>{{ 'HOME.ENTERPRISE_OBSERVABILITY' | translate }}</h3>
+        <p>{{ 'HOME.ENTERPRISE_OBSERVABILITY_DESC' | translate }}</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon"><span class="material-icons">shield</span></div>
-        <h3>Circuit Breaker</h3>
-        <p>resilience4j circuit breaker and retry on all LLM calls. Graceful degradation under failure.</p>
+        <h3>{{ 'HOME.ENTERPRISE_CIRCUIT_BREAKER' | translate }}</h3>
+        <p>{{ 'HOME.ENTERPRISE_CIRCUIT_BREAKER_DESC' | translate }}</p>
       </div>
     </div>
   </section>
@@ -139,8 +137,8 @@
   <!-- Code Example Section -->
   <section class="features-section code-section">
     <div class="section-header">
-      <h2>Define Workflows in YAML or Java</h2>
-      <p>Zero-code YAML DSL or type-safe Java builders &mdash; your choice</p>
+      <h2>{{ 'HOME.CODE_TITLE' | translate }}</h2>
+      <p>{{ 'HOME.CODE_SUBTITLE' | translate }}</p>
     </div>
     <div class="code-block">
       <pre><code>swarm:
@@ -175,17 +173,17 @@
   <!-- CTA Section -->
   <section class="features-section cta-section">
     <div class="section-header">
-      <h2>Start Building Today</h2>
-      <p>Open source core &bull; Enterprise features with BSL license &bull; Spring Boot native</p>
+      <h2>{{ 'HOME.CTA_TITLE' | translate }}</h2>
+      <p>{{ 'HOME.CTA_SUBTITLE' | translate }}</p>
     </div>
     <div class="hero-actions" style="justify-content: center;">
       <a href="https://github.com/intelliswarm-ai/swarm-ai" target="_blank" class="btn-primary">
         <span class="material-icons">code</span>
-        View on GitHub
+        {{ 'HOME.CTA_GITHUB' | translate }}
       </a>
       <a routerLink="/benchmarks" class="btn-secondary">
         <span class="material-icons">speed</span>
-        See Benchmarks
+        {{ 'HOME.CTA_BENCHMARKS' | translate }}
       </a>
     </div>
   </section>

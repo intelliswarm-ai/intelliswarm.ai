@@ -146,6 +146,48 @@ app.get('/api/collection/info', async (req, res) => {
   }
 });
 
+// --- News endpoint ---
+const NEWS_FILE = path.join(__dirname, 'data', 'news.json');
+
+app.get('/api/news', (req, res) => {
+  try {
+    const news = JSON.parse(fs.readFileSync(NEWS_FILE, 'utf8'));
+    news.sort((a, b) => new Date(b.date) - new Date(a.date));
+    const category = req.query.category;
+    const filtered = category ? news.filter(n => n.category === category) : news;
+    res.json({ news: filtered, total: filtered.length });
+  } catch (error) {
+    console.error('News error:', error);
+    res.status(500).json({ error: 'Failed to load news' });
+  }
+});
+
+app.post('/api/news', (req, res) => {
+  try {
+    const { id, date, category, title, summary, content, tags, link } = req.body;
+    if (!title || !summary || !category) {
+      return res.status(400).json({ error: 'title, summary, and category are required' });
+    }
+    const news = JSON.parse(fs.readFileSync(NEWS_FILE, 'utf8'));
+    const item = {
+      id: id || `news-${Date.now()}`,
+      date: date || new Date().toISOString().split('T')[0],
+      category,
+      title,
+      summary,
+      content: content || summary,
+      tags: tags || [],
+      link: link || '',
+    };
+    news.push(item);
+    fs.writeFileSync(NEWS_FILE, JSON.stringify(news, null, 2));
+    res.json({ success: true, item });
+  } catch (error) {
+    console.error('News create error:', error);
+    res.status(500).json({ error: 'Failed to create news item' });
+  }
+});
+
 // --- Improvement Contributions endpoint ---
 const CONTRIBUTIONS_DIR = path.join(__dirname, 'contributions');
 if (!fs.existsSync(CONTRIBUTIONS_DIR)) {

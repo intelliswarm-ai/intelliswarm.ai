@@ -2,42 +2,39 @@
   <!-- Hero Section -->
   <section class="hero-section">
     <h1>
-      <span>Contribute </span><span class="gradient-text">Improvements</span>
+      <span>{{ 'CONTRIBUTE.TITLE_1' | translate }} </span><span class="gradient-text">{{ 'CONTRIBUTE.TITLE_2' | translate }}</span>
     </h1>
-    <p class="hero-description">
-      Your SwarmAI deployment discovered framework improvements through the 10% self-improvement investment.
-      Submit them here to benefit all SwarmAI users worldwide.
-    </p>
+    <p class="hero-description">{{ 'CONTRIBUTE.DESCRIPTION' | translate }}</p>
   </section>
 
   <!-- How It Works -->
   <section class="how-it-works">
-    <h2>How It Works</h2>
+    <h2>{{ 'CONTRIBUTE.HOW_TITLE' | translate }}</h2>
     <div class="steps-grid">
       <div class="step-card">
         <div class="step-number">1</div>
-        <h3>Export</h3>
-        <p>In your firewalled environment, run:<br>
+        <h3>{{ 'CONTRIBUTE.STEP1_TITLE' | translate }}</h3>
+        <p>{{ 'CONTRIBUTE.STEP1_DESC' | translate }}<br>
           <code>POST /actuator/self-improving/export</code><br>
-          This produces an anonymized JSON file with no workflow content or user data.
+          {{ 'CONTRIBUTE.STEP1_NOTE' | translate }}
         </p>
       </div>
       <div class="step-card">
         <div class="step-number">2</div>
-        <h3>Review</h3>
-        <p>Security team audits the export. It contains only structural patterns &mdash; convergence defaults, tool routing hints, anti-patterns, and skill metadata.</p>
+        <h3>{{ 'CONTRIBUTE.STEP2_TITLE' | translate }}</h3>
+        <p>{{ 'CONTRIBUTE.STEP2_DESC' | translate }}</p>
       </div>
       <div class="step-card">
         <div class="step-number">3</div>
-        <h3>Submit</h3>
-        <p>Upload or paste the JSON below. Improvements are validated, aggregated, and flow into the next SwarmAI release via automated PRs.</p>
+        <h3>{{ 'CONTRIBUTE.STEP3_TITLE' | translate }}</h3>
+        <p>{{ 'CONTRIBUTE.STEP3_DESC' | translate }}</p>
       </div>
     </div>
   </section>
 
   <!-- Upload Section -->
   <section class="upload-section">
-    <h2>Submit Improvement Data</h2>
+    <h2>{{ 'CONTRIBUTE.UPLOAD_TITLE' | translate }}</h2>
 
     <!-- Drop Zone -->
     <div
@@ -50,10 +47,10 @@
     >
       <div class="drop-zone-content" *ngIf="!parsedData">
         <span class="upload-icon">&#8682;</span>
-        <p>Drag and drop your <strong>swarmai-improvements-*.json</strong> file here</p>
-        <span class="or-divider">or</span>
+        <p>{{ 'CONTRIBUTE.DROP_TEXT' | translate }} <strong>{{ 'CONTRIBUTE.DROP_FILE' | translate }}</strong> {{ 'CONTRIBUTE.DROP_SUFFIX' | translate }}</p>
+        <span class="or-divider">{{ 'CONTRIBUTE.OR' | translate }}</span>
         <label class="file-select-btn">
-          Browse Files
+          {{ 'CONTRIBUTE.BROWSE' | translate }}
           <input type="file" accept=".json" (change)="onFileSelected($event)" hidden />
         </label>
       </div>
@@ -66,7 +63,7 @@
 
     <!-- Paste Alternative -->
     <div class="paste-section">
-      <p class="paste-label">Or paste the JSON directly:</p>
+      <p class="paste-label">{{ 'CONTRIBUTE.PASTE_LABEL' | translate }}</p>
       <textarea
         class="json-textarea"
         placeholder='{"exportFormat": "swarmai-improvements", ...}'
@@ -78,31 +75,31 @@
 
     <!-- Parsed Summary -->
     <div class="parsed-summary" *ngIf="parsedData">
-      <h3>Improvement Summary</h3>
+      <h3>{{ 'CONTRIBUTE.SUMMARY_TITLE' | translate }}</h3>
       <div class="summary-grid">
         <div class="summary-item">
           <span class="summary-value">{{ parsedData.totalImprovements }}</span>
-          <span class="summary-label">Total Improvements</span>
+          <span class="summary-label">{{ 'CONTRIBUTE.TOTAL' | translate }}</span>
         </div>
         <div class="summary-item tier1">
           <span class="summary-value">{{ parsedData.tier1 }}</span>
-          <span class="summary-label">Tier 1 (Auto-merge)</span>
+          <span class="summary-label">{{ 'CONTRIBUTE.TIER1' | translate }}</span>
         </div>
         <div class="summary-item tier2">
           <span class="summary-value">{{ parsedData.tier2 }}</span>
-          <span class="summary-label">Tier 2 (PR Review)</span>
+          <span class="summary-label">{{ 'CONTRIBUTE.TIER2' | translate }}</span>
         </div>
         <div class="summary-item tier3">
           <span class="summary-value">{{ parsedData.tier3 }}</span>
-          <span class="summary-label">Tier 3 (Architecture)</span>
+          <span class="summary-label">{{ 'CONTRIBUTE.TIER3' | translate }}</span>
         </div>
         <div class="summary-item">
           <span class="summary-value">{{ parsedData.estimatedTokenSavings | number }}</span>
-          <span class="summary-label">Est. Token Savings/Run</span>
+          <span class="summary-label">{{ 'CONTRIBUTE.TOKEN_SAVINGS' | translate }}</span>
         </div>
         <div class="summary-item">
           <span class="summary-value">v{{ parsedData.version }}</span>
-          <span class="summary-label">Framework Version</span>
+          <span class="summary-label">{{ 'CONTRIBUTE.FW_VERSION' | translate }}</span>
         </div>
       </div>
     </div>
@@ -110,28 +107,28 @@
     <!-- Submission Form -->
     <form [formGroup]="contributeForm" (ngSubmit)="handleSubmit()" *ngIf="parsedData">
       <div class="form-section">
-        <h3>Optional Details</h3>
-        <p class="form-description">Help us understand where these improvements come from. All fields are optional except the agreement.</p>
+        <h3>{{ 'CONTRIBUTE.OPTIONAL_TITLE' | translate }}</h3>
+        <p class="form-description">{{ 'CONTRIBUTE.OPTIONAL_DESC' | translate }}</p>
         <div class="form-row">
           <div class="form-field">
-            <label>Organization Name</label>
-            <input type="text" placeholder="Anonymous" formControlName="organizationName" />
+            <label>{{ 'CONTRIBUTE.ORG_NAME' | translate }}</label>
+            <input type="text" [placeholder]="'CONTRIBUTE.ORG_PLACEHOLDER' | translate" formControlName="organizationName" />
           </div>
           <div class="form-field">
-            <label>Contact Email</label>
-            <input type="email" placeholder="For follow-up questions only" formControlName="contactEmail" />
+            <label>{{ 'CONTRIBUTE.CONTACT_EMAIL' | translate }}</label>
+            <input type="email" [placeholder]="'CONTRIBUTE.EMAIL_PLACEHOLDER' | translate" formControlName="contactEmail" />
           </div>
         </div>
         <div class="form-field full-width">
-          <label>Notes</label>
-          <textarea placeholder="Any context about your deployment (scale, workflow types, etc.)" formControlName="notes" rows="3"></textarea>
+          <label>{{ 'CONTRIBUTE.NOTES' | translate }}</label>
+          <textarea [placeholder]="'CONTRIBUTE.NOTES_PLACEHOLDER' | translate" formControlName="notes" rows="3"></textarea>
         </div>
       </div>
 
       <div class="form-agreement">
         <label class="checkbox-label">
           <input type="checkbox" formControlName="agreedTerms" />
-          <span>I confirm this export contains only anonymized framework improvement data and no proprietary information.</span>
+          <span>{{ 'CONTRIBUTE.AGREE' | translate }}</span>
         </label>
       </div>
 
@@ -140,8 +137,8 @@
         class="submit-btn"
         [disabled]="!contributeForm.valid || !parsedData || status.state === 'submitting'"
       >
-        <span *ngIf="status.state !== 'submitting'">Submit Improvements</span>
-        <span *ngIf="status.state === 'submitting'">Submitting...</span>
+        <span *ngIf="status.state !== 'submitting'">{{ 'CONTRIBUTE.SUBMIT' | translate }}</span>
+        <span *ngIf="status.state === 'submitting'">{{ 'CONTRIBUTE.SUBMITTING' | translate }}</span>
       </button>
     </form>
 
@@ -153,25 +150,25 @@
 
   <!-- Alternative Channels -->
   <section class="alt-channels">
-    <h2>Alternative Submission Channels</h2>
+    <h2>{{ 'CONTRIBUTE.ALT_TITLE' | translate }}</h2>
     <div class="channels-grid">
       <div class="channel-card">
-        <h3>GitHub Issue</h3>
-        <p>Attach the export file to a new issue using the "improvement-contribution" template.</p>
+        <h3>{{ 'CONTRIBUTE.ALT_GITHUB_TITLE' | translate }}</h3>
+        <p>{{ 'CONTRIBUTE.ALT_GITHUB_DESC' | translate }}</p>
         <a href="https://github.com/intelliswarm-ai/swarm-ai/issues/new?template=improvement-contribution.md&labels=self-improving,contribution" target="_blank" rel="noopener noreferrer" class="channel-link">
-          Open GitHub Issue
+          {{ 'CONTRIBUTE.ALT_GITHUB_LINK' | translate }}
         </a>
       </div>
       <div class="channel-card">
-        <h3>Email</h3>
-        <p>Send the export file directly. Security-reviewed exports welcome.</p>
+        <h3>{{ 'CONTRIBUTE.ALT_EMAIL_TITLE' | translate }}</h3>
+        <p>{{ 'CONTRIBUTE.ALT_EMAIL_DESC' | translate }}</p>
         <a href="mailto:contributions@intelliswarm.ai?subject=SwarmAI%20Improvement%20Contribution" class="channel-link">
           contributions&#64;intelliswarm.ai
         </a>
       </div>
       <div class="channel-card">
-        <h3>CLI</h3>
-        <p>Submit directly from your terminal:</p>
+        <h3>{{ 'CONTRIBUTE.ALT_CLI_TITLE' | translate }}</h3>
+        <p>{{ 'CONTRIBUTE.ALT_CLI_DESC' | translate }}</p>
         <code class="cli-command">curl -X POST https://api.intelliswarm.ai/api/v1/contribute \<br>&nbsp;&nbsp;-H "Content-Type: application/json" \<br>&nbsp;&nbsp;-d &#64;swarmai-improvements-*.json</code>
       </div>
     </div>
@@ -179,11 +176,7 @@
 
   <!-- Privacy Note -->
   <section class="privacy-note">
-    <h3>Privacy &amp; Security</h3>
-    <p>
-      SwarmAI improvement exports contain <strong>only anonymized structural patterns</strong> &mdash; convergence defaults,
-      tool routing hints, anti-patterns, and skill metadata. No workflow content, no user data, no proprietary information.
-      The export file is human-readable JSON designed for security team review before submission.
-    </p>
+    <h3>{{ 'CONTRIBUTE.PRIVACY_TITLE' | translate }}</h3>
+    <p>{{ 'CONTRIBUTE.PRIVACY_DESC' | translate }}</p>
   </section>
 </div>

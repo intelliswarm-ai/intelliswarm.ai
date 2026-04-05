@@ -1,0 +1,62 @@
+[
+  {
+    "id": "self-improving-module",
+    "date": "2026-04-04",
+    "category": "release",
+    "title": "Self-Improving Module Launched",
+    "summary": "SwarmAI now reserves 10% of every workflow's token budget for automatic framework improvement. The Community Investment Ledger tracks collective impact across all deployments.",
+    "content": "The new `swarmai-self-improving` module introduces a first-of-its-kind mechanism: every workflow automatically invests 10% of its token budget into discovering framework-level improvements. These aren't per-workflow optimizations — they produce generic rules that ship in the next release and benefit all users on upgrade.\n\nThe module includes an ImprovementCollector, PatternExtractor, ImprovementClassifier, and a three-tier pipeline (auto-merge, PR review, architecture proposals). A Community Investment Ledger tracks total tokens invested, improvements shipped, skills graduated, and ROI.\n\nFor firewalled environments, the ImprovementExporter produces anonymized JSON files that ops teams can submit through intelliswarm.ai/contribute.",
+    "tags": ["self-improving", "10% investment", "community ledger"],
+    "link": "https://github.com/intelliswarm-ai/swarm-ai"
+  },
+  {
+    "id": "github-reporting-pipeline",
+    "date": "2026-04-04",
+    "category": "feature",
+    "title": "GitHub Improvement Reporting Pipeline",
+    "summary": "Connected deployments can now automatically create GitHub PRs with evidence-backed improvement proposals. Firewalled environments get health indicators, log nudges, and export tools.",
+    "content": "The reporting pipeline adds two channels for improvements to flow back to the framework repository:\n\n**Channel 1: GitHub PRs** — When a GitHub token is configured, the framework automatically creates branches and pull requests with full evidence: what changes, cross-validation results, expected impact, and who benefits on upgrade. Tier 1 improvements auto-merge if CI passes; Tier 2 requires human review.\n\n**Channel 2: Telemetry** — Anonymized improvement data is sent to the central endpoint for aggregation across all deployments worldwide.\n\nFor air-gapped environments: Spring Actuator health indicators, scheduled log nudges, and startup banners remind ops teams about pending improvements. The ImprovementExporter produces security-auditable JSON files.",
+    "tags": ["reporting", "github", "firewalled", "enterprise"],
+    "link": "https://github.com/intelliswarm-ai/swarm-ai"
+  },
+  {
+    "id": "contribution-portal",
+    "date": "2026-04-05",
+    "category": "feature",
+    "title": "Contribute Portal Live on IntelliSwarm.ai",
+    "summary": "Enterprise teams running SwarmAI behind firewalls can now submit improvement exports through the website at intelliswarm.ai/contribute, via GitHub issues, email, or CLI.",
+    "content": "The new /contribute page on intelliswarm.ai provides a drag-and-drop upload interface for SwarmAI improvement export files. The page validates the JSON format, shows a breakdown of improvements by tier, and submits them to the backend for aggregation.\n\nFour submission channels are now available:\n1. **Web form** — Upload at intelliswarm.ai/contribute\n2. **GitHub issue** — Using the improvement-contribution template\n3. **Email** — Send to contributions@intelliswarm.ai\n4. **CLI** — curl directly to the API endpoint\n\nAll exports contain only anonymized structural patterns — no workflow content, no user data, no proprietary information.",
+    "tags": ["contribute", "website", "enterprise", "firewalled"],
+    "link": "/contribute"
+  },
+  {
+    "id": "enterprise-module-v1",
+    "date": "2026-03-15",
+    "category": "release",
+    "title": "Enterprise Module: Multi-Tenancy & Deep RL",
+    "summary": "The swarmai-enterprise module adds license-gated multi-tenancy, advanced governance, and DQN neural networks for reinforcement learning-powered decision making.",
+    "content": "The enterprise module brings production-grade features for large-scale deployments:\n\n- **Multi-tenancy** — Tenant-isolated memory, knowledge bases, quotas, and budgets\n- **Advanced governance** — Fine-grained RBAC with tool permission levels (READ_ONLY, WORKSPACE_WRITE, DANGEROUS)\n- **Deep RL** — DQN neural networks for policy optimization, replacing the tabular Q-learning in the core module\n- **Audit logging** — Complete decision trail for compliance requirements\n\nActivated with a BSL license key via `swarmai.enterprise.license-key` configuration.",
+    "tags": ["enterprise", "multi-tenancy", "deep-rl", "governance"],
+    "link": "https://github.com/intelliswarm-ai/swarm-ai"
+  },
+  {
+    "id": "eval-module",
+    "date": "2026-03-01",
+    "category": "release",
+    "title": "Self-Evaluation Module for Continuous Quality",
+    "summary": "The swarmai-eval module provides a framework for agentic self-evaluation, competitive benchmarks against LangGraph and CrewAI, and continuous quality improvement metrics.",
+    "content": "SwarmAI now includes built-in evaluation capabilities:\n\n- **Agentic self-evaluation** — Workflows assess their own output quality, convergence efficiency, and tool selection accuracy\n- **Competitive benchmarks** — Standardized comparison against LangGraph, CrewAI, and AutoGen on token efficiency, quality, and governance compliance\n- **Continuous metrics** — Track quality trends across versions to ensure improvements from the 10% investment are validated\n\nResults are available at intelliswarm.ai/benchmarks.",
+    "tags": ["evaluation", "benchmarks", "quality"],
+    "link": "/benchmarks"
+  },
+  {
+    "id": "1000-tests",
+    "date": "2026-02-20",
+    "category": "milestone",
+    "title": "1,000+ Tests Passing",
+    "summary": "SwarmAI crossed 1,013 passing tests across all modules, covering process types, governance, budget tracking, skill generation, and the new self-improvement pipeline.",
+    "content": "The test suite now covers:\n- All 7 process types with end-to-end workflow tests\n- Governance gate approval/rejection flows\n- Budget enforcement (HARD_STOP and WARN modes)\n- Dynamic skill generation and graduation\n- Self-improvement pipeline: collection, extraction, classification, aggregation\n- GitHub and telemetry reporting\n- Enterprise multi-tenancy isolation\n\nEvery self-improvement proposal must pass the full suite before shipping. This is the safety net that makes automatic Tier 1 improvements possible.",
+    "tags": ["testing", "quality", "milestone"],
+    "link": "https://github.com/intelliswarm-ai/swarm-ai"
+  }
+]
