@@ -13,6 +13,7 @@ import { ServicesComponent } from './components/services/services.component';
 import { ChatPageComponent } from './pages/chat/chat.component';
 import { BenchmarksComponent } from './pages/benchmarks/benchmarks.component';
 import { DocsComponent } from './pages/docs/docs.component';
+import { ContributeComponent } from './pages/contribute/contribute.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -28,6 +29,7 @@ const routes: Routes = [
   { path: 'chat', component: ChatPageComponent },
   { path: 'benchmarks', component: BenchmarksComponent },
   { path: 'docs', component: DocsComponent },
+  { path: 'contribute', component: ContributeComponent },
   { path: '**', redirectTo: '/home' },
 ];
 

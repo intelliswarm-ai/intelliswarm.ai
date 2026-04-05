@@ -34,6 +34,7 @@ import { ResumeChatComponent } from './components/resume-chat/resume-chat.compon
 import { ChatPageComponent } from './pages/chat/chat.component';
 import { BenchmarksComponent } from './pages/benchmarks/benchmarks.component';
 import { DocsComponent } from './pages/docs/docs.component';
+import { ContributeComponent } from './pages/contribute/contribute.component';
 
 @NgModule({
   declarations: [
@@ -64,6 +65,7 @@ import { DocsComponent } from './pages/docs/docs.component';
     ChatPageComponent,
     BenchmarksComponent,
     DocsComponent,
+    ContributeComponent,
   ],
   imports: [BrowserModule, ReactiveFormsModule, FormsModule, AppRoutingModule],
   providers: [provideClientHydration()],

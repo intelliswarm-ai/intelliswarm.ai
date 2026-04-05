@@ -1,0 +1,189 @@
+<div class="contribute-container page-content">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <h1>
+      <span>Contribute </span><span class="gradient-text">Improvements</span>
+    </h1>
+    <p class="hero-description">
+      Your SwarmAI deployment discovered framework improvements through the 10% self-improvement investment.
+      Submit them here to benefit all SwarmAI users worldwide.
+    </p>
+  </section>
+
+  <!-- How It Works -->
+  <section class="how-it-works">
+    <h2>How It Works</h2>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-number">1</div>
+        <h3>Export</h3>
+        <p>In your firewalled environment, run:<br>
+          <code>POST /actuator/self-improving/export</code><br>
+          This produces an anonymized JSON file with no workflow content or user data.
+        </p>
+      </div>
+      <div class="step-card">
+        <div class="step-number">2</div>
+        <h3>Review</h3>
+        <p>Security team audits the export. It contains only structural patterns &mdash; convergence defaults, tool routing hints, anti-patterns, and skill metadata.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-number">3</div>
+        <h3>Submit</h3>
+        <p>Upload or paste the JSON below. Improvements are validated, aggregated, and flow into the next SwarmAI release via automated PRs.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Upload Section -->
+  <section class="upload-section">
+    <h2>Submit Improvement Data</h2>
+
+    <!-- Drop Zone -->
+    <div
+      class="drop-zone"
+      [class.drag-over]="isDragOver"
+      [class.has-file]="!!parsedData"
+      (dragover)="onDragOver($event)"
+      (dragleave)="onDragLeave($event)"
+      (drop)="onDrop($event)"
+    >
+      <div class="drop-zone-content" *ngIf="!parsedData">
+        <span class="upload-icon">&#8682;</span>
+        <p>Drag and drop your <strong>swarmai-improvements-*.json</strong> file here</p>
+        <span class="or-divider">or</span>
+        <label class="file-select-btn">
+          Browse Files
+          <input type="file" accept=".json" (change)="onFileSelected($event)" hidden />
+        </label>
+      </div>
+      <div class="file-loaded" *ngIf="parsedData">
+        <span class="check-icon">&#10003;</span>
+        <p>{{ fileName || 'Pasted JSON' }}</p>
+        <span class="file-info">{{ parsedData.totalImprovements }} improvements from {{ parsedData.totalWorkflowsAnalyzed }} workflows</span>
+      </div>
+    </div>
+
+    <!-- Paste Alternative -->
+    <div class="paste-section">
+      <p class="paste-label">Or paste the JSON directly:</p>
+      <textarea
+        class="json-textarea"
+        placeholder='{"exportFormat": "swarmai-improvements", ...}'
+        [value]="rawJson"
+        (input)="onPasteJson($event)"
+        rows="6"
+      ></textarea>
+    </div>
+
+    <!-- Parsed Summary -->
+    <div class="parsed-summary" *ngIf="parsedData">
+      <h3>Improvement Summary</h3>
+      <div class="summary-grid">
+        <div class="summary-item">
+          <span class="summary-value">{{ parsedData.totalImprovements }}</span>
+          <span class="summary-label">Total Improvements</span>
+        </div>
+        <div class="summary-item tier1">
+          <span class="summary-value">{{ parsedData.tier1 }}</span>
+          <span class="summary-label">Tier 1 (Auto-merge)</span>
+        </div>
+        <div class="summary-item tier2">
+          <span class="summary-value">{{ parsedData.tier2 }}</span>
+          <span class="summary-label">Tier 2 (PR Review)</span>
+        </div>
+        <div class="summary-item tier3">
+          <span class="summary-value">{{ parsedData.tier3 }}</span>
+          <span class="summary-label">Tier 3 (Architecture)</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-value">{{ parsedData.estimatedTokenSavings | number }}</span>
+          <span class="summary-label">Est. Token Savings/Run</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-value">v{{ parsedData.version }}</span>
+          <span class="summary-label">Framework Version</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Submission Form -->
+    <form [formGroup]="contributeForm" (ngSubmit)="handleSubmit()" *ngIf="parsedData">
+      <div class="form-section">
+        <h3>Optional Details</h3>
+        <p class="form-description">Help us understand where these improvements come from. All fields are optional except the agreement.</p>
+        <div class="form-row">
+          <div class="form-field">
+            <label>Organization Name</label>
+            <input type="text" placeholder="Anonymous" formControlName="organizationName" />
+          </div>
+          <div class="form-field">
+            <label>Contact Email</label>
+            <input type="email" placeholder="For follow-up questions only" formControlName="contactEmail" />
+          </div>
+        </div>
+        <div class="form-field full-width">
+          <label>Notes</label>
+          <textarea placeholder="Any context about your deployment (scale, workflow types, etc.)" formControlName="notes" rows="3"></textarea>
+        </div>
+      </div>
+
+      <div class="form-agreement">
+        <label class="checkbox-label">
+          <input type="checkbox" formControlName="agreedTerms" />
+          <span>I confirm this export contains only anonymized framework improvement data and no proprietary information.</span>
+        </label>
+      </div>
+
+      <button
+        type="submit"
+        class="submit-btn"
+        [disabled]="!contributeForm.valid || !parsedData || status.state === 'submitting'"
+      >
+        <span *ngIf="status.state !== 'submitting'">Submit Improvements</span>
+        <span *ngIf="status.state === 'submitting'">Submitting...</span>
+      </button>
+    </form>
+
+    <!-- Status Messages -->
+    <div class="status-message" *ngIf="status.message" [ngClass]="status.state">
+      {{ status.message }}
+    </div>
+  </section>
+
+  <!-- Alternative Channels -->
+  <section class="alt-channels">
+    <h2>Alternative Submission Channels</h2>
+    <div class="channels-grid">
+      <div class="channel-card">
+        <h3>GitHub Issue</h3>
+        <p>Attach the export file to a new issue using the "improvement-contribution" template.</p>
+        <a href="https://github.com/intelliswarm-ai/swarm-ai/issues/new?template=improvement-contribution.md&labels=self-improving,contribution" target="_blank" rel="noopener noreferrer" class="channel-link">
+          Open GitHub Issue
+        </a>
+      </div>
+      <div class="channel-card">
+        <h3>Email</h3>
+        <p>Send the export file directly. Security-reviewed exports welcome.</p>
+        <a href="mailto:contributions@intelliswarm.ai?subject=SwarmAI%20Improvement%20Contribution" class="channel-link">
+          contributions&#64;intelliswarm.ai
+        </a>
+      </div>
+      <div class="channel-card">
+        <h3>CLI</h3>
+        <p>Submit directly from your terminal:</p>
+        <code class="cli-command">curl -X POST https://api.intelliswarm.ai/api/v1/contribute \<br>&nbsp;&nbsp;-H "Content-Type: application/json" \<br>&nbsp;&nbsp;-d &#64;swarmai-improvements-*.json</code>
+      </div>
+    </div>
+  </section>
+
+  <!-- Privacy Note -->
+  <section class="privacy-note">
+    <h3>Privacy &amp; Security</h3>
+    <p>
+      SwarmAI improvement exports contain <strong>only anonymized structural patterns</strong> &mdash; convergence defaults,
+      tool routing hints, anti-patterns, and skill metadata. No workflow content, no user data, no proprietary information.
+      The export file is human-readable JSON designed for security team review before submission.
+    </p>
+  </section>
+</div>
