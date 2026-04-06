@@ -60,8 +60,7 @@
 
       <!-- Expanded Content -->
       <div class="news-card-body" *ngIf="expandedId === item.id">
-        <div class="news-content">
-          <p *ngFor="let paragraph of item.content.split('\n\n')">{{ paragraph }}</p>
+        <div class="news-content" [innerHTML]="renderContent(item.content)">
         </div>
         <div class="news-actions">
           <a

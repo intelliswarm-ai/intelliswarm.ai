@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 interface NewsItem {
   id: string;
@@ -24,6 +25,8 @@ export class NewsComponent implements OnInit {
   expandedId: string | null = null;
   loading: boolean = true;
   error: string = '';
+
+  constructor(private sanitizer: DomSanitizer) {}
 
   ngOnInit(): void {
     this.fetchNews();
@@ -78,5 +81,50 @@ export class NewsComponent implements OnInit {
 
   isInternal(link: string): boolean {
     return link.startsWith('/');
+  }
+
+  renderContent(content: string): SafeHtml {
+    const html = content
+      .split('\n\n')
+      .map(block => {
+        // Check if block is a list (lines starting with -)
+        const lines = block.split('\n');
+        if (lines.every(l => l.trimStart().startsWith('- '))) {
+          const items = lines.map(l => `<li>${this.inlineMarkdown(l.replace(/^\s*-\s*/, ''))}</li>`).join('');
+          return `<ul>${items}</ul>`;
+        }
+        // Check if block contains mixed content with list items
+        if (lines.some(l => l.trimStart().startsWith('- '))) {
+          let html = '';
+          let listItems: string[] = [];
+          for (const line of lines) {
+            if (line.trimStart().startsWith('- ')) {
+              listItems.push(`<li>${this.inlineMarkdown(line.replace(/^\s*-\s*/, ''))}</li>`);
+            } else {
+              if (listItems.length) {
+                html += `<ul>${listItems.join('')}</ul>`;
+                listItems = [];
+              }
+              html += `<p>${this.inlineMarkdown(line)}</p>`;
+            }
+          }
+          if (listItems.length) html += `<ul>${listItems.join('')}</ul>`;
+          return html;
+        }
+        // Numbered list (lines starting with digits)
+        if (lines.every(l => /^\d+\.\s/.test(l.trimStart()))) {
+          const items = lines.map(l => `<li>${this.inlineMarkdown(l.replace(/^\s*\d+\.\s*/, ''))}</li>`).join('');
+          return `<ol>${items}</ol>`;
+        }
+        return `<p>${this.inlineMarkdown(block)}</p>`;
+      })
+      .join('');
+    return this.sanitizer.bypassSecurityTrustHtml(html);
+  }
+
+  private inlineMarkdown(text: string): string {
+    return text
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/`(.+?)`/g, '<code>$1</code>');
   }
 }
