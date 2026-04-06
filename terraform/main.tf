@@ -350,6 +350,21 @@ resource "aws_dynamodb_table" "contributions" {
   }
 }
 
+resource "aws_dynamodb_table" "contacts" {
+  name         = "intelliswarm-contacts"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "contactId"
+
+  attribute {
+    name = "contactId"
+    type = "S"
+  }
+
+  tags = {
+    Name = "intelliswarm-contacts"
+  }
+}
+
 
 # =============================================================================
 # IAM Role for Lambda
@@ -405,7 +420,25 @@ resource "aws_iam_role_policy" "lambda_dynamodb" {
         Resource = [
           aws_dynamodb_table.news.arn,
           aws_dynamodb_table.contributions.arn,
+          aws_dynamodb_table.contacts.arn,
         ]
+      }
+    ]
+  })
+}
+
+# Grant SES permission to send email notifications for contact form submissions.
+resource "aws_iam_role_policy" "lambda_ses" {
+  name = "intelliswarm-lambda-ses-send"
+  role = aws_iam_role.lambda_exec.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = ["ses:SendEmail", "ses:SendRawEmail"]
+        Resource = "*"
       }
     ]
   })
@@ -413,47 +446,73 @@ resource "aws_iam_role_policy" "lambda_dynamodb" {
 
 
 # =============================================================================
+# SES -- Email notifications for contact form
+# =============================================================================
+
+# Verify the email address in SES. After `terraform apply`, AWS sends a
+# verification email — click the link to activate sending.
+resource "aws_ses_email_identity" "contact" {
+  count = var.contact_email != "" ? 1 : 0
+  email = var.contact_email
+}
+
+
+# =============================================================================
 # Lambda Function
 # =============================================================================
 
-# Package the backend directory into a zip for Lambda deployment.
-data "archive_file" "lambda_zip" {
-  type        = "zip"
-  source_dir  = "${path.module}/../backend"
-  output_path = "${path.module}/lambda.zip"
+# Package the backend into a zip for Lambda.
+# Uses archive_file with an explicit file list to avoid Windows symlink issues
+# in node_modules/.bin (which archive_file cannot read on Windows).
+#
+# Strategy: we zip only the files Lambda needs, NOT the full node_modules.
+# Lambda deps are installed fresh via null_resource.backend_deps which runs
+# npm ci --omit=dev in a staging directory.
 
-  # Exclude files that are not needed in the Lambda package.
-  excludes = [
-    "node_modules/.cache",
-    "data",
-    "contributions",
-    "Dockerfile",
-    "template.yaml",
-    ".env",
-  ]
+resource "null_resource" "lambda_staging" {
+  depends_on = [null_resource.backend_deps]
+
+  triggers = {
+    lambda_handler = filemd5("${path.module}/../backend/lambda.js")
+    package_json   = filemd5("${path.module}/../backend/package.json")
+    health_handler = filemd5("${path.module}/../backend/handlers/health.js")
+    news_handler   = filemd5("${path.module}/../backend/handlers/news.js")
+    contrib_handler = filemd5("${path.module}/../backend/handlers/contribute.js")
+    storage_index  = filemd5("${path.module}/../backend/storage/index.js")
+    storage_dynamo = filemd5("${path.module}/../backend/storage/dynamodb.js")
+    contact_handler = filemd5("${path.module}/../backend/handlers/contact.js")
+  }
+
+  # Package Lambda via external PowerShell script (avoids heredoc escaping issues)
+  provisioner "local-exec" {
+    command = "powershell -ExecutionPolicy Bypass -File package-lambda.ps1"
+  }
 }
 
 resource "aws_lambda_function" "backend" {
-  function_name    = "intelliswarm-backend"
-  description      = "IntelliSwarm.ai API backend (${var.environment})"
-  role             = aws_iam_role.lambda_exec.arn
-  handler          = "lambda.handler"
-  runtime          = "nodejs18.x"
-  memory_size      = 128
-  timeout          = 15
-  filename         = data.archive_file.lambda_zip.output_path
-  source_code_hash = data.archive_file.lambda_zip.output_base64sha256
+  function_name                  = "intelliswarm-backend"
+  description                    = "IntelliSwarm.ai API backend (${var.environment})"
+  role                           = aws_iam_role.lambda_exec.arn
+  handler                        = "lambda.handler"
+  runtime                        = "nodejs18.x"
+  memory_size                    = 128
+  timeout                        = 15
+  reserved_concurrent_executions = -1 # No reserved concurrency (uses account default pool)
+  filename                       = "${path.module}/lambda.zip"
 
   environment {
     variables = {
       STORAGE_BACKEND    = "dynamodb"
       NEWS_TABLE         = aws_dynamodb_table.news.name
       CONTRIBUTIONS_TABLE = aws_dynamodb_table.contributions.name
+      CONTACTS_TABLE     = aws_dynamodb_table.contacts.name
+      CONTACT_EMAIL      = var.contact_email
       NODE_ENV           = var.environment
     }
   }
 
   depends_on = [
+    null_resource.lambda_staging,
     aws_iam_role_policy_attachment.lambda_basic,
     aws_iam_role_policy.lambda_dynamodb,
   ]
@@ -539,6 +598,12 @@ resource "aws_apigatewayv2_route" "get_contributions" {
   target    = "integrations/${aws_apigatewayv2_integration.lambda.id}"
 }
 
+resource "aws_apigatewayv2_route" "post_contact" {
+  api_id    = aws_apigatewayv2_api.backend.id
+  route_key = "POST /api/contact"
+  target    = "integrations/${aws_apigatewayv2_integration.lambda.id}"
+}
+
 # Default stage with auto-deploy.
 resource "aws_apigatewayv2_stage" "default" {
   api_id      = aws_apigatewayv2_api.backend.id
@@ -595,16 +660,6 @@ resource "aws_lambda_function_event_invoke_config" "backend" {
   maximum_retry_attempts = 0
 }
 
-resource "aws_lambda_provisioned_concurrency_config" "none" {
-  count = 0 # Explicitly: no provisioned concurrency (saves money)
-}
-
-# API Gateway throttling: 100 requests/second burst, 50 sustained.
-# This prevents DDoS from causing massive Lambda invocations.
-resource "aws_apigatewayv2_stage" "throttle_override" {
-  count = 0 # Throttle is set on the default stage above via route_settings below
-}
-
 # AWS Budget alarm: alert at $5/month, hard stop thinking at $10
 resource "aws_budgets_budget" "monthly" {
   name         = "intelliswarm-monthly-budget"
@@ -638,19 +693,13 @@ resource "aws_budgets_budget" "monthly" {
   }
 }
 
-# Lambda concurrency limit (account-level is 1000 by default;
-# this limits THIS function to 10 concurrent invocations max).
-resource "aws_lambda_function_concurrency" "backend" {
-  function_name                  = aws_lambda_function.backend.function_name
-  reserved_concurrent_executions = 10
-}
 
 
 # =============================================================================
 # ONE-COMMAND DEPLOY: Build frontend, sync S3, seed DynamoDB, invalidate cache
 # =============================================================================
 
-# Step 1: Install backend node_modules (needed in Lambda zip)
+# Step 1: Install backend node_modules (needed in Lambda staging)
 resource "null_resource" "backend_deps" {
   triggers = {
     package_json = filemd5("${path.module}/../backend/package.json")
@@ -658,23 +707,25 @@ resource "null_resource" "backend_deps" {
 
   provisioner "local-exec" {
     working_dir = "${path.module}/../backend"
-    command     = "npm ci --omit=dev"
+    command     = "npm install --omit=dev"
   }
 }
 
-# Step 2: Build Angular frontend
+# Step 2: Build Angular frontend (only rebuilds when source changes)
 resource "null_resource" "frontend_build" {
   triggers = {
-    always = timestamp()
+    app_module = filemd5("${path.module}/../website/src/app/app.module.ts")
+    package    = filemd5("${path.module}/../website/package.json")
+    index_html = filemd5("${path.module}/../website/src/index.html")
   }
 
   provisioner "local-exec" {
     working_dir = "${path.module}/../website"
-    command     = "npm ci && npx ng build --configuration production"
+    command     = "npm install && npx ng build --configuration production"
   }
 }
 
-# Step 3: Sync frontend to S3
+# Step 3: Sync frontend to S3 (runs after frontend_build changes)
 resource "null_resource" "s3_sync" {
   depends_on = [
     aws_s3_bucket.frontend,
@@ -683,33 +734,20 @@ resource "null_resource" "s3_sync" {
   ]
 
   triggers = {
-    always = timestamp()
+    frontend_build_id = null_resource.frontend_build.id
+  }
+
+  # Upload all files to S3 via PowerShell (avoids Windows cmd quoting issues with cache-control)
+  provisioner "local-exec" {
+    command = "powershell -ExecutionPolicy Bypass -Command \"aws s3 sync '${path.module}/../website/dist/intelliswarm-website/browser/' 's3://${aws_s3_bucket.frontend.id}/' --delete --cache-control 'public,max-age=31536000,immutable' --exclude 'index.html' --exclude '*.json' --region ${var.aws_region}\""
   }
 
   provisioner "local-exec" {
-    command = <<-EOT
-      # Upload hashed assets with long cache
-      aws s3 sync ${path.module}/../website/dist/intelliswarm-website/browser/ \
-        s3://${aws_s3_bucket.frontend.id}/ \
-        --delete \
-        --cache-control "public, max-age=31536000, immutable" \
-        --exclude "index.html" \
-        --exclude "*.json" \
-        --region ${var.aws_region}
+    command = "powershell -ExecutionPolicy Bypass -Command \"aws s3 cp '${path.module}/../website/dist/intelliswarm-website/browser/index.html' 's3://${aws_s3_bucket.frontend.id}/index.html' --cache-control 'public,max-age=60' --region ${var.aws_region}\""
+  }
 
-      # Upload index.html with short cache
-      aws s3 cp ${path.module}/../website/dist/intelliswarm-website/browser/index.html \
-        s3://${aws_s3_bucket.frontend.id}/index.html \
-        --cache-control "public, max-age=60" \
-        --region ${var.aws_region}
-
-      # Upload JSON files (i18n etc.) with medium cache
-      aws s3 sync ${path.module}/../website/dist/intelliswarm-website/browser/ \
-        s3://${aws_s3_bucket.frontend.id}/ \
-        --exclude "*" --include "*.json" \
-        --cache-control "public, max-age=3600" \
-        --region ${var.aws_region}
-    EOT
+  provisioner "local-exec" {
+    command = "powershell -ExecutionPolicy Bypass -Command \"aws s3 sync '${path.module}/../website/dist/intelliswarm-website/browser/' 's3://${aws_s3_bucket.frontend.id}/' --exclude '*' --include '*.json' --cache-control 'public,max-age=3600' --region ${var.aws_region}\""
   }
 }
 
@@ -725,23 +763,11 @@ resource "null_resource" "seed_news" {
   }
 
   provisioner "local-exec" {
-    command = <<-EOT
-      node -e "
-        const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
-        const { DynamoDBDocumentClient, PutCommand } = require('@aws-sdk/lib-dynamodb');
-        const fs = require('fs');
-        const client = new DynamoDBClient({ region: '${var.aws_region}' });
-        const ddb = DynamoDBDocumentClient.from(client);
-        const news = JSON.parse(fs.readFileSync('${path.module}/../backend/data/news.json', 'utf8'));
-        (async () => {
-          for (const item of news) {
-            await ddb.send(new PutCommand({ TableName: '${aws_dynamodb_table.news.name}', Item: item }));
-            console.log('Seeded:', item.id);
-          }
-          console.log('Done: ' + news.length + ' news items seeded.');
-        })();
-      "
-    EOT
+    command = "node seed-news.js"
+    environment = {
+      AWS_REGION = var.aws_region
+      NEWS_TABLE = aws_dynamodb_table.news.name
+    }
   }
 }
 
@@ -753,16 +779,10 @@ resource "null_resource" "cloudfront_invalidation" {
   ]
 
   triggers = {
-    always = timestamp()
+    s3_sync_id = null_resource.s3_sync.id
   }
 
   provisioner "local-exec" {
-    command = <<-EOT
-      # CloudFront is a global service — its API endpoint is always us-east-1.
-      # This does NOT deploy anything to us-east-1; it just clears the CDN cache worldwide.
-      aws cloudfront create-invalidation \
-        --distribution-id ${aws_cloudfront_distribution.website.id} \
-        --paths "/*"
-    EOT
+    command = "powershell -ExecutionPolicy Bypass -Command \"aws cloudfront create-invalidation --distribution-id ${aws_cloudfront_distribution.website.id} --paths '/*'\""
   }
 }

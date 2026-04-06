@@ -61,4 +61,17 @@ function createContributionDynamoStorage(tableName) {
   };
 }
 
-module.exports = { createNewsDynamoStorage, createContributionDynamoStorage };
+function createContactDynamoStorage(tableName) {
+  tableName = tableName || process.env.CONTACTS_TABLE || 'intelliswarm-contacts';
+
+  return {
+    async save(contact) {
+      const { PutCommand } = require('@aws-sdk/lib-dynamodb');
+      await getDdb().send(
+        new PutCommand({ TableName: tableName, Item: contact })
+      );
+    },
+  };
+}
+
+module.exports = { createNewsDynamoStorage, createContributionDynamoStorage, createContactDynamoStorage };

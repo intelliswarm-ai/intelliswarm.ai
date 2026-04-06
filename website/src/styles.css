@@ -836,7 +836,8 @@ h2.accordion-header button,
   margin: 0;
 }
 
-.contact-form .form-group input {
+.contact-form .form-group input,
+.contact-form .form-group textarea {
   color: var(--white-700);
   width: 100%;
   background-color: var(--input-bg);
@@ -845,6 +846,9 @@ h2.accordion-header button,
   border-radius: 8px !important;
   margin-bottom: 20px;
   color: var(--light);
+  font-family: inherit;
+  font-size: inherit;
+  resize: vertical;
 }
 
 .contact-form .form-group .input-group {

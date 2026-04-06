@@ -17,10 +17,11 @@ function createStorage() {
 
   switch (backend) {
     case 'dynamodb': {
-      const { createNewsDynamoStorage, createContributionDynamoStorage } = require('./dynamodb');
+      const { createNewsDynamoStorage, createContributionDynamoStorage, createContactDynamoStorage } = require('./dynamodb');
       return {
         news: createNewsDynamoStorage(),
         contributions: createContributionDynamoStorage(),
+        contacts: createContactDynamoStorage(),
       };
     }
 
@@ -34,11 +35,12 @@ function createStorage() {
 
     case 'filesystem':
     default: {
-      const { createNewsFileStorage, createContributionFileStorage } = require('./filesystem');
+      const { createNewsFileStorage, createContributionFileStorage, createContactFileStorage } = require('./filesystem');
       const dataDir = process.env.DATA_DIR || path.join(__dirname, '..');
       return {
         news: createNewsFileStorage(path.join(dataDir, 'data', 'news.json')),
         contributions: createContributionFileStorage(path.join(dataDir, 'contributions')),
+        contacts: createContactFileStorage(path.join(dataDir, 'contacts')),
       };
     }
   }

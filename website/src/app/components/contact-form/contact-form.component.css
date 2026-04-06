@@ -12,3 +12,87 @@
   text-decoration: none;
   display: inline-block;
 }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .contact-area {
+    padding: 40px 0;
+  }
+
+  .contact-area .title-2 {
+    font-size: 28px;
+  }
+
+  .contact-form {
+    padding: 20px 16px;
+  }
+
+  .input-group {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .input-group input {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 44px;
+  }
+
+  .contact-content {
+    margin-bottom: 32px;
+  }
+
+  .contact-brand {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .contact-brand img {
+    max-width: 80px;
+  }
+
+  .btn.btn-primary {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .form-check {
+    font-size: 13px;
+  }
+
+  .contact-logo .logo-text {
+    font-size: 26px;
+  }
+}
+
+@media (max-width: 480px) {
+  .contact-area {
+    padding: 24px 0;
+  }
+
+  .contact-area .title-2 {
+    font-size: 24px;
+  }
+
+  .contact-form {
+    padding: 16px 12px;
+  }
+
+  .contact-form h2 {
+    font-size: 20px;
+  }
+
+  .contact-form p {
+    font-size: 13px;
+  }
+
+  .contact-logo .logo-text {
+    font-size: 22px;
+  }
+}

@@ -200,3 +200,115 @@
     font-size: 0.85rem;
   }
 }
+
+// Responsive
+@media (max-width: 768px) {
+  .benchmarks-container {
+    padding: 24px 16px;
+  }
+
+  .hero-title {
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
+  }
+
+  .hero-description {
+    font-size: 1rem;
+  }
+
+  .score-section {
+    flex-direction: column;
+    gap: 24px;
+    margin-bottom: 40px;
+  }
+
+  .score-card {
+    padding: 24px 32px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .score-big {
+    font-size: 3rem;
+  }
+
+  .score-meta {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .category-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .category-section h2,
+  .comparison-section h2,
+  .scenarios-section h2,
+  .methodology-section h2 {
+    font-size: 1.25rem;
+  }
+
+  .table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
+  }
+
+  .comparison-table, .scenarios-table {
+    font-size: 0.8rem;
+    min-width: 600px;
+
+    th, td {
+      padding: 8px 10px;
+    }
+  }
+
+  .methodology-content {
+    padding: 16px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .benchmarks-container {
+    padding: 16px 12px;
+  }
+
+  .hero-title {
+    font-size: 1.4rem;
+  }
+
+  .score-big {
+    font-size: 2.5rem;
+  }
+
+  .score-card {
+    padding: 20px 20px;
+  }
+
+  .score-label {
+    font-size: 0.8rem;
+  }
+
+  .score-meta {
+    gap: 16px;
+  }
+
+  .meta-item {
+    .meta-value { font-size: 1.2rem; }
+    .meta-label { font-size: 0.7rem; }
+  }
+
+  .category-card {
+    padding: 14px;
+  }
+
+  .category-score {
+    font-size: 1.5rem;
+  }
+
+  .methodology-content {
+    padding: 12px;
+    font-size: 0.85rem;
+  }
+}

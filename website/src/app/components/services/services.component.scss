@@ -15,13 +15,13 @@
   margin-bottom: 60px;
 
   h1 {
-    font-size: 44px;
+    font-size: clamp(28px, 5vw, 44px);
     font-weight: 500;
     margin-bottom: 16px;
     color: var(--text-primary);
-    
+
     .gradient-text {
-      background: linear-gradient(90deg, 
+      background: linear-gradient(90deg,
         #8f45d9 0%,
         #e355a7 50%,
         #ff7a5c 100%);
@@ -384,4 +384,45 @@
   .projects-grid {
     grid-template-columns: 1fr;
   }
-} 
+
+  .services-container {
+    padding: 24px 12px;
+  }
+
+  .service-card {
+    padding: 18px;
+
+    h3 {
+      font-size: 17px;
+    }
+
+    ul li {
+      font-size: 13px;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  .solution-card {
+    padding: 18px;
+
+    h3 {
+      font-size: 14px;
+    }
+  }
+
+  .agentic-solutions h2,
+  .open-source-section h2 {
+    font-size: clamp(22px, 5vw, 32px);
+  }
+
+  .github-cta {
+    padding: 20px;
+
+    .btn-primary {
+      padding: 12px 20px;
+      min-height: 44px;
+    }
+  }
+}

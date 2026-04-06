@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 interface Language {
   code: string;
@@ -39,7 +41,7 @@ function setDocDir(code: string): void {
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit, OnDestroy {
   isMobileMenuOpen = false;
   isLangMenuOpen = false;
   logoText = 'INTELLISWARM.AI';
@@ -60,11 +62,28 @@ export class HeaderComponent {
 
   currentLang: Language;
 
+  private routerSub!: Subscription;
+
   constructor(private router: Router, private translate: TranslateService) {
     const saved = getSavedLang();
     this.translate.setDefaultLang('en');
     this.translate.use(saved);
     this.currentLang = this.languages.find(l => l.code === saved) || this.languages[0];
+  }
+
+  ngOnInit(): void {
+    // Close mobile menu on every route change
+    this.routerSub = this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe(() => {
+        this.closeMobileMenu();
+      });
+  }
+
+  ngOnDestroy(): void {
+    if (this.routerSub) {
+      this.routerSub.unsubscribe();
+    }
   }
 
   switchLanguage(lang: Language): void {
@@ -83,12 +102,34 @@ export class HeaderComponent {
     this.isLangMenuOpen = false;
   }
 
-  toggleMobileMenu() {
+  toggleMobileMenu(): void {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
+    this.setBodyScrollLock(this.isMobileMenuOpen);
   }
 
-  closeMobileMenuAndNavigate(route: string) {
-    this.isMobileMenuOpen = false;
+  closeMobileMenu(): void {
+    if (this.isMobileMenuOpen) {
+      this.isMobileMenuOpen = false;
+      this.setBodyScrollLock(false);
+    }
+  }
+
+  closeMobileMenuAndNavigate(route: string): void {
+    this.closeMobileMenu();
     this.router.navigate([route]);
+  }
+
+  private setBodyScrollLock(lock: boolean): void {
+    try {
+      if (typeof document !== 'undefined') {
+        if (lock) {
+          document.body.classList.add('mobile-menu-open');
+          document.body.style.overflow = 'hidden';
+        } else {
+          document.body.classList.remove('mobile-menu-open');
+          document.body.style.overflow = '';
+        }
+      }
+    } catch {}
   }
 }

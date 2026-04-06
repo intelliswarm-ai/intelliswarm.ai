@@ -12,6 +12,7 @@ const { createStorage } = require('./storage');
 const { handleHealth } = require('./handlers/health');
 const { handleGetNews, handleCreateNews } = require('./handlers/news');
 const { handleContribute, handleListContributions } = require('./handlers/contribute');
+const { handleContact } = require('./handlers/contact');
 
 const CORS_HEADERS = {
   'Content-Type': 'application/json',
@@ -58,6 +59,10 @@ exports.handler = async (event) => {
 
       case path === '/api/contributions' && method === 'GET':
         result = await handleListContributions(storage.contributions);
+        break;
+
+      case path === '/api/contact' && method === 'POST':
+        result = await handleContact(storage.contacts, JSON.parse(event.body || '{}'));
         break;
 
       default:

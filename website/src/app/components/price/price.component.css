@@ -191,47 +191,89 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .title-2 {
-    font-size: 36px;
+    font-size: 28px;
   }
-  
+
   .pricing-subtitle {
-    font-size: 18px;
-    margin-bottom: 40px;
+    font-size: 16px;
+    margin-bottom: 32px;
   }
-  
+
   .pricing-item {
-    padding: 40px 30px;
+    padding: 32px 24px;
+    margin-bottom: 0;
   }
-  
+
+  .pricing-item.popular {
+    transform: none;
+  }
+
+  .pricing-item.popular:hover {
+    transform: translateY(-5px);
+  }
+
   .pricing-item h3 {
-    font-size: 24px;
+    font-size: 22px;
   }
-  
+
   .pricing-item h4 span {
     font-size: 36px;
   }
-}
 
-@media (max-width: 576px) {
-  .pricing-area {
-    padding: 60px 0;
+  .pricing-item li {
+    font-size: 14px;
+    min-height: 44px;
   }
-  
-  .title-2 {
-    font-size: 32px;
-  }
-  
-  .pricing-item {
-    padding: 35px 25px;
-  }
-  
-  .pricing-button {
-    gap: 12px;
-  }
-  
+
   .btn-primary,
   .btn-secondary {
-    padding: 14px 28px;
+    min-height: 44px;
     font-size: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pricing-area {
+    padding: 40px 0;
+  }
+
+  .title-2 {
+    font-size: 24px;
+  }
+
+  .pricing-subtitle {
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+
+  .pricing-item {
+    padding: 24px 18px;
+  }
+
+  .pricing-item h3 {
+    font-size: 20px;
+  }
+
+  .pricing-item h4 span {
+    font-size: 30px;
+  }
+
+  .pricing-item p {
+    font-size: 14px;
+  }
+
+  .pricing-button {
+    gap: 10px;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    padding: 12px 24px;
+    font-size: 14px;
+  }
+
+  .pricing-item li {
+    font-size: 13px;
+    padding: 10px 0;
   }
 }

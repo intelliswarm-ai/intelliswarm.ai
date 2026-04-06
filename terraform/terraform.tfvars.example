@@ -7,3 +7,4 @@ environment        = "production"
 alert_email        = "your-email@example.com" # Budget alerts go here
 monthly_budget_usd = 10                       # Alert at $5, $8, $10
 github_token       = ""                       # Optional: for contribution GitHub issues
+contact_email      = "your-email@example.com" # Contact form submissions forwarded here (must verify in SES)

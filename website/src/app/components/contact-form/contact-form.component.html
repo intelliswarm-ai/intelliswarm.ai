@@ -13,14 +13,6 @@
           <h3>{{ 'CONTACT.TEAM' | translate }}</h3>
           <h4>{{ 'CONTACT.LAB' | translate }}</h4>
           <h5>{{ 'CONTACT.TAGLINE' | translate }}</h5>
-          <div class="contact-brand">
-            <img src="../../../assets/img/brand/1.png" alt="brand" />
-            <img src="../../../assets/img/brand/2.png" alt="brand" />
-            <img src="../../../assets/img/brand/3.png" alt="brand" />
-            <img src="../../../assets/img/brand/4.png" alt="brand" />
-            <img src="../../../assets/img/brand/5.png" alt="brand" />
-            <img src="../../../assets/img/brand/6.png" alt="brand" />
-          </div>
         </div>
       </div>
       <div class="col-md-12 col-lg-6">
@@ -28,7 +20,7 @@
           <h2>{{ 'CONTACT.FORM_TITLE' | translate }}</h2>
           <p>{{ 'CONTACT.FORM_DESC' | translate }}</p>
 
-          <form [formGroup]="contactForm" (ngSubmit)="handleSubmit()">
+          <form [formGroup]="contactForm" (ngSubmit)="handleSubmit()" *ngIf="!submitted">
             <div class="form-group">
               <div class="input-group">
                 <input type="text" [placeholder]="'CONTACT.FIRST_NAME' | translate" formControlName="firstName" />
@@ -39,10 +31,10 @@
                 <input type="text" [placeholder]="'CONTACT.JOB_TITLE' | translate" formControlName="jobTitle" />
               </div>
               <div class="input-group">
-                <input type="text" [placeholder]="'CONTACT.EMAIL' | translate" formControlName="emailAddress" />
+                <input type="email" [placeholder]="'CONTACT.EMAIL' | translate" formControlName="emailAddress" />
                 <input type="text" [placeholder]="'CONTACT.PHONE' | translate" formControlName="phoneNumber" />
               </div>
-              <input type="text" [placeholder]="'CONTACT.MESSAGE' | translate" formControlName="message" />
+              <textarea [placeholder]="'CONTACT.MESSAGE' | translate" formControlName="message" rows="4"></textarea>
             </div>
             <div class="form-check">
               <input type="checkbox" class="form-check-input" id="flexCheckDefault" formControlName="agreedTerms" />
@@ -50,10 +42,16 @@
                 {{ 'CONTACT.AGREE_TERMS' | translate }}
               </label>
             </div>
-            <button type="submit" class="btn btn-primary" [disabled]="!contactForm.valid">
-              {{ 'CONTACT.SUBMIT' | translate }}
+            <button type="submit" class="btn btn-primary" [disabled]="!contactForm.valid || submitting">
+              {{ submitting ? 'Sending...' : ('CONTACT.SUBMIT' | translate) }}
             </button>
+            <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
           </form>
+
+          <div class="success-message" *ngIf="submitted">
+            <h3>Thank you!</h3>
+            <p>Your message has been sent. We'll get back to you shortly.</p>
+          </div>
         </div>
       </div>
     </div>

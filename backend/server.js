@@ -6,6 +6,7 @@ const { createStorage } = require('./storage');
 const { handleHealth } = require('./handlers/health');
 const { handleGetNews, handleCreateNews } = require('./handlers/news');
 const { handleContribute, handleListContributions } = require('./handlers/contribute');
+const { handleContact } = require('./handlers/contact');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -43,6 +44,11 @@ app.post('/api/contribute', async (req, res) => {
 
 app.get('/api/contributions', async (req, res) => {
   sendResult(res, await handleListContributions(storage.contributions));
+});
+
+// --- Contact ---
+app.post('/api/contact', async (req, res) => {
+  sendResult(res, await handleContact(storage.contacts, req.body));
 });
 
 // --- RAG Chat (requires ChromaDB + Ollama — only available on full server deployments) ---

@@ -42,3 +42,9 @@ variable "monthly_budget_usd" {
   type        = number
   default     = 10
 }
+
+variable "contact_email" {
+  description = "Email address to receive contact form submissions (must be verified in SES)"
+  type        = string
+  default     = ""
+}

@@ -47,4 +47,20 @@ function createContributionFileStorage(dirPath) {
   };
 }
 
-module.exports = { createNewsFileStorage, createContributionFileStorage };
+function createContactFileStorage(dirPath) {
+  if (!fs.existsSync(dirPath)) {
+    fs.mkdirSync(dirPath, { recursive: true });
+  }
+
+  return {
+    async save(contact) {
+      const filename = `${contact.contactId}.json`;
+      fs.writeFileSync(
+        path.join(dirPath, filename),
+        JSON.stringify(contact, null, 2)
+      );
+    },
+  };
+}
+
+module.exports = { createNewsFileStorage, createContributionFileStorage, createContactFileStorage };

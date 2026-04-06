@@ -160,3 +160,100 @@
   border: 1px solid #e2e8f0;
   &:hover { background: #e2e8f0; }
 }
+
+// Responsive
+@media (max-width: 768px) {
+  .docs-container {
+    padding: 24px 16px;
+  }
+
+  .hero-title {
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
+  }
+
+  .hero-description {
+    font-size: 1rem;
+  }
+
+  .docs-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .modules-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .modules-section h2,
+  .quickstart-section h2 {
+    font-size: 1.25rem;
+  }
+
+  .code-block {
+    padding: 16px;
+    border-radius: 8px;
+    overflow-x: auto;
+    max-width: 100%;
+
+    code {
+      font-size: 0.78rem;
+    }
+  }
+
+  .quickstart-actions {
+    flex-direction: column;
+
+    .btn-primary,
+    .btn-secondary {
+      width: 100%;
+      justify-content: center;
+      min-height: 44px;
+    }
+  }
+
+  .doc-card {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .docs-container {
+    padding: 16px 12px;
+  }
+
+  .hero-title {
+    font-size: 1.4rem;
+  }
+
+  .hero-description {
+    font-size: 0.9rem;
+  }
+
+  .doc-content {
+    h3 { font-size: 0.9rem; }
+    p { font-size: 0.8rem; }
+  }
+
+  .code-block {
+    padding: 12px;
+
+    code {
+      font-size: 0.72rem;
+    }
+  }
+
+  .modules-section h2,
+  .quickstart-section h2 {
+    font-size: 1.1rem;
+  }
+
+  .module-card {
+    padding: 12px;
+  }
+
+  .btn-primary, .btn-secondary {
+    padding: 10px 16px;
+    font-size: 0.85rem;
+  }
+}

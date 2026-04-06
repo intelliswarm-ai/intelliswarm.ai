@@ -8,7 +8,7 @@
       </a>
     </div>
 
-    <!-- Center - Navigation -->
+    <!-- Center - Navigation (desktop) -->
     <nav class="nav-links">
       <a routerLink="/home" routerLinkActive="active">{{ 'NAV.HOME' | translate }}</a>
       <a routerLink="/docs" routerLinkActive="active">{{ 'NAV.DOCS' | translate }}</a>
@@ -20,7 +20,7 @@
       <a routerLink="/contact" routerLinkActive="active">{{ 'NAV.CONTACT' | translate }}</a>
     </nav>
 
-    <!-- Right side - Language Selector + Get Started -->
+    <!-- Right side - Language Selector + Get Started (desktop) -->
     <div class="right-actions">
       <div class="lang-selector" (clickOutside)="closeLangMenu()">
         <button class="lang-toggle" (click)="toggleLangMenu()">
@@ -44,5 +44,79 @@
         <a href="https://github.com/intelliswarm-ai/swarm-ai" target="_blank" rel="noopener noreferrer" class="get-started-btn">{{ 'NAV.GET_STARTED' | translate }}</a>
       </div>
     </div>
+
+    <!-- Hamburger button (mobile only) -->
+    <button
+      class="hamburger"
+      [class.open]="isMobileMenuOpen"
+      (click)="toggleMobileMenu()"
+      aria-label="Toggle navigation menu"
+      [attr.aria-expanded]="isMobileMenuOpen"
+    >
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </button>
   </div>
 </header>
+
+<!-- Mobile menu overlay -->
+<div
+  class="mobile-menu-backdrop"
+  [class.open]="isMobileMenuOpen"
+  (click)="closeMobileMenu()"
+></div>
+
+<nav
+  class="mobile-menu"
+  [class.open]="isMobileMenuOpen"
+  aria-label="Mobile navigation"
+>
+  <!-- Close button -->
+  <button
+    class="mobile-menu-close"
+    (click)="closeMobileMenu()"
+    aria-label="Close navigation menu"
+  >
+    <span class="close-icon"></span>
+  </button>
+
+  <!-- Navigation links -->
+  <div class="mobile-menu-links">
+    <a routerLink="/home" routerLinkActive="active" (click)="closeMobileMenu()">{{ 'NAV.HOME' | translate }}</a>
+    <a routerLink="/docs" routerLinkActive="active" (click)="closeMobileMenu()">{{ 'NAV.DOCS' | translate }}</a>
+    <a routerLink="/benchmarks" routerLinkActive="active" (click)="closeMobileMenu()">{{ 'NAV.BENCHMARKS' | translate }}</a>
+    <a routerLink="/examples" routerLinkActive="active" (click)="closeMobileMenu()">{{ 'NAV.EXAMPLES' | translate }}</a>
+    <a routerLink="/news" routerLinkActive="active" (click)="closeMobileMenu()">{{ 'NAV.NEWS' | translate }}</a>
+    <a routerLink="/pricing" routerLinkActive="active" (click)="closeMobileMenu()">{{ 'NAV.PRICING' | translate }}</a>
+    <a routerLink="/contribute" routerLinkActive="active" (click)="closeMobileMenu()">{{ 'NAV.CONTRIBUTE' | translate }}</a>
+    <a routerLink="/contact" routerLinkActive="active" (click)="closeMobileMenu()">{{ 'NAV.CONTACT' | translate }}</a>
+  </div>
+
+  <!-- Language selector (mobile) -->
+  <div class="mobile-lang-selector">
+    <p class="mobile-section-label">Language</p>
+    <div class="mobile-lang-grid">
+      <button
+        *ngFor="let lang of languages"
+        class="mobile-lang-option"
+        [class.active]="lang.code === currentLang.code"
+        (click)="switchLanguage(lang)"
+      >
+        <span class="lang-flag">{{ lang.flag }}</span>
+        <span class="lang-label">{{ lang.label }}</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Get Started CTA (mobile) -->
+  <div class="mobile-cta">
+    <a
+      href="https://github.com/intelliswarm-ai/swarm-ai"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="mobile-get-started-btn"
+      (click)="closeMobileMenu()"
+    >{{ 'NAV.GET_STARTED' | translate }}</a>
+  </div>
+</nav>
