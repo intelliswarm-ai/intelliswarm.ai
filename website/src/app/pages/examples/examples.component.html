@@ -34,7 +34,7 @@
           <span class="category-badge">{{ex.category}}</span>
           <span class="process-badge">{{ex.process}}</span>
         </div>
-        <a [href]="'https://github.com/intelliswarm-ai/swarm-ai-examples/tree/main/src/main/java/ai/intelliswarm/swarmai/examples/' + ex.source"
+        <a [href]="'https://github.com/intelliswarm-ai/swarm-ai-examples/tree/main/' + ex.source"
            target="_blank" rel="noopener noreferrer" class="source-link">
           <span class="material-icons">code</span> Source
         </a>
@@ -69,11 +69,14 @@
       <pre><code>git clone https://github.com/intelliswarm-ai/swarm-ai-examples.git
 cd swarm-ai-examples
 
-# Set your API key
-export OPENAI_API_KEY=sk-...
+# Run any example (auto-detects Ollama, builds, and runs)
+./run.sh bare-minimum
+./run.sh customer-support "I need help with billing"
+./run.sh stock-analysis TSLA
 
-# Run any example
-mvn compile exec:java -Dexec.mainClass="ai.intelliswarm.swarmai.examples.research.ResearchPipeline"</code></pre>
+# Or run from each example's directory
+./customer-support-rest-api/run.sh
+./rag-knowledge-base-rest-api/run.sh</code></pre>
     </div>
     <div class="quickstart-actions">
       <a href="https://github.com/intelliswarm-ai/swarm-ai-examples" target="_blank" class="btn-primary">
