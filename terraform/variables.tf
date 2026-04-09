@@ -48,3 +48,16 @@ variable "contact_email" {
   type        = string
   default     = ""
 }
+
+variable "contribute_email" {
+  description = "Email address to receive self-improvement contributions (default: contribute@intelliswarm.ai)"
+  type        = string
+  default     = "contribute@intelliswarm.ai"
+}
+
+variable "admin_password" {
+  description = "Password for the admin panel at /admin/contributions"
+  type        = string
+  sensitive   = true
+  default     = ""
+}

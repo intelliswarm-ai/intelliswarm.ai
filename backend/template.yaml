@@ -29,6 +29,8 @@ Resources:
           - OPTIONS
         AllowHeaders:
           - Content-Type
+          - Cookie
+        AllowCredentials: true
 
   ApiFunction:
     Type: AWS::Serverless::Function
@@ -71,6 +73,48 @@ Resources:
             ApiId: !Ref HttpApi
             Path: /api/contributions
             Method: GET
+        PostContact:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /api/contact
+            Method: POST
+        AdminLogin:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /api/admin/login
+            Method: POST
+        AdminLogout:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /api/admin/logout
+            Method: POST
+        AdminAuthCheck:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /api/admin/auth-check
+            Method: GET
+        AdminGetContributions:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /api/admin/contributions
+            Method: GET
+        AdminGetContribution:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /api/admin/contributions/{trackingId}
+            Method: GET
+        AdminReviewContribution:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /api/admin/contributions/{trackingId}/review
+            Method: POST
 
   NewsTable:
     Type: AWS::DynamoDB::Table

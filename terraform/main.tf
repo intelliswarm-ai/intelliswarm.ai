@@ -239,7 +239,7 @@ resource "aws_cloudfront_distribution" "website" {
     cache_policy_id        = data.aws_cloudfront_cache_policy.caching_optimized.id
   }
 
-  # --- /api/* behavior: proxy to API Gateway (no caching) ---
+  # --- /api/* behavior: proxy to API Gateway (no caching, forward cookies) ---
   ordered_cache_behavior {
     path_pattern             = "/api/*"
     target_origin_id         = "api-gateway"
@@ -481,6 +481,7 @@ resource "null_resource" "lambda_staging" {
     storage_index  = filemd5("${path.module}/../backend/storage/index.js")
     storage_dynamo = filemd5("${path.module}/../backend/storage/dynamodb.js")
     contact_handler = filemd5("${path.module}/../backend/handlers/contact.js")
+    admin_auth      = filemd5("${path.module}/../backend/handlers/admin-auth.js")
   }
 
   # Package Lambda via external PowerShell script (avoids heredoc escaping issues)
@@ -502,12 +503,14 @@ resource "aws_lambda_function" "backend" {
 
   environment {
     variables = {
-      STORAGE_BACKEND    = "dynamodb"
-      NEWS_TABLE         = aws_dynamodb_table.news.name
+      STORAGE_BACKEND     = "dynamodb"
+      NEWS_TABLE          = aws_dynamodb_table.news.name
       CONTRIBUTIONS_TABLE = aws_dynamodb_table.contributions.name
-      CONTACTS_TABLE     = aws_dynamodb_table.contacts.name
-      CONTACT_EMAIL      = var.contact_email
-      NODE_ENV           = var.environment
+      CONTACTS_TABLE      = aws_dynamodb_table.contacts.name
+      CONTACT_EMAIL       = var.contact_email
+      CONTRIBUTE_EMAIL    = var.contribute_email
+      ADMIN_PASSWORD      = var.admin_password
+      NODE_ENV            = var.environment
     }
   }
 
@@ -601,6 +604,44 @@ resource "aws_apigatewayv2_route" "get_contributions" {
 resource "aws_apigatewayv2_route" "post_contact" {
   api_id    = aws_apigatewayv2_api.backend.id
   route_key = "POST /api/contact"
+  target    = "integrations/${aws_apigatewayv2_integration.lambda.id}"
+}
+
+# --- Admin routes ---
+
+resource "aws_apigatewayv2_route" "admin_login" {
+  api_id    = aws_apigatewayv2_api.backend.id
+  route_key = "POST /api/admin/login"
+  target    = "integrations/${aws_apigatewayv2_integration.lambda.id}"
+}
+
+resource "aws_apigatewayv2_route" "admin_logout" {
+  api_id    = aws_apigatewayv2_api.backend.id
+  route_key = "POST /api/admin/logout"
+  target    = "integrations/${aws_apigatewayv2_integration.lambda.id}"
+}
+
+resource "aws_apigatewayv2_route" "admin_auth_check" {
+  api_id    = aws_apigatewayv2_api.backend.id
+  route_key = "GET /api/admin/auth-check"
+  target    = "integrations/${aws_apigatewayv2_integration.lambda.id}"
+}
+
+resource "aws_apigatewayv2_route" "admin_get_contributions" {
+  api_id    = aws_apigatewayv2_api.backend.id
+  route_key = "GET /api/admin/contributions"
+  target    = "integrations/${aws_apigatewayv2_integration.lambda.id}"
+}
+
+resource "aws_apigatewayv2_route" "admin_get_contribution" {
+  api_id    = aws_apigatewayv2_api.backend.id
+  route_key = "GET /api/admin/contributions/{trackingId}"
+  target    = "integrations/${aws_apigatewayv2_integration.lambda.id}"
+}
+
+resource "aws_apigatewayv2_route" "admin_review_contribution" {
+  api_id    = aws_apigatewayv2_api.backend.id
+  route_key = "POST /api/admin/contributions/{trackingId}/review"
   target    = "integrations/${aws_apigatewayv2_integration.lambda.id}"
 }
 

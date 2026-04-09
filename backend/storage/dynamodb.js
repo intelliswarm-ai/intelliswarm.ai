@@ -56,7 +56,37 @@ function createContributionDynamoStorage(tableName) {
         organizationName: item.organizationName,
         improvementsCount: item.improvementsCount,
         frameworkVersion: item.frameworkVersion,
+        status: item.status || 'PENDING',
       }));
+    },
+    async get(trackingId) {
+      const { GetCommand } = require('@aws-sdk/lib-dynamodb');
+      const result = await getDdb().send(
+        new GetCommand({ TableName: tableName, Key: { trackingId } })
+      );
+      return result.Item || null;
+    },
+    async update(trackingId, updates) {
+      const { UpdateCommand } = require('@aws-sdk/lib-dynamodb');
+      const expressions = [];
+      const names = {};
+      const values = {};
+      Object.entries(updates).forEach(([key, value], i) => {
+        expressions.push(`#k${i} = :v${i}`);
+        names[`#k${i}`] = key;
+        values[`:v${i}`] = value;
+      });
+      const result = await getDdb().send(
+        new UpdateCommand({
+          TableName: tableName,
+          Key: { trackingId },
+          UpdateExpression: 'SET ' + expressions.join(', '),
+          ExpressionAttributeNames: names,
+          ExpressionAttributeValues: values,
+          ReturnValues: 'ALL_NEW',
+        })
+      );
+      return result.Attributes;
     },
   };
 }

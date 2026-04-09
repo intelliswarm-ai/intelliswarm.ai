@@ -41,8 +41,24 @@ function createContributionFileStorage(dirPath) {
           organizationName: data.organizationName,
           improvementsCount: data.improvementsCount,
           frameworkVersion: data.frameworkVersion,
+          status: data.status || 'PENDING',
         };
       });
+    },
+    async get(trackingId) {
+      const filename = `${trackingId}.json`;
+      const filePath = path.join(dirPath, filename);
+      if (!fs.existsSync(filePath)) return null;
+      return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    },
+    async update(trackingId, updates) {
+      const filename = `${trackingId}.json`;
+      const filePath = path.join(dirPath, filename);
+      if (!fs.existsSync(filePath)) return null;
+      const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+      Object.assign(data, updates);
+      fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+      return data;
     },
   };
 }

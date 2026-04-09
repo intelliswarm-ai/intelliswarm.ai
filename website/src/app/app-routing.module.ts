@@ -15,6 +15,7 @@ import { BenchmarksComponent } from './pages/benchmarks/benchmarks.component';
 import { DocsComponent } from './pages/docs/docs.component';
 import { ContributeComponent } from './pages/contribute/contribute.component';
 import { NewsComponent } from './pages/news/news.component';
+import { AdminComponent } from './pages/admin/admin.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -32,6 +33,7 @@ const routes: Routes = [
   { path: 'docs', component: DocsComponent },
   { path: 'contribute', component: ContributeComponent },
   { path: 'news', component: NewsComponent },
+  { path: 'admin/contributions', component: AdminComponent },
   { path: '**', redirectTo: '/home' },
 ];
 

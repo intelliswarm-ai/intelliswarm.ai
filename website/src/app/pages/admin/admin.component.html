@@ -1,0 +1,240 @@
+<div class="admin-container page-content">
+
+  <!-- Auth Checking -->
+  <div class="loading-state" *ngIf="authChecking">
+    <span class="spinner"></span>
+  </div>
+
+  <!-- Login Form -->
+  <section class="login-section" *ngIf="!authChecking && !authenticated">
+    <div class="login-card">
+      <h2>Admin Access</h2>
+      <p>Enter the admin password to view contributions.</p>
+      <div class="login-form">
+        <input
+          type="password"
+          placeholder="Password"
+          [(ngModel)]="loginPassword"
+          (keydown)="onPasswordKeydown($event)"
+          [disabled]="loginLoading"
+          autofocus
+        />
+        <button (click)="login()" [disabled]="loginLoading || !loginPassword">
+          <span *ngIf="!loginLoading">Sign In</span>
+          <span *ngIf="loginLoading">Signing in...</span>
+        </button>
+      </div>
+      <p class="login-error" *ngIf="loginError">{{ loginError }}</p>
+    </div>
+  </section>
+
+  <!-- Authenticated Content -->
+  <ng-container *ngIf="!authChecking && authenticated">
+
+  <!-- Header -->
+  <section class="admin-header">
+    <div class="header-row">
+      <div>
+        <h1>
+          <span>Self-Improvement </span><span class="gradient-text">Contributions</span>
+        </h1>
+        <p class="admin-description">
+          Improvements submitted by SwarmAI deployments worldwide.
+        </p>
+      </div>
+      <button class="logout-btn" (click)="logout()">Logout</button>
+    </div>
+  </section>
+
+  <!-- Stats Cards -->
+  <section class="stats-section" *ngIf="!loading">
+    <div class="stats-grid">
+      <div class="stat-card pending" *ngIf="totalPending > 0">
+        <span class="stat-value">{{ totalPending }}</span>
+        <span class="stat-label">Pending Review</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value">{{ totalContributions }}</span>
+        <span class="stat-label">Total</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value">{{ totalImprovements }}</span>
+        <span class="stat-label">Improvements</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value">{{ uniqueOrganizations }}</span>
+        <span class="stat-label">Organizations</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Loading -->
+  <div class="loading-state" *ngIf="loading">
+    <span class="spinner"></span>
+    <p>Loading contributions...</p>
+  </div>
+
+  <!-- Error -->
+  <div class="error-state" *ngIf="error">
+    <p>{{ error }}</p>
+    <button (click)="loadContributions()">Retry</button>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!loading && !error && contributions.length === 0">
+    <h3>No contributions yet</h3>
+    <p>When SwarmAI deployments submit self-improvement data, they'll appear here.</p>
+  </div>
+
+  <!-- Contributions Table -->
+  <section class="contributions-section" *ngIf="!loading && contributions.length > 0">
+    <div class="table-header">
+      <h2>Recent Contributions</h2>
+      <button class="refresh-btn" (click)="loadContributions()">Refresh</button>
+    </div>
+
+    <div class="contributions-table">
+      <div class="table-row header-row">
+        <span class="col-status">Status</span>
+        <span class="col-tracking">Tracking ID</span>
+        <span class="col-org">Organization</span>
+        <span class="col-count">Improvements</span>
+        <span class="col-version">Version</span>
+        <span class="col-date">Received</span>
+      </div>
+
+      <div
+        class="table-row data-row"
+        *ngFor="let contrib of contributions"
+        [class.pending-row]="(contrib.status || 'PENDING') === 'PENDING'"
+        (click)="selectContribution(contrib.trackingId)"
+      >
+        <span class="col-status">
+          <span class="status-badge" [ngClass]="(contrib.status || 'PENDING').toLowerCase()">
+            {{ contrib.status || 'PENDING' }}
+          </span>
+        </span>
+        <span class="col-tracking">
+          <code>{{ contrib.trackingId }}</code>
+        </span>
+        <span class="col-org">{{ contrib.organizationName }}</span>
+        <span class="col-count">
+          <span class="badge">{{ contrib.improvementsCount }}</span>
+        </span>
+        <span class="col-version">{{ contrib.frameworkVersion }}</span>
+        <span class="col-date" [title]="formatDate(contrib.receivedAt)">
+          {{ getTimeSince(contrib.receivedAt) }}
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Detail Panel -->
+  <div class="detail-overlay" *ngIf="selectedContribution" (click)="closeDetail()">
+    <div class="detail-panel" (click)="$event.stopPropagation()">
+      <div class="detail-header">
+        <h3>{{ selectedContribution.trackingId }}</h3>
+        <button class="close-btn" (click)="closeDetail()">&times;</button>
+      </div>
+      <div class="detail-body">
+        <div class="detail-row">
+          <span class="detail-label">Organization</span>
+          <span class="detail-value">{{ selectedContribution.organizationName }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Received</span>
+          <span class="detail-value">{{ formatDate(selectedContribution.receivedAt) }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Improvements</span>
+          <span class="detail-value">{{ selectedContribution.improvementsCount }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Framework Version</span>
+          <span class="detail-value">{{ selectedContribution.frameworkVersion }}</span>
+        </div>
+        <div class="detail-row" *ngIf="selectedContribution.contactEmail">
+          <span class="detail-label">Contact</span>
+          <span class="detail-value">{{ selectedContribution.contactEmail }}</span>
+        </div>
+        <div class="detail-row" *ngIf="selectedContribution.notes">
+          <span class="detail-label">Notes</span>
+          <span class="detail-value">{{ selectedContribution.notes }}</span>
+        </div>
+
+        <!-- Status -->
+        <div class="detail-row">
+          <span class="detail-label">Status</span>
+          <span class="detail-value">
+            <span class="status-badge" [ngClass]="(selectedContribution.status || 'PENDING').toLowerCase()">
+              {{ selectedContribution.status || 'PENDING' }}
+            </span>
+          </span>
+        </div>
+        <div class="detail-row" *ngIf="selectedContribution.reviewedAt">
+          <span class="detail-label">Reviewed</span>
+          <span class="detail-value">{{ formatDate(selectedContribution.reviewedAt) }}</span>
+        </div>
+        <div class="detail-row" *ngIf="selectedContribution.reviewNotes">
+          <span class="detail-label">Review Notes</span>
+          <span class="detail-value">{{ selectedContribution.reviewNotes }}</span>
+        </div>
+
+        <!-- Review Actions (only for PENDING) -->
+        <div class="review-section" *ngIf="(selectedContribution.status || 'PENDING') === 'PENDING'">
+          <h4>Review This Contribution</h4>
+          <textarea
+            class="review-textarea"
+            placeholder="Optional review notes..."
+            [(ngModel)]="reviewNotes"
+            rows="2"
+          ></textarea>
+          <div class="review-actions">
+            <button
+              class="approve-btn"
+              (click)="reviewContribution('APPROVE')"
+              [disabled]="reviewLoading"
+            >
+              {{ reviewLoading ? 'Processing...' : 'Approve & Notify' }}
+            </button>
+            <button
+              class="reject-btn"
+              (click)="reviewContribution('REJECT')"
+              [disabled]="reviewLoading"
+            >
+              Reject
+            </button>
+          </div>
+          <p class="review-hint">
+            Approve sends email to contribute&#64;intelliswarm.ai and creates a GitHub issue.
+          </p>
+        </div>
+
+        <!-- Improvement Details -->
+        <div class="improvements-section" *ngIf="selectedContribution.improvementData?.improvements?.length">
+          <h4>Improvements</h4>
+          <div class="improvement-card" *ngFor="let imp of selectedContribution.improvementData?.improvements; let i = index">
+            <div class="improvement-header">
+              <span class="improvement-num">#{{ i + 1 }}</span>
+              <span class="improvement-category">{{ imp.category }}</span>
+              <span class="improvement-tier" [ngClass]="imp.tier?.toLowerCase()">{{ imp.tier }}</span>
+            </div>
+            <div class="improvement-body">
+              <p class="improvement-recommendation">{{ imp.recommendation }}</p>
+              <div class="improvement-meta">
+                <span *ngIf="imp.confidence">Confidence: {{ (imp.confidence * 100).toFixed(0) }}%</span>
+                <span *ngIf="imp.crossValidated">Cross-validated</span>
+                <span *ngIf="imp.estimatedTokenSavings">~{{ imp.estimatedTokenSavings }} tokens saved</span>
+              </div>
+              <div class="improvement-condition" *ngIf="imp.condition">
+                <code>{{ imp.condition | json }}</code>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </ng-container><!-- end authenticated -->
+</div>

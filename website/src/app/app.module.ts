@@ -43,6 +43,7 @@ import { BenchmarksComponent } from './pages/benchmarks/benchmarks.component';
 import { DocsComponent } from './pages/docs/docs.component';
 import { ContributeComponent } from './pages/contribute/contribute.component';
 import { NewsComponent } from './pages/news/news.component';
+import { AdminComponent } from './pages/admin/admin.component';
 
 @NgModule({
   declarations: [
@@ -75,6 +76,7 @@ import { NewsComponent } from './pages/news/news.component';
     DocsComponent,
     ContributeComponent,
     NewsComponent,
+    AdminComponent,
   ],
   imports: [
     BrowserModule,

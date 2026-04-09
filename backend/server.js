@@ -5,8 +5,9 @@ require('dotenv').config();
 const { createStorage } = require('./storage');
 const { handleHealth } = require('./handlers/health');
 const { handleGetNews, handleCreateNews } = require('./handlers/news');
-const { handleContribute, handleListContributions } = require('./handlers/contribute');
+const { handleContribute, handleListContributions, handleGetContribution, handleReviewContribution } = require('./handlers/contribute');
 const { handleContact } = require('./handlers/contact');
+const { requireAdmin, handleLogin, handleLogout, handleAuthCheck } = require('./handlers/admin-auth');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -42,8 +43,41 @@ app.post('/api/contribute', async (req, res) => {
   sendResult(res, await handleContribute(storage.contributions, req.body));
 });
 
-app.get('/api/contributions', async (req, res) => {
+// --- Admin Auth ---
+function sendResultWithCookie(res, result) {
+  if (result.cookie) {
+    const { name, value, options } = result.cookie;
+    res.cookie(name, value, options);
+  }
+  if (result.clearCookie) {
+    res.clearCookie(result.clearCookie, { path: '/' });
+  }
+  res.status(result.statusCode).json(result.body);
+}
+
+app.post('/api/admin/login', async (req, res) => {
+  sendResultWithCookie(res, await handleLogin(req.body));
+});
+
+app.post('/api/admin/logout', async (req, res) => {
+  sendResultWithCookie(res, await handleLogout());
+});
+
+app.get('/api/admin/auth-check', async (req, res) => {
+  sendResult(res, await handleAuthCheck(req));
+});
+
+// --- Admin-Protected Contribution Endpoints ---
+app.get('/api/admin/contributions', requireAdmin, async (req, res) => {
   sendResult(res, await handleListContributions(storage.contributions));
+});
+
+app.get('/api/admin/contributions/:trackingId', requireAdmin, async (req, res) => {
+  sendResult(res, await handleGetContribution(storage.contributions, req.params.trackingId));
+});
+
+app.post('/api/admin/contributions/:trackingId/review', requireAdmin, async (req, res) => {
+  sendResult(res, await handleReviewContribution(storage.contributions, req.params.trackingId, req.body));
 });
 
 // --- Contact ---
