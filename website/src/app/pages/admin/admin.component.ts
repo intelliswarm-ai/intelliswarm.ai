@@ -19,7 +19,17 @@ interface ContributionDetail extends ContributionSummary {
     frameworkVersion: string;
     improvements: Improvement[];
   };
+  improvementIssues?: Record<string, IssueInfo>;
 }
+
+interface IssueInfo {
+  url: string;
+  number: number;
+  repo: string;
+  createdAt: string;
+}
+
+type RepoKey = 'swarm-ai' | 'swarm-ai-examples' | 'swarm-ai-skills';
 
 interface Improvement {
   category: string;
@@ -55,6 +65,15 @@ export class AdminComponent implements OnInit {
   // Review
   reviewNotes = '';
   reviewLoading = false;
+
+  // Per-improvement issue creation
+  issueCreating: Record<number, boolean> = {};
+  issueError: Record<number, string> = {};
+  issueRepoSelection: Record<number, RepoKey> = {};
+  repoOptions: RepoKey[] = ['swarm-ai', 'swarm-ai-examples', 'swarm-ai-skills'];
+
+  // Delete state
+  deleteLoading = false;
 
   // Stats
   totalContributions = 0;
@@ -225,6 +244,100 @@ export class AdminComponent implements OnInit {
       console.error('Review failed:', err);
     } finally {
       this.reviewLoading = false;
+    }
+  }
+
+  /**
+   * Auto-detect repo for an improvement based on condition.file or category.
+   * Mirrors the backend logic.
+   */
+  detectRepo(imp: Improvement): RepoKey {
+    const file = (imp?.condition?.['file'] || '').toLowerCase();
+    const category = (imp?.category || '').toLowerCase();
+
+    if (file.includes('examples/') || file.includes('example/') || category.includes('example')) {
+      return 'swarm-ai-examples';
+    }
+    if (file.includes('skills/') || file.includes('skill/') || category.includes('skill')) {
+      return 'swarm-ai-skills';
+    }
+    return 'swarm-ai';
+  }
+
+  getSelectedRepo(imp: Improvement, index: number): RepoKey {
+    return this.issueRepoSelection[index] || this.detectRepo(imp);
+  }
+
+  setSelectedRepo(index: number, repo: RepoKey): void {
+    this.issueRepoSelection[index] = repo;
+  }
+
+  getIssueForImprovement(index: number): IssueInfo | null {
+    return this.selectedContribution?.improvementIssues?.[String(index)] || null;
+  }
+
+  async createImprovementIssue(index: number): Promise<void> {
+    if (!this.selectedContribution) return;
+    const improvement = this.selectedContribution.improvementData?.improvements?.[index];
+    if (!improvement) return;
+
+    const repo = this.getSelectedRepo(improvement, index);
+    this.issueCreating[index] = true;
+    this.issueError[index] = '';
+
+    try {
+      const response = await fetch(
+        `/api/admin/contributions/${this.selectedContribution.trackingId}/improvements/${index}/create-issue`,
+        {
+          method: 'POST',
+          headers: this.authHeaders(),
+          body: JSON.stringify({ repo }),
+        }
+      );
+      const data = await response.json();
+      if (response.ok && data.success) {
+        // Update local state
+        if (!this.selectedContribution.improvementIssues) {
+          this.selectedContribution.improvementIssues = {};
+        }
+        this.selectedContribution.improvementIssues[String(index)] = data.issue;
+      } else {
+        this.issueError[index] = data.error || 'Failed to create issue';
+      }
+    } catch (err: any) {
+      this.issueError[index] = err.message || 'Connection failed';
+    } finally {
+      this.issueCreating[index] = false;
+    }
+  }
+
+  async deleteContribution(): Promise<void> {
+    if (!this.selectedContribution) return;
+    if (!confirm(`Delete contribution ${this.selectedContribution.trackingId}? This cannot be undone.`)) {
+      return;
+    }
+    this.deleteLoading = true;
+    try {
+      const response = await fetch(
+        `/api/admin/contributions/${this.selectedContribution.trackingId}`,
+        { method: 'DELETE', headers: this.authHeaders() }
+      );
+      if (response.ok) {
+        const deletedId = this.selectedContribution.trackingId;
+        this.contributions = this.contributions.filter((c) => c.trackingId !== deletedId);
+        this.totalContributions = this.contributions.length;
+        this.totalImprovements = this.contributions.reduce((sum, c) => sum + c.improvementsCount, 0);
+        this.totalPending = this.contributions.filter((c) => (c.status || 'PENDING') === 'PENDING').length;
+        this.uniqueOrganizations = new Set(this.contributions.map((c) => c.organizationName)).size;
+        this.closeDetail();
+      } else {
+        const data = await response.json().catch(() => ({}));
+        alert('Delete failed: ' + (data.error || response.status));
+      }
+    } catch (err: any) {
+      alert('Delete failed: ' + (err.message || 'connection error'));
+    } finally {
+      this.deleteLoading = false;
     }
   }
 

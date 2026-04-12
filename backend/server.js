@@ -5,7 +5,14 @@ require('dotenv').config();
 const { createStorage } = require('./storage');
 const { handleHealth } = require('./handlers/health');
 const { handleGetNews, handleCreateNews } = require('./handlers/news');
-const { handleContribute, handleListContributions, handleGetContribution, handleReviewContribution } = require('./handlers/contribute');
+const {
+  handleContribute,
+  handleListContributions,
+  handleGetContribution,
+  handleReviewContribution,
+  handleCreateImprovementIssue,
+  handleDeleteContribution,
+} = require('./handlers/contribute');
 const { handleContact } = require('./handlers/contact');
 const { requireAdmin, handleLogin, handleLogout, handleAuthCheck } = require('./handlers/admin-auth');
 
@@ -78,6 +85,16 @@ app.get('/api/admin/contributions/:trackingId', requireAdmin, async (req, res) =
 
 app.post('/api/admin/contributions/:trackingId/review', requireAdmin, async (req, res) => {
   sendResult(res, await handleReviewContribution(storage.contributions, req.params.trackingId, req.body));
+});
+
+app.post('/api/admin/contributions/:trackingId/improvements/:index/create-issue', requireAdmin, async (req, res) => {
+  sendResult(res, await handleCreateImprovementIssue(
+    storage.contributions, req.params.trackingId, req.params.index, req.body
+  ));
+});
+
+app.delete('/api/admin/contributions/:trackingId', requireAdmin, async (req, res) => {
+  sendResult(res, await handleDeleteContribution(storage.contributions, req.params.trackingId));
 });
 
 // --- Contact ---

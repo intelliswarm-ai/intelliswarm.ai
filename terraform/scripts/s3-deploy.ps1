@@ -6,6 +6,11 @@ param(
 
 $ErrorActionPreference = "Stop"
 
+# Strip stray quotes that Terraform+cmd double-layering may leave behind
+$BuildDir = $BuildDir.Trim("'").Trim('"')
+$Bucket   = $Bucket.Trim("'").Trim('"')
+$Region   = $Region.Trim("'").Trim('"')
+
 Write-Host "Wiping S3 bucket $Bucket..."
 aws s3 rm "s3://$Bucket/" --recursive --region $Region
 

@@ -11,14 +11,21 @@
 const { createStorage } = require('./storage');
 const { handleHealth } = require('./handlers/health');
 const { handleGetNews, handleCreateNews } = require('./handlers/news');
-const { handleContribute, handleListContributions, handleGetContribution, handleReviewContribution } = require('./handlers/contribute');
+const {
+  handleContribute,
+  handleListContributions,
+  handleGetContribution,
+  handleReviewContribution,
+  handleCreateImprovementIssue,
+  handleDeleteContribution,
+} = require('./handlers/contribute');
 const { handleContact } = require('./handlers/contact');
 const { handleLogin, handleAuthCheck, isAdminAuthenticated } = require('./handlers/admin-auth');
 
 const CORS_HEADERS = {
   'Content-Type': 'application/json',
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+  'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
 };
 
@@ -42,6 +49,7 @@ exports.handler = async (event) => {
   // Extract tracking ID from paths like /api/admin/contributions/CONTRIB-xxx
   const adminContribMatch = path.match(/^\/api\/admin\/contributions\/([^/]+)$/);
   const adminReviewMatch = path.match(/^\/api\/admin\/contributions\/([^/]+)\/review$/);
+  const adminCreateIssueMatch = path.match(/^\/api\/admin\/contributions\/([^/]+)\/improvements\/([^/]+)\/create-issue$/);
 
   let result;
 
@@ -100,6 +108,27 @@ exports.handler = async (event) => {
           result = { statusCode: 401, body: { error: 'Authentication required' } };
         } else {
           result = await handleGetContribution(storage.contributions, adminContribMatch[1]);
+        }
+        break;
+
+      case !!adminContribMatch && method === 'DELETE':
+        if (!isAdminAuthenticated(headers)) {
+          result = { statusCode: 401, body: { error: 'Authentication required' } };
+        } else {
+          result = await handleDeleteContribution(storage.contributions, adminContribMatch[1]);
+        }
+        break;
+
+      case !!adminCreateIssueMatch && method === 'POST':
+        if (!isAdminAuthenticated(headers)) {
+          result = { statusCode: 401, body: { error: 'Authentication required' } };
+        } else {
+          result = await handleCreateImprovementIssue(
+            storage.contributions,
+            adminCreateIssueMatch[1],
+            adminCreateIssueMatch[2],
+            JSON.parse(event.body || '{}')
+          );
         }
         break;
 

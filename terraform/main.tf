@@ -500,6 +500,14 @@ resource "aws_lambda_function" "backend" {
   timeout                        = 15
   reserved_concurrent_executions = -1 # No reserved concurrency (uses account default pool)
   filename                       = "${path.module}/lambda.zip"
+  # Hash source files directly (not the generated zip, which has chicken-and-egg issues
+  # with null_resource.lambda_staging). Any handler change triggers Lambda redeployment.
+  source_code_hash = sha256(join("", concat(
+    [filesha256("${path.module}/../backend/lambda.js")],
+    [filesha256("${path.module}/../backend/package.json")],
+    [for f in fileset("${path.module}/../backend/handlers", "*.js") : filesha256("${path.module}/../backend/handlers/${f}")],
+    [for f in fileset("${path.module}/../backend/storage", "*.js") : filesha256("${path.module}/../backend/storage/${f}")],
+  )))
 
   environment {
     variables = {
@@ -510,6 +518,7 @@ resource "aws_lambda_function" "backend" {
       CONTACT_EMAIL       = var.contact_email
       CONTRIBUTE_EMAIL    = var.contribute_email
       ADMIN_PASSWORD      = var.admin_password
+      GITHUB_TOKEN        = var.github_token
       NODE_ENV            = var.environment
     }
   }
@@ -550,7 +559,7 @@ resource "aws_apigatewayv2_api" "backend" {
       "https://${var.domain_name}",
       "https://www.${var.domain_name}",
     ]
-    allow_methods = ["GET", "POST", "OPTIONS"]
+    allow_methods = ["GET", "POST", "DELETE", "OPTIONS"]
     allow_headers = ["Content-Type", "Authorization"]
     max_age       = 3600
   }
@@ -642,6 +651,18 @@ resource "aws_apigatewayv2_route" "admin_get_contribution" {
 resource "aws_apigatewayv2_route" "admin_review_contribution" {
   api_id    = aws_apigatewayv2_api.backend.id
   route_key = "POST /api/admin/contributions/{trackingId}/review"
+  target    = "integrations/${aws_apigatewayv2_integration.lambda.id}"
+}
+
+resource "aws_apigatewayv2_route" "admin_create_improvement_issue" {
+  api_id    = aws_apigatewayv2_api.backend.id
+  route_key = "POST /api/admin/contributions/{trackingId}/improvements/{index}/create-issue"
+  target    = "integrations/${aws_apigatewayv2_integration.lambda.id}"
+}
+
+resource "aws_apigatewayv2_route" "admin_delete_contribution" {
+  api_id    = aws_apigatewayv2_api.backend.id
+  route_key = "DELETE /api/admin/contributions/{trackingId}"
   target    = "integrations/${aws_apigatewayv2_integration.lambda.id}"
 }
 
@@ -755,9 +776,11 @@ resource "null_resource" "backend_deps" {
 # Step 2: Build Angular frontend (only rebuilds when source changes)
 resource "null_resource" "frontend_build" {
   triggers = {
-    app_module = filemd5("${path.module}/../website/src/app/app.module.ts")
-    package    = filemd5("${path.module}/../website/package.json")
-    index_html = filemd5("${path.module}/../website/src/index.html")
+    # Hash of all Angular source files (ts/html/scss/css/json) — any change triggers rebuild
+    src_hash     = sha256(join("", [for f in fileset("${path.module}/../website/src", "**/*.{ts,html,scss,css,json,md}") : filesha256("${path.module}/../website/src/${f}")]))
+    package      = filemd5("${path.module}/../website/package.json")
+    angular_json = filemd5("${path.module}/../website/angular.json")
+    blog_script  = filemd5("${path.module}/../website/scripts/generate-blog-index.js")
   }
 
   provisioner "local-exec" {

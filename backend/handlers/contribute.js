@@ -179,6 +179,189 @@ async function handleListContributions(storage) {
   }
 }
 
+// Allowed repos for per-improvement issue creation (prevents arbitrary repo injection)
+const ALLOWED_REPOS = {
+  'swarm-ai':          'intelliswarm-ai/swarm-ai',
+  'swarm-ai-examples': 'intelliswarm-ai/swarm-ai-examples',
+  'swarm-ai-skills':   'intelliswarm-ai/swarm-ai-skills',
+};
+
+/**
+ * Auto-detect the most appropriate repo for an improvement based on
+ * its condition.file path or category. Used as the default suggestion.
+ */
+function detectRepoForImprovement(improvement) {
+  const file = (improvement?.condition?.file || '').toLowerCase();
+  const category = (improvement?.category || '').toLowerCase();
+
+  if (file.includes('examples/') || file.includes('example/') || category.includes('example')) {
+    return 'swarm-ai-examples';
+  }
+  if (file.includes('skills/') || file.includes('skill/') || category.includes('skill')) {
+    return 'swarm-ai-skills';
+  }
+  // Default: core framework
+  return 'swarm-ai';
+}
+
+/**
+ * Create a GitHub issue for a single improvement in a chosen repo.
+ * Returns { url, number } on success, throws on failure.
+ */
+async function createSingleImprovementIssue(contribution, improvement, index, repoKey) {
+  const githubToken = process.env.GITHUB_TOKEN;
+  if (!githubToken) {
+    throw new Error('GITHUB_TOKEN is not configured on the server');
+  }
+
+  const fullRepo = ALLOWED_REPOS[repoKey];
+  if (!fullRepo) {
+    throw new Error(`Invalid repo. Allowed: ${Object.keys(ALLOWED_REPOS).join(', ')}`);
+  }
+
+  const { trackingId, organizationName, contactEmail } = contribution;
+  const category = improvement.category || 'UNKNOWN';
+  const tier = improvement.tier || 'UNKNOWN';
+  const confidence = improvement.confidence != null
+    ? `${(improvement.confidence * 100).toFixed(0)}%`
+    : 'N/A';
+  const tokenSavings = improvement.estimatedTokenSavings
+    ? `~${improvement.estimatedTokenSavings.toLocaleString()} tokens/run`
+    : 'N/A';
+  const conditionStr = improvement.condition
+    ? '```json\n' + JSON.stringify(improvement.condition, null, 2) + '\n```'
+    : '_(no condition data)_';
+
+  const title = `[${tier}] ${category}: ${truncate(improvement.recommendation, 80)}`;
+
+  const body = [
+    `## Improvement from Self-Improvement Pipeline`,
+    ``,
+    `**Source contribution:** \`${trackingId}\` (improvement #${index + 1})`,
+    `**Organization:** ${organizationName || 'Anonymous'}`,
+    contactEmail ? `**Contact:** ${contactEmail}` : null,
+    `**Framework version:** ${contribution.frameworkVersion || 'unknown'}`,
+    ``,
+    `### Category`,
+    `\`${category}\``,
+    ``,
+    `### Tier`,
+    `\`${tier}\``,
+    ``,
+    `### Confidence`,
+    `${confidence}${improvement.crossValidated ? ' (cross-validated)' : ''}`,
+    ``,
+    `### Estimated Token Savings`,
+    `${tokenSavings}`,
+    ``,
+    `### Recommendation`,
+    improvement.recommendation || '_(no recommendation provided)_',
+    ``,
+    `### Condition / Context`,
+    conditionStr,
+    ``,
+    `### Supporting Observations`,
+    `${improvement.supportingObservations ?? 'N/A'}`,
+    ``,
+    `---`,
+    `_Auto-generated from the SwarmAI self-improvement contribution pipeline._`,
+  ].filter(l => l !== null).join('\n');
+
+  const labels = ['self-improving', 'contribution', `tier:${tier.toLowerCase().replace(/_/g, '-')}`];
+
+  const ghResponse = await fetch(`https://api.github.com/repos/${fullRepo}/issues`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${githubToken}`,
+      Accept: 'application/vnd.github+json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ title, body, labels }),
+  });
+
+  if (!ghResponse.ok) {
+    const errText = await ghResponse.text();
+    throw new Error(`GitHub API returned ${ghResponse.status}: ${errText}`);
+  }
+
+  const issue = await ghResponse.json();
+  return { url: issue.html_url, number: issue.number, repo: fullRepo };
+}
+
+function truncate(str, n) {
+  if (!str) return '';
+  return str.length <= n ? str : str.substring(0, n - 1) + '…';
+}
+
+/**
+ * Handler: POST /api/admin/contributions/:trackingId/improvements/:index/create-issue
+ * Body: { repo: 'swarm-ai' | 'swarm-ai-examples' | 'swarm-ai-skills' }
+ */
+async function handleCreateImprovementIssue(storage, trackingId, indexStr, data) {
+  try {
+    if (!trackingId) {
+      return { statusCode: 400, body: { error: 'trackingId is required' } };
+    }
+    const index = parseInt(indexStr, 10);
+    if (isNaN(index) || index < 0) {
+      return { statusCode: 400, body: { error: 'improvement index must be a non-negative integer' } };
+    }
+    const repoKey = (data && data.repo) || null;
+    if (!repoKey || !ALLOWED_REPOS[repoKey]) {
+      return {
+        statusCode: 400,
+        body: { error: `repo must be one of: ${Object.keys(ALLOWED_REPOS).join(', ')}` },
+      };
+    }
+
+    const contribution = await storage.get(trackingId);
+    if (!contribution) {
+      return { statusCode: 404, body: { error: 'Contribution not found' } };
+    }
+
+    const improvements = contribution.improvementData?.improvements || [];
+    if (index >= improvements.length) {
+      return { statusCode: 404, body: { error: 'Improvement index out of range' } };
+    }
+
+    // Check if already created
+    const existing = contribution.improvementIssues?.[String(index)];
+    if (existing) {
+      return {
+        statusCode: 409,
+        body: { error: 'Issue already created for this improvement', issue: existing },
+      };
+    }
+
+    const issue = await createSingleImprovementIssue(
+      contribution, improvements[index], index, repoKey
+    );
+
+    // Persist the issue URL on the contribution
+    const improvementIssues = { ...(contribution.improvementIssues || {}) };
+    improvementIssues[String(index)] = {
+      url: issue.url,
+      number: issue.number,
+      repo: issue.repo,
+      createdAt: new Date().toISOString(),
+    };
+    await storage.update(trackingId, { improvementIssues });
+
+    console.log(`[Contribution] Issue #${issue.number} created in ${issue.repo} for ${trackingId}#${index}`);
+
+    return {
+      statusCode: 200,
+      body: { success: true, issue: improvementIssues[String(index)] },
+    };
+  } catch (err) {
+    console.error('[Contribution] Create issue error:', err);
+    return {
+      statusCode: 500,
+      body: { error: 'Failed to create issue: ' + err.message },
+    };
+  }
+}
+
 async function createGitHubIssue(contribution, improvements) {
   const githubToken = process.env.GITHUB_TOKEN;
   if (!githubToken) return;
@@ -326,4 +509,38 @@ async function handleGetContribution(storage, trackingId) {
   }
 }
 
-module.exports = { handleContribute, handleListContributions, handleGetContribution, handleReviewContribution };
+/**
+ * Handler: DELETE /api/admin/contributions/:trackingId
+ * Admin-only. Permanently removes a contribution (e.g. test data).
+ */
+async function handleDeleteContribution(storage, trackingId) {
+  try {
+    if (!trackingId) {
+      return { statusCode: 400, body: { error: 'trackingId is required' } };
+    }
+    const contribution = await storage.get(trackingId);
+    if (!contribution) {
+      return { statusCode: 404, body: { error: 'Contribution not found' } };
+    }
+    if (typeof storage.delete !== 'function') {
+      return { statusCode: 501, body: { error: 'Delete not supported by this storage backend' } };
+    }
+    await storage.delete(trackingId);
+    console.log(`[Contribution] Deleted ${trackingId}`);
+    return { statusCode: 200, body: { success: true, trackingId } };
+  } catch (err) {
+    console.error('[Contribution] Delete error:', err);
+    return { statusCode: 500, body: { error: 'Failed to delete contribution: ' + err.message } };
+  }
+}
+
+module.exports = {
+  handleContribute,
+  handleListContributions,
+  handleGetContribution,
+  handleReviewContribution,
+  handleCreateImprovementIssue,
+  handleDeleteContribution,
+  detectRepoForImprovement,
+  ALLOWED_REPOS,
+};

@@ -88,6 +88,12 @@ function createContributionDynamoStorage(tableName) {
       );
       return result.Attributes;
     },
+    async delete(trackingId) {
+      const { DeleteCommand } = require('@aws-sdk/lib-dynamodb');
+      await getDdb().send(
+        new DeleteCommand({ TableName: tableName, Key: { trackingId } })
+      );
+    },
   };
 }
 

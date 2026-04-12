@@ -60,6 +60,10 @@ function createContributionFileStorage(dirPath) {
       fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
       return data;
     },
+    async delete(trackingId) {
+      const filePath = path.join(dirPath, `${trackingId}.json`);
+      if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+    },
   };
 }
 

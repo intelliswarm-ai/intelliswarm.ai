@@ -229,8 +229,49 @@
               <div class="improvement-condition" *ngIf="imp.condition">
                 <code>{{ imp.condition | json }}</code>
               </div>
+
+              <!-- GitHub issue creation -->
+              <div class="issue-section">
+                <ng-container *ngIf="getIssueForImprovement(i) as issue">
+                  <a [href]="issue.url" target="_blank" rel="noopener noreferrer" class="issue-link">
+                    Issue #{{ issue.number }} in {{ issue.repo }} →
+                  </a>
+                </ng-container>
+
+                <ng-container *ngIf="!getIssueForImprovement(i)">
+                  <div class="issue-repo-selector">
+                    <label>Target repo:</label>
+                    <select
+                      [value]="getSelectedRepo(imp, i)"
+                      (change)="setSelectedRepo(i, $any($event.target).value)"
+                    >
+                      <option *ngFor="let r of repoOptions" [value]="r">
+                        {{ r }}{{ r === detectRepo(imp) ? ' (auto-detected)' : '' }}
+                      </option>
+                    </select>
+                    <button
+                      class="create-issue-btn"
+                      (click)="createImprovementIssue(i)"
+                      [disabled]="issueCreating[i]"
+                    >
+                      <span *ngIf="!issueCreating[i]">Create GitHub Issue</span>
+                      <span *ngIf="issueCreating[i]">Creating...</span>
+                    </button>
+                  </div>
+                  <p class="issue-error" *ngIf="issueError[i]">{{ issueError[i] }}</p>
+                </ng-container>
+              </div>
             </div>
           </div>
+        </div>
+
+        <!-- Danger Zone: Delete -->
+        <div class="danger-zone">
+          <h4>Danger Zone</h4>
+          <button class="delete-btn" (click)="deleteContribution()" [disabled]="deleteLoading">
+            {{ deleteLoading ? 'Deleting...' : 'Delete this contribution' }}
+          </button>
+          <p class="danger-hint">Permanently removes this contribution. Cannot be undone.</p>
         </div>
       </div>
     </div>
