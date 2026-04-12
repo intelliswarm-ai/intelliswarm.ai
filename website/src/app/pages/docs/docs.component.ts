@@ -1,11 +1,21 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { SeoService } from '../../services/seo.service';
 
 @Component({
   selector: 'app-docs',
   templateUrl: './docs.component.html',
   styleUrls: ['./docs.component.scss']
 })
-export class DocsComponent {
+export class DocsComponent implements OnInit {
+  constructor(private seo: SeoService) {}
+
+  ngOnInit(): void {
+    this.seo.update({
+      title: 'Documentation',
+      description: 'Everything you need to build, deploy, and scale AI agent workflows with SwarmAI. Getting started, YAML DSL, self-improving workflows, enterprise features, and module reference.',
+      keywords: 'SwarmAI documentation, AI agent tutorial, YAML DSL guide, Spring Boot AI docs',
+    });
+  }
   sections = [
     {
       title: 'Getting Started',

@@ -8,7 +8,8 @@
     "PRICING": "Harga",
     "CONTRIBUTE": "Kontribusi",
     "CONTACT": "Kontak",
-    "GET_STARTED": "Mulai"
+    "GET_STARTED": "Mulai",
+    "BLOG": "Blog"
   },
   "HOME": {
     "BADGE": "Orkestrasi Agen AI Kelas Enterprise",
@@ -306,5 +307,16 @@
     "JA": "日本語",
     "FR": "Français",
     "ID": "Indonesia"
+  },
+  "BLOG": {
+    "TITLE": "Blog Teknis",
+    "DESCRIPTION": "Wawasan, keputusan arsitektur, dan pembaruan framework dari tim IntelliSwarm.ai.",
+    "ALL": "Semua",
+    "LOADING": "Memuat...",
+    "EMPTY": "Tidak ditemukan artikel blog untuk filter ini.",
+    "READ_MORE": "Baca selengkapnya",
+    "MIN_READ": "menit baca",
+    "BACK_TO_BLOG": "Kembali ke Blog",
+    "SHARE": "Bagikan artikel ini"
   }
 }

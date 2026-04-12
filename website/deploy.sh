@@ -14,7 +14,7 @@ NC='\033[0m' # No Color
 
 # Configuration
 STACK_NAME="intelliswarm-website"
-REGION="us-east-1"
+REGION="eu-central-2"
 DOMAIN_NAME="intelliswarm.ai"
 S3_BUCKET="intelliswarm-website"
 

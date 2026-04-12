@@ -762,7 +762,7 @@ resource "null_resource" "frontend_build" {
 
   provisioner "local-exec" {
     working_dir = "${path.module}/../website"
-    command     = "npm install && npx ng build --configuration production"
+    command     = "npm install && node scripts/generate-blog-index.js && npx ng build --configuration production"
   }
 }
 
@@ -778,17 +778,24 @@ resource "null_resource" "s3_sync" {
     frontend_build_id = null_resource.frontend_build.id
   }
 
-  # Upload all files to S3 via PowerShell (avoids Windows cmd quoting issues with cache-control)
+  # Step 3a: Wipe S3 bucket (clean slate — guarantees no stale files)
   provisioner "local-exec" {
-    command = "powershell -ExecutionPolicy Bypass -Command \"aws s3 sync '${path.module}/../website/dist/intelliswarm-website/browser/' 's3://${aws_s3_bucket.frontend.id}/' --delete --cache-control 'public,max-age=31536000,immutable' --exclude 'index.html' --exclude '*.json' --region ${var.aws_region}\""
+    command = "powershell -ExecutionPolicy Bypass -Command \"aws s3 rm 's3://${aws_s3_bucket.frontend.id}/' --recursive --region ${var.aws_region}\""
   }
 
+  # Step 3b: Upload hashed assets (JS, CSS, images, fonts) — 1 year immutable cache
   provisioner "local-exec" {
-    command = "powershell -ExecutionPolicy Bypass -Command \"aws s3 cp '${path.module}/../website/dist/intelliswarm-website/browser/index.html' 's3://${aws_s3_bucket.frontend.id}/index.html' --cache-control 'public,max-age=60' --region ${var.aws_region}\""
+    command = "powershell -ExecutionPolicy Bypass -Command \"aws s3 cp '${path.module}/../website/dist/intelliswarm-website/browser/' 's3://${aws_s3_bucket.frontend.id}/' --recursive --cache-control 'public,max-age=31536000,immutable' --exclude '*.html' --exclude '*.json' --region ${var.aws_region}\""
   }
 
+  # Step 3c: Upload ALL HTML files (root + prerendered routes) — no-cache for fast updates
   provisioner "local-exec" {
-    command = "powershell -ExecutionPolicy Bypass -Command \"aws s3 sync '${path.module}/../website/dist/intelliswarm-website/browser/' 's3://${aws_s3_bucket.frontend.id}/' --exclude '*' --include '*.json' --cache-control 'public,max-age=3600' --region ${var.aws_region}\""
+    command = "powershell -ExecutionPolicy Bypass -Command \"aws s3 cp '${path.module}/../website/dist/intelliswarm-website/browser/' 's3://${aws_s3_bucket.frontend.id}/' --recursive --exclude '*' --include '*.html' --cache-control 'no-cache,no-store,must-revalidate' --content-type 'text/html' --region ${var.aws_region}\""
+  }
+
+  # Step 3d: Upload JSON files (blog data, i18n, manifests) — 1 hour cache
+  provisioner "local-exec" {
+    command = "powershell -ExecutionPolicy Bypass -Command \"aws s3 cp '${path.module}/../website/dist/intelliswarm-website/browser/' 's3://${aws_s3_bucket.frontend.id}/' --recursive --exclude '*' --include '*.json' --cache-control 'public,max-age=3600' --region ${var.aws_region}\""
   }
 }
 

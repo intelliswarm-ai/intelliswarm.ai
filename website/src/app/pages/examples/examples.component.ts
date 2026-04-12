@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { SeoService } from '../../services/seo.service';
 
 interface Example {
   id: string;
@@ -17,7 +18,16 @@ interface Example {
   templateUrl: './examples.component.html',
   styleUrl: './examples.component.css'
 })
-export class ExamplesComponent {
+export class ExamplesComponent implements OnInit {
+  constructor(private seo: SeoService) {}
+
+  ngOnInit(): void {
+    this.seo.update({
+      title: 'Examples',
+      description: 'Explore 50+ SwarmAI workflow examples: hierarchical research, parallel analysis, self-improving pipelines, swarm audits, and composite enterprise workflows.',
+      keywords: 'AI agent examples, multi-agent workflow, SwarmAI examples, Java AI tutorial',
+    });
+  }
 
   examples: Example[] = [
     {

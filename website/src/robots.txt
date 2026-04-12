@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://intelliswarm.ai/sitemap.xml
+
+# Disallow admin and internal paths
+Disallow: /admin/
+Disallow: /api/

@@ -8,6 +8,7 @@
     "PRICING": "定价",
     "CONTRIBUTE": "贡献",
     "CONTACT": "联系我们",
+    "BLOG": "博客",
     "GET_STARTED": "开始使用"
   },
   "HOME": {
@@ -162,6 +163,17 @@
     "ENTERPRISE_F8": "合规和安全审查",
     "GET_STARTED": "开始使用",
     "CONTACT_US": "联系我们"
+  },
+  "BLOG": {
+    "TITLE": "工程博客",
+    "DESCRIPTION": "IntelliSwarm.ai团队的见解、架构决策和框架更新。",
+    "ALL": "全部",
+    "LOADING": "加载中...",
+    "EMPTY": "未找到此筛选条件的博客文章。",
+    "READ_MORE": "阅读更多",
+    "MIN_READ": "分钟阅读",
+    "BACK_TO_BLOG": "返回博客",
+    "SHARE": "分享这篇文章"
   },
   "NEWS": {
     "TITLE": "框架新闻",

@@ -1,0 +1,90 @@
+<div class="blog-container page-content">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <h1>
+      <span class="gradient-text">{{ 'BLOG.TITLE' | translate }}</span>
+    </h1>
+    <p class="hero-description">{{ 'BLOG.DESCRIPTION' | translate }}</p>
+  </section>
+
+  <!-- Tag Filters -->
+  <section class="filters-section" *ngIf="allTags.length > 0">
+    <button
+      class="filter-btn"
+      [class.active]="activeTag === 'all'"
+      (click)="filterByTag('all')"
+    >
+      {{ 'BLOG.ALL' | translate }}
+    </button>
+    <button
+      *ngFor="let tag of allTags"
+      class="filter-btn"
+      [class.active]="activeTag === tag"
+      (click)="filterByTag(tag)"
+    >
+      {{ tag }}
+    </button>
+  </section>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="loading">
+    <p>{{ 'BLOG.LOADING' | translate }}</p>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-state" *ngIf="error">
+    <p>{{ error }}</p>
+  </div>
+
+  <!-- Blog Grid -->
+  <section class="blog-grid" *ngIf="!loading && !error">
+    <a
+      *ngFor="let post of filteredPosts"
+      class="blog-card"
+      [routerLink]="['/blog', post.slug]"
+    >
+      <!-- Cover Image -->
+      <div class="blog-card-image" *ngIf="post.coverImage">
+        <img [src]="post.coverImage" [alt]="post.title" loading="lazy" />
+      </div>
+
+      <div class="blog-card-content">
+        <!-- Meta -->
+        <div class="blog-card-meta">
+          <span class="blog-category">
+            <span class="material-icons">{{ getCategoryIcon(post.category) }}</span>
+            {{ post.category }}
+          </span>
+          <span class="blog-date">{{ formatDate(post.date) }}</span>
+          <span class="blog-reading-time">
+            <span class="material-icons">schedule</span>
+            {{ post.readingTime }} {{ 'BLOG.MIN_READ' | translate }}
+          </span>
+        </div>
+
+        <!-- Title -->
+        <h2 class="blog-card-title">{{ post.title }}</h2>
+
+        <!-- Summary -->
+        <p class="blog-card-summary">{{ post.summary }}</p>
+
+        <!-- Footer -->
+        <div class="blog-card-footer">
+          <div class="blog-tags">
+            <span class="tag" *ngFor="let tag of post.tags">{{ tag }}</span>
+          </div>
+          <span class="read-more">
+            {{ 'BLOG.READ_MORE' | translate }}
+            <span class="material-icons">arrow_forward</span>
+          </span>
+        </div>
+      </div>
+    </a>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="filteredPosts.length === 0">
+      <span class="material-icons empty-icon">article</span>
+      <p>{{ 'BLOG.EMPTY' | translate }}</p>
+    </div>
+  </section>
+</div>

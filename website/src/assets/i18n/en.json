@@ -8,6 +8,7 @@
     "PRICING": "Pricing",
     "CONTRIBUTE": "Contribute",
     "CONTACT": "Contact",
+    "BLOG": "Blog",
     "GET_STARTED": "Get Started"
   },
   "HOME": {
@@ -162,6 +163,17 @@
     "ENTERPRISE_F8": "Compliance & Security Reviews",
     "GET_STARTED": "Get Started",
     "CONTACT_US": "Contact Us"
+  },
+  "BLOG": {
+    "TITLE": "Engineering Blog",
+    "DESCRIPTION": "Insights, architecture decisions, and framework updates from the IntelliSwarm.ai team.",
+    "ALL": "All",
+    "LOADING": "Loading posts...",
+    "EMPTY": "No blog posts found for this filter.",
+    "READ_MORE": "Read more",
+    "MIN_READ": "min read",
+    "BACK_TO_BLOG": "Back to Blog",
+    "SHARE": "Share this article"
   },
   "NEWS": {
     "TITLE": "Framework News",

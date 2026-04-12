@@ -8,7 +8,8 @@
     "PRICING": "Precios",
     "CONTRIBUTE": "Contribuir",
     "CONTACT": "Contacto",
-    "GET_STARTED": "Comenzar"
+    "GET_STARTED": "Comenzar",
+    "BLOG": "Blog"
   },
   "HOME": {
     "BADGE": "Orquestación de Agentes de IA de Nivel Empresarial",
@@ -306,5 +307,16 @@
     "JA": "日本語",
     "FR": "Français",
     "ID": "Indonesia"
+  },
+  "BLOG": {
+    "TITLE": "Blog de ingeniería",
+    "DESCRIPTION": "Perspectivas, decisiones de arquitectura y actualizaciones del framework del equipo IntelliSwarm.ai.",
+    "ALL": "Todo",
+    "LOADING": "Cargando...",
+    "EMPTY": "No se encontraron artículos para este filtro.",
+    "READ_MORE": "Leer más",
+    "MIN_READ": "min de lectura",
+    "BACK_TO_BLOG": "Volver al blog",
+    "SHARE": "Compartir este artículo"
   }
 }

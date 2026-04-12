@@ -6,7 +6,7 @@ setlocal enabledelayedexpansion
 
 REM Configuration
 set STACK_NAME=intelliswarm-website
-set REGION=us-east-1
+set REGION=eu-central-2
 set DOMAIN_NAME=intelliswarm.ai
 set S3_BUCKET=intelliswarm-website
 

@@ -32,7 +32,9 @@
             "tsConfig": "tsconfig.app.json",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              "src/robots.txt",
+              "src/sitemap.xml"
             ],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
@@ -42,7 +44,10 @@
               "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
             ],
             "server": "src/main.server.ts",
-            "prerender": false,
+            "prerender": {
+              "discoverRoutes": true,
+              "routesFile": "prerender-routes.txt"
+            },
             "ssr": false
           },
           "configurations": {

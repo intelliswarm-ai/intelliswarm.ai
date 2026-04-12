@@ -8,7 +8,8 @@
     "PRICING": "料金",
     "CONTRIBUTE": "貢献",
     "CONTACT": "お問い合わせ",
-    "GET_STARTED": "始める"
+    "GET_STARTED": "始める",
+    "BLOG": "ブログ"
   },
   "HOME": {
     "BADGE": "エンタープライズグレードのAIエージェントオーケストレーション",
@@ -306,5 +307,16 @@
     "JA": "日本語",
     "FR": "Français",
     "ID": "Indonesia"
+  },
+  "BLOG": {
+    "TITLE": "エンジニアリングブログ",
+    "DESCRIPTION": "IntelliSwarm.aiチームによるインサイト、アーキテクチャ決定、フレームワーク更新。",
+    "ALL": "すべて",
+    "LOADING": "読み込み中...",
+    "EMPTY": "このフィルターのブログ記事が見つかりません。",
+    "READ_MORE": "続きを読む",
+    "MIN_READ": "分で読めます",
+    "BACK_TO_BLOG": "ブログに戻る",
+    "SHARE": "この記事を共有"
   }
 }

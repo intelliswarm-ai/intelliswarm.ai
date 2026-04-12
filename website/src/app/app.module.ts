@@ -44,6 +44,8 @@ import { DocsComponent } from './pages/docs/docs.component';
 import { ContributeComponent } from './pages/contribute/contribute.component';
 import { NewsComponent } from './pages/news/news.component';
 import { AdminComponent } from './pages/admin/admin.component';
+import { BlogListComponent } from './pages/blog/blog-list/blog-list.component';
+import { BlogPostComponent } from './pages/blog/blog-post/blog-post.component';
 
 @NgModule({
   declarations: [
@@ -77,6 +79,8 @@ import { AdminComponent } from './pages/admin/admin.component';
     ContributeComponent,
     NewsComponent,
     AdminComponent,
+    BlogListComponent,
+    BlogPostComponent,
   ],
   imports: [
     BrowserModule,

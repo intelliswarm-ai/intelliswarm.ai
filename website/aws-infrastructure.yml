@@ -1,12 +1,12 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: 'IntelliSwarm.ai Website Infrastructure - S3, CloudFront, Route53'
+Description: 'IntelliSwarm.ai Website Infrastructure - S3, CloudFront, Route53, ACM'
 
 Parameters:
   DomainName:
     Type: String
     Default: 'intelliswarm.ai'
     Description: 'Primary domain name for the website'
-  
+
   S3BucketName:
     Type: String
     Default: 'intelliswarm-website'
@@ -28,19 +28,47 @@ Resources:
       WebsiteConfiguration:
         IndexDocument: index.html
         ErrorDocument: index.html
-      BucketPolicy:
-        PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Sid: PublicReadGetObject
-              Effect: Allow
-              Principal: '*'
-              Action: 's3:GetObject'
-              Resource: !Sub '${WebsiteBucket}/*'
+
+  # Bucket Policy — separate resource to avoid circular dependency
+  WebsiteBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref WebsiteBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: PublicReadGetObject
+            Effect: Allow
+            Principal: '*'
+            Action: 's3:GetObject'
+            Resource: !Sub 'arn:aws:s3:::${S3BucketName}/*'
+
+  # ACM Certificate (must be in us-east-1 for CloudFront)
+  # NOTE: This requires DNS validation. After stack creation, add the CNAME
+  # records shown in the ACM console to your hosted zone to validate.
+  Certificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: !Ref DomainName
+      SubjectAlternativeNames:
+        - !Sub 'www.${DomainName}'
+      ValidationMethod: DNS
+      DomainValidationOptions:
+        - DomainName: !Ref DomainName
+          HostedZoneId: !Ref HostedZone
+        - DomainName: !Sub 'www.${DomainName}'
+          HostedZoneId: !Ref HostedZone
+
+  # Route 53 Hosted Zone
+  HostedZone:
+    Type: AWS::Route53::HostedZone
+    Properties:
+      Name: !Ref DomainName
 
   # CloudFront Distribution
   CloudFrontDistribution:
     Type: AWS::CloudFront::Distribution
+    DependsOn: Certificate
     Properties:
       DistributionConfig:
         Origins:
@@ -54,8 +82,8 @@ Resources:
           TargetOriginId: S3Origin
           ViewerProtocolPolicy: redirect-to-https
           Compress: true
-          CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad # CachingOptimized
-          OriginRequestPolicyId: 88a5eaf4-2fd4-4709-b370-b4c650ea3fcf # CORS-S3Origin
+          CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad  # CachingOptimized
+          OriginRequestPolicyId: 88a5eaf4-2fd4-4709-b370-b4c650ea3fcf  # CORS-S3Origin
         CustomErrorResponses:
           - ErrorCode: 403
             ResponseCode: 200
@@ -67,13 +95,9 @@ Resources:
           - !Ref DomainName
           - !Sub 'www.${DomainName}'
         ViewerCertificate:
-          CloudFrontDefaultCertificate: true
-
-  # Route 53 Hosted Zone
-  HostedZone:
-    Type: AWS::Route53::HostedZone
-    Properties:
-      Name: !Ref DomainName
+          AcmCertificateArn: !Ref Certificate
+          SslSupportMethod: sni-only
+          MinimumProtocolVersion: TLSv1.2_2021
 
   # A Record for Root Domain
   RootDomainRecord:
@@ -84,7 +108,7 @@ Resources:
       Type: A
       AliasTarget:
         DNSName: !GetAtt CloudFrontDistribution.DomainName
-        HostedZoneId: Z2FDTNDATAQYW2 # CloudFront Hosted Zone ID (fixed)
+        HostedZoneId: Z2FDTNDATAQYW2  # CloudFront Hosted Zone ID (fixed global value)
         EvaluateTargetHealth: false
 
   # A Record for www Subdomain
@@ -96,7 +120,7 @@ Resources:
       Type: A
       AliasTarget:
         DNSName: !GetAtt CloudFrontDistribution.DomainName
-        HostedZoneId: Z2FDTNDATAQYW2 # CloudFront Hosted Zone ID (fixed)
+        HostedZoneId: Z2FDTNDATAQYW2  # CloudFront Hosted Zone ID (fixed global value)
         EvaluateTargetHealth: false
 
 Outputs:
@@ -123,6 +147,12 @@ Outputs:
     Value: !Ref HostedZone
     Export:
       Name: !Sub '${AWS::StackName}-HostedZoneId'
+
+  CertificateArn:
+    Description: 'ACM Certificate ARN'
+    Value: !Ref Certificate
+    Export:
+      Name: !Sub '${AWS::StackName}-CertificateArn'
 
   WebsiteURL:
     Description: 'Website URL'

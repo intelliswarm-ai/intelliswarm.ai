@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { SeoService } from '../../services/seo.service';
 
 interface ContributionStatus {
   state: 'idle' | 'validating' | 'submitting' | 'success' | 'error';
@@ -22,7 +23,7 @@ interface ParsedImprovement {
   templateUrl: './contribute.component.html',
   styleUrls: ['./contribute.component.scss'],
 })
-export class ContributeComponent {
+export class ContributeComponent implements OnInit {
   contributeForm!: FormGroup;
   status: ContributionStatus = { state: 'idle', message: '' };
   parsedData: ParsedImprovement | null = null;
@@ -30,12 +31,20 @@ export class ContributeComponent {
   fileName: string = '';
   isDragOver: boolean = false;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private seo: SeoService) {
     this.contributeForm = this.fb.group({
       organizationName: [''],
       contactEmail: ['', Validators.email],
       notes: [''],
       agreedTerms: [false, Validators.requiredTrue],
+    });
+  }
+
+  ngOnInit(): void {
+    this.seo.update({
+      title: 'Contribute',
+      description: 'Submit anonymized framework improvements discovered by your SwarmAI deployment. Help improve the framework for all users worldwide.',
+      keywords: 'contribute SwarmAI, open source contribution, framework improvement',
     });
   }
 

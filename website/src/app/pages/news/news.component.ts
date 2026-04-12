@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { SeoService } from '../../services/seo.service';
 
 interface NewsItem {
   id: string;
@@ -26,9 +27,14 @@ export class NewsComponent implements OnInit {
   loading: boolean = true;
   error: string = '';
 
-  constructor(private sanitizer: DomSanitizer) {}
+  constructor(private sanitizer: DomSanitizer, private seo: SeoService) {}
 
   ngOnInit(): void {
+    this.seo.update({
+      title: 'Framework News',
+      description: 'Latest releases, features, and milestones from the SwarmAI multi-agent orchestration framework.',
+      keywords: 'SwarmAI news, AI framework releases, multi-agent updates',
+    });
     this.fetchNews();
   }
 

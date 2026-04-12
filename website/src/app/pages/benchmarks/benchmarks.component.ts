@@ -1,11 +1,21 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { SeoService } from '../../services/seo.service';
 
 @Component({
   selector: 'app-benchmarks',
   templateUrl: './benchmarks.component.html',
   styleUrls: ['./benchmarks.component.scss']
 })
-export class BenchmarksComponent {
+export class BenchmarksComponent implements OnInit {
+  constructor(private seo: SeoService) {}
+
+  ngOnInit(): void {
+    this.seo.update({
+      title: 'Framework Benchmarks',
+      description: 'SwarmAI benchmark results: Framework Value Score, category breakdown, scenario results, and competitive comparison against LangGraph, CrewAI, AutoGen, and Semantic Kernel.',
+      keywords: 'AI framework benchmarks, SwarmAI vs CrewAI, multi-agent comparison, LangGraph alternative',
+    });
+  }
   valueScore = 100.0;
   passRate = 100.0;
   totalScenarios = 15;
