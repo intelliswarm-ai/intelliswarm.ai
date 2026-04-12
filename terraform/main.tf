@@ -778,24 +778,9 @@ resource "null_resource" "s3_sync" {
     frontend_build_id = null_resource.frontend_build.id
   }
 
-  # Step 3a: Wipe S3 bucket (clean slate — guarantees no stale files)
+  # Deploy to S3: wipe + fresh upload with per-type cache headers
   provisioner "local-exec" {
-    command = "powershell -ExecutionPolicy Bypass -Command \"aws s3 rm 's3://${aws_s3_bucket.frontend.id}/' --recursive --region ${var.aws_region}\""
-  }
-
-  # Step 3b: Upload hashed assets (JS, CSS, images, fonts) — 1 year immutable cache
-  provisioner "local-exec" {
-    command = "powershell -ExecutionPolicy Bypass -Command \"aws s3 cp '${path.module}/../website/dist/intelliswarm-website/browser/' 's3://${aws_s3_bucket.frontend.id}/' --recursive --cache-control 'public,max-age=31536000,immutable' --exclude '*.html' --exclude '*.json' --region ${var.aws_region}\""
-  }
-
-  # Step 3c: Upload ALL HTML files (root + prerendered routes) — no-cache for fast updates
-  provisioner "local-exec" {
-    command = "powershell -ExecutionPolicy Bypass -Command \"aws s3 cp '${path.module}/../website/dist/intelliswarm-website/browser/' 's3://${aws_s3_bucket.frontend.id}/' --recursive --exclude '*' --include '*.html' --cache-control 'no-cache,no-store,must-revalidate' --content-type 'text/html' --region ${var.aws_region}\""
-  }
-
-  # Step 3d: Upload JSON files (blog data, i18n, manifests) — 1 hour cache
-  provisioner "local-exec" {
-    command = "powershell -ExecutionPolicy Bypass -Command \"aws s3 cp '${path.module}/../website/dist/intelliswarm-website/browser/' 's3://${aws_s3_bucket.frontend.id}/' --recursive --exclude '*' --include '*.json' --cache-control 'public,max-age=3600' --region ${var.aws_region}\""
+    command = "powershell -ExecutionPolicy Bypass -File scripts/s3-deploy.ps1 -BuildDir '${path.module}/../website/dist/intelliswarm-website/browser/' -Bucket '${aws_s3_bucket.frontend.id}' -Region '${var.aws_region}'"
   }
 }
 
