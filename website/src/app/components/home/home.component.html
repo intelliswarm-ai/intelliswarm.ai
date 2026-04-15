@@ -16,13 +16,29 @@
       </p>
 
       <div class="hero-actions">
-        <a href="https://github.com/intelliswarm-ai/swarm-ai" target="_blank" rel="noopener noreferrer" class="btn-primary">
+        <a href="#quick-install" class="btn-primary">
           <span class="material-icons">rocket_launch</span>
           {{ 'HOME.GET_STARTED' | translate }}
         </a>
         <a routerLink="/docs" class="btn-secondary">
           <span class="material-icons">menu_book</span>
           {{ 'HOME.DOCUMENTATION' | translate }}
+        </a>
+        <a href="https://github.com/intelliswarm-ai/swarm-ai" target="_blank" rel="noopener noreferrer" class="btn-secondary">
+          <span class="material-icons">code</span>
+          GitHub
+        </a>
+      </div>
+
+      <div class="hero-badges">
+        <a href="https://central.sonatype.com/artifact/ai.intelliswarm/swarmai-core" target="_blank" rel="noopener noreferrer" aria-label="Maven Central">
+          <img src="https://img.shields.io/maven-central/v/ai.intelliswarm/swarmai-core.svg?label=Maven%20Central&style=for-the-badge" alt="Maven Central">
+        </a>
+        <a href="https://github.com/intelliswarm-ai/swarm-ai/blob/main/LICENSE" target="_blank" rel="noopener noreferrer" aria-label="License">
+          <img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg?style=for-the-badge" alt="Apache 2.0">
+        </a>
+        <a href="https://openjdk.org/projects/jdk/21/" target="_blank" rel="noopener noreferrer" aria-label="Java 21">
+          <img src="https://img.shields.io/badge/Java-21-orange.svg?style=for-the-badge" alt="Java 21">
         </a>
       </div>
 
@@ -45,6 +61,31 @@
         </div>
       </div>
     </div>
+  </section>
+
+  <!-- Quick Install Section -->
+  <section id="quick-install" class="features-section quick-install-section">
+    <div class="section-header">
+      <h2>{{ 'HOME.INSTALL_TITLE' | translate }}</h2>
+      <p>{{ 'HOME.INSTALL_SUBTITLE' | translate }}</p>
+    </div>
+
+    <div class="install-tabs">
+      <button class="install-tab active" type="button">Maven (pom.xml)</button>
+    </div>
+
+    <div class="code-block install-code">
+      <button class="copy-btn" type="button" (click)="copyInstallSnippet()" aria-label="Copy to clipboard">
+        <span class="material-icons">{{ installCopied ? 'check' : 'content_copy' }}</span>
+      </button>
+      <pre><code>{{ installSnippet }}</code></pre>
+    </div>
+
+    <p class="install-note">
+      <span class="material-icons">info</span>
+      {{ 'HOME.INSTALL_NOTE' | translate }}
+      <a href="https://central.sonatype.com/search?q=g:ai.intelliswarm" target="_blank" rel="noopener noreferrer">{{ 'HOME.INSTALL_VIEW_ALL' | translate }}</a>
+    </p>
   </section>
 
   <!-- Process Types Section -->
