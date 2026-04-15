@@ -29,6 +29,12 @@ const CORS_HEADERS = {
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
 };
 
+// Public GET endpoints whose responses are safe to cache at CloudFront.
+// Matched exactly against the request path.
+const CACHEABLE_GET_PATHS = new Set(['/api/news', '/api/health']);
+const CACHE_CONTROL_PUBLIC =
+  'public, max-age=300, s-maxage=600, stale-while-revalidate=3600';
+
 let storage;
 
 exports.handler = async (event) => {
@@ -140,9 +146,24 @@ exports.handler = async (event) => {
     result = { statusCode: 500, body: { error: 'Internal server error' } };
   }
 
+  const responseHeaders = { ...CORS_HEADERS };
+  const queryString = event.rawQueryString || '';
+  const isCacheableHit =
+    method === 'GET' &&
+    CACHEABLE_GET_PATHS.has(path) &&
+    !queryString &&
+    result.statusCode >= 200 &&
+    result.statusCode < 300;
+
+  if (isCacheableHit) {
+    responseHeaders['Cache-Control'] = CACHE_CONTROL_PUBLIC;
+  } else if (method !== 'OPTIONS') {
+    responseHeaders['Cache-Control'] = 'no-store';
+  }
+
   return {
     statusCode: result.statusCode,
-    headers: CORS_HEADERS,
+    headers: responseHeaders,
     body: JSON.stringify(result.body),
   };
 };

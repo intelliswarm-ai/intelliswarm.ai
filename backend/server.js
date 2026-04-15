@@ -31,13 +31,25 @@ function sendResult(res, result) {
   res.status(result.statusCode).json(result.body);
 }
 
+const CACHE_CONTROL_PUBLIC =
+  'public, max-age=300, s-maxage=600, stale-while-revalidate=3600';
+
+function setPublicCache(req, res, next) {
+  if (Object.keys(req.query).length === 0) {
+    res.set('Cache-Control', CACHE_CONTROL_PUBLIC);
+  } else {
+    res.set('Cache-Control', 'no-store');
+  }
+  next();
+}
+
 // --- Health ---
-app.get('/api/health', async (req, res) => {
+app.get('/api/health', setPublicCache, async (req, res) => {
   sendResult(res, await handleHealth({ runtime: 'express' }));
 });
 
 // --- News ---
-app.get('/api/news', async (req, res) => {
+app.get('/api/news', setPublicCache, async (req, res) => {
   sendResult(res, await handleGetNews(storage.news, req.query));
 });
 
