@@ -17,30 +17,47 @@ function createStorage() {
 
   switch (backend) {
     case 'dynamodb': {
-      const { createNewsDynamoStorage, createContributionDynamoStorage, createContactDynamoStorage } = require('./dynamodb');
+      const {
+        createNewsDynamoStorage,
+        createContributionDynamoStorage,
+        createContactDynamoStorage,
+        createLedgerDynamoStorage,
+      } = require('./dynamodb');
       return {
         news: createNewsDynamoStorage(),
         contributions: createContributionDynamoStorage(),
         contacts: createContactDynamoStorage(),
+        ledger: createLedgerDynamoStorage(),
       };
     }
 
     case 's3': {
-      const { createNewsS3Storage, createContributionS3Storage } = require('./s3compatible');
+      const {
+        createNewsS3Storage,
+        createContributionS3Storage,
+        createLedgerS3Storage,
+      } = require('./s3compatible');
       return {
         news: createNewsS3Storage(),
         contributions: createContributionS3Storage(),
+        ledger: createLedgerS3Storage(),
       };
     }
 
     case 'filesystem':
     default: {
-      const { createNewsFileStorage, createContributionFileStorage, createContactFileStorage } = require('./filesystem');
+      const {
+        createNewsFileStorage,
+        createContributionFileStorage,
+        createContactFileStorage,
+        createLedgerFileStorage,
+      } = require('./filesystem');
       const dataDir = process.env.DATA_DIR || path.join(__dirname, '..');
       return {
         news: createNewsFileStorage(path.join(dataDir, 'data', 'news.json')),
         contributions: createContributionFileStorage(path.join(dataDir, 'contributions')),
         contacts: createContactFileStorage(path.join(dataDir, 'contacts')),
+        ledger: createLedgerFileStorage(path.join(dataDir, 'ledger')),
       };
     }
   }

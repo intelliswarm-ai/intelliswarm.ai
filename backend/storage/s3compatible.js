@@ -131,4 +131,50 @@ function createContributionS3Storage(bucket, prefix) {
   };
 }
 
-module.exports = { createNewsS3Storage, createContributionS3Storage };
+function createLedgerS3Storage(bucket, prefix) {
+  bucket = bucket || process.env.S3_BUCKET;
+  prefix = prefix || 'ledger/';
+
+  function keyOf(installationId, reportDate) {
+    return `${prefix}${installationId}__${reportDate}.json`;
+  }
+
+  return {
+    async putDailyRollup(record) {
+      const { PutObjectCommand } = require('@aws-sdk/client-s3');
+      await getS3().send(
+        new PutObjectCommand({
+          Bucket: bucket,
+          Key: keyOf(record.installationId, record.reportDate),
+          Body: JSON.stringify(record, null, 2),
+          ContentType: 'application/json',
+        })
+      );
+    },
+    async listDailyRollups(sinceIsoDate) {
+      const { ListObjectsV2Command, GetObjectCommand } = require('@aws-sdk/client-s3');
+      const resp = await getS3().send(
+        new ListObjectsV2Command({ Bucket: bucket, Prefix: prefix })
+      );
+      const items = [];
+      for (const obj of resp.Contents || []) {
+        if (!obj.Key.endsWith('.json')) continue;
+        const filename = obj.Key.substring(prefix.length).replace(/\.json$/, '');
+        const parts = filename.split('__');
+        if (parts.length !== 2) continue;
+        if (sinceIsoDate && parts[1] < sinceIsoDate) continue;
+        const data = await getS3().send(
+          new GetObjectCommand({ Bucket: bucket, Key: obj.Key })
+        );
+        items.push(JSON.parse(await data.Body.transformToString()));
+      }
+      return items;
+    },
+  };
+}
+
+module.exports = {
+  createNewsS3Storage,
+  createContributionS3Storage,
+  createLedgerS3Storage,
+};

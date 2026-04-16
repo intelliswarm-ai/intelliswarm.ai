@@ -14,6 +14,7 @@ import { ChatPageComponent } from './pages/chat/chat.component';
 import { BenchmarksComponent } from './pages/benchmarks/benchmarks.component';
 import { DocsComponent } from './pages/docs/docs.component';
 import { ContributeComponent } from './pages/contribute/contribute.component';
+import { LedgerComponent } from './pages/ledger/ledger.component';
 import { NewsComponent } from './pages/news/news.component';
 import { AdminComponent } from './pages/admin/admin.component';
 import { BlogListComponent } from './pages/blog/blog-list/blog-list.component';
@@ -34,6 +35,7 @@ const routes: Routes = [
   { path: 'benchmarks', component: BenchmarksComponent },
   { path: 'docs', component: DocsComponent },
   { path: 'contribute', component: ContributeComponent },
+  { path: 'ledger', component: LedgerComponent },
   { path: 'news', component: NewsComponent },
   { path: 'blog', component: BlogListComponent },
   { path: 'blog/:slug', component: BlogPostComponent },

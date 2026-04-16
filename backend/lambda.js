@@ -19,6 +19,7 @@ const {
   handleCreateImprovementIssue,
   handleDeleteContribution,
 } = require('./handlers/contribute');
+const { handleTelemetryReport, handlePublicLedger } = require('./handlers/ledger');
 const { handleContact } = require('./handlers/contact');
 const { handleLogin, handleAuthCheck, isAdminAuthenticated } = require('./handlers/admin-auth');
 
@@ -31,7 +32,7 @@ const CORS_HEADERS = {
 
 // Public GET endpoints whose responses are safe to cache at CloudFront.
 // Matched exactly against the request path.
-const CACHEABLE_GET_PATHS = new Set(['/api/news', '/api/health']);
+const CACHEABLE_GET_PATHS = new Set(['/api/news', '/api/health', '/api/v1/self-improving/ledger']);
 const CACHE_CONTROL_PUBLIC =
   'public, max-age=300, s-maxage=600, stale-while-revalidate=3600';
 
@@ -76,6 +77,14 @@ exports.handler = async (event) => {
 
       case path === '/api/contribute' && method === 'POST':
         result = await handleContribute(storage.contributions, JSON.parse(event.body || '{}'));
+        break;
+
+      case path === '/api/v1/self-improving/telemetry' && method === 'POST':
+        result = await handleTelemetryReport(storage.ledger, JSON.parse(event.body || '{}'));
+        break;
+
+      case path === '/api/v1/self-improving/ledger' && method === 'GET':
+        result = await handlePublicLedger(storage.ledger);
         break;
 
       case path === '/api/contact' && method === 'POST':

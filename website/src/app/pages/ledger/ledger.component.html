@@ -1,0 +1,164 @@
+<div class="ledger-container">
+
+  <section class="hero-section">
+    <h1>
+      <span class="gradient-text">Community Investment Ledger</span>
+    </h1>
+    <p class="hero-description">
+      Every SwarmAI deployment that opts in reports a daily rollup of how much
+      its workflows spent on framework self-improvement — and what those tokens
+      produced. Aggregated across the community. No workflow content, no user data.
+    </p>
+  </section>
+
+  <ng-container [ngSwitch]="state">
+
+    <div *ngSwitchCase="'loading'" class="status-panel">
+      <p>Loading ledger…</p>
+    </div>
+
+    <div *ngSwitchCase="'error'" class="status-panel error">
+      <p>{{ errorMessage }}</p>
+      <button class="retry-btn" (click)="load()">Retry</button>
+    </div>
+
+    <div *ngSwitchCase="'empty'" class="status-panel">
+      <p>
+        No deployments have reported yet. Enable opt-in telemetry in your
+        SwarmAI deployment with
+        <code>swarmai.self-improving.telemetry-enabled=true</code> to contribute.
+      </p>
+    </div>
+
+    <ng-container *ngSwitchCase="'loaded'">
+
+      <!-- The credibility number: outputs vs inputs ratio -->
+      <section class="headline-section">
+        <div class="headline-card">
+          <div class="ratio">
+            <div class="ratio-number">{{ snapshot!.ratios.proposalsPerMillionTokens }}</div>
+            <div class="ratio-label">
+              proposals generated per <strong>million tokens</strong> invested
+            </div>
+          </div>
+          <div class="ratio">
+            <div class="ratio-number">{{ snapshot!.ratios.shipRatePercent }}%</div>
+            <div class="ratio-label">
+              of proposals <strong>ship-eligible</strong> (Tier&nbsp;1 + Tier&nbsp;2)
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Outputs: value produced -->
+      <section class="section">
+        <h2>What the community produced</h2>
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-value">{{ formatNumber(snapshot!.outputs.totalProposalsGenerated) }}</div>
+            <div class="stat-label">Proposals generated</div>
+            <div class="stat-detail">{{ formatExact(snapshot!.outputs.totalProposalsGenerated) }}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value tier1">{{ formatNumber(snapshot!.outputs.totalTier1AutoEligible) }}</div>
+            <div class="stat-label">Tier 1 auto-eligible</div>
+            <div class="stat-detail">data-only, auto-mergeable</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value tier2">{{ formatNumber(snapshot!.outputs.totalTier2PRsFiled) }}</div>
+            <div class="stat-label">Tier 2 PRs filed</div>
+            <div class="stat-detail">human review in progress</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value tier3">{{ formatNumber(snapshot!.outputs.totalTier3Proposals) }}</div>
+            <div class="stat-label">Tier 3 proposals</div>
+            <div class="stat-detail">architectural, maintainer queue</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">{{ formatNumber(snapshot!.outputs.totalAntiPatternsDiscovered) }}</div>
+            <div class="stat-label">Anti-patterns discovered</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">{{ formatNumber(snapshot!.outputs.totalSkillsPromoted) }}</div>
+            <div class="stat-label">Skills promoted</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Inputs: fuel burned -->
+      <section class="section">
+        <h2>What the community invested</h2>
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-value">{{ formatNumber(snapshot!.inputs.totalTokensInvested) }}</div>
+            <div class="stat-label">Tokens invested</div>
+            <div class="stat-detail">{{ formatExact(snapshot!.inputs.totalTokensInvested) }}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">{{ formatNumber(snapshot!.inputs.totalWorkflowRuns) }}</div>
+            <div class="stat-label">Workflow runs</div>
+            <div class="stat-detail">{{ formatExact(snapshot!.inputs.totalWorkflowRuns) }}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">{{ formatNumber(snapshot!.inputs.totalObservationsCollected) }}</div>
+            <div class="stat-label">Observations collected</div>
+            <div class="stat-detail">structural patterns from runs</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Category breakdown -->
+      <section class="section" *ngIf="sortedCategories.length > 0">
+        <h2>Improvements by category</h2>
+        <div class="category-list">
+          <div class="category-row" *ngFor="let c of sortedCategories">
+            <div class="category-label">{{ c.label }}</div>
+            <div class="category-count">{{ formatExact(c.count) }}</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Coverage meta -->
+      <section class="section meta-section">
+        <h2>Reporting coverage</h2>
+        <div class="coverage-grid">
+          <div>
+            <div class="coverage-label">Reporting deployments</div>
+            <div class="coverage-value">{{ snapshot!.coverage.reportingInstallations }}</div>
+          </div>
+          <div>
+            <div class="coverage-label">Rolling window</div>
+            <div class="coverage-value">{{ snapshot!.coverage.reportingWindowDays }} days</div>
+          </div>
+          <div>
+            <div class="coverage-label">First report</div>
+            <div class="coverage-value">{{ formatDate(snapshot!.coverage.firstReportAt) }}</div>
+          </div>
+          <div>
+            <div class="coverage-label">Snapshot</div>
+            <div class="coverage-value">{{ formatDate(snapshot!.snapshotTime) }}</div>
+          </div>
+        </div>
+      </section>
+
+    </ng-container>
+  </ng-container>
+
+  <!-- Always visible: trust copy shown in every state (loading, empty, error, loaded) -->
+  <section class="section explainer">
+    <h2>What we do NOT collect</h2>
+    <ul>
+      <li>Workflow definitions, prompts, agent outputs, or any task content</li>
+      <li>User identifiers, tenant IDs, organization names, or API keys</li>
+      <li>Per-workflow events — only a once-daily aggregated rollup</li>
+    </ul>
+    <p class="explainer-text">
+      Each deployment that opts in generates a random anonymous installation ID on first boot
+      and reports only counters: workflow runs, tokens invested, and the structural
+      categories of proposals produced. Telemetry is disabled by default and must be
+      explicitly enabled via
+      <code>swarmai.self-improving.telemetry-enabled=true</code>.
+    </p>
+  </section>
+
+</div>

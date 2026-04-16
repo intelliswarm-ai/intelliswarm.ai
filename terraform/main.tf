@@ -365,6 +365,24 @@ resource "aws_dynamodb_table" "contacts" {
   }
 }
 
+# Community Investment Ledger — daily rollups from opted-in SwarmAI deployments.
+# Populated by POST /api/v1/self-improving/telemetry, read by GET /api/v1/self-improving/ledger.
+# Composite key: "{installationId}#{reportDate}" so re-reports for the same day overwrite.
+resource "aws_dynamodb_table" "ledger" {
+  name         = "intelliswarm-ledger"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "rollupKey"
+
+  attribute {
+    name = "rollupKey"
+    type = "S"
+  }
+
+  tags = {
+    Name = "intelliswarm-ledger"
+  }
+}
+
 
 # =============================================================================
 # IAM Role for Lambda
@@ -421,6 +439,7 @@ resource "aws_iam_role_policy" "lambda_dynamodb" {
           aws_dynamodb_table.news.arn,
           aws_dynamodb_table.contributions.arn,
           aws_dynamodb_table.contacts.arn,
+          aws_dynamodb_table.ledger.arn,
         ]
       }
     ]
@@ -478,6 +497,7 @@ resource "null_resource" "lambda_staging" {
     health_handler = filemd5("${path.module}/../backend/handlers/health.js")
     news_handler   = filemd5("${path.module}/../backend/handlers/news.js")
     contrib_handler = filemd5("${path.module}/../backend/handlers/contribute.js")
+    ledger_handler  = filemd5("${path.module}/../backend/handlers/ledger.js")
     storage_index  = filemd5("${path.module}/../backend/storage/index.js")
     storage_dynamo = filemd5("${path.module}/../backend/storage/dynamodb.js")
     contact_handler = filemd5("${path.module}/../backend/handlers/contact.js")
@@ -515,6 +535,7 @@ resource "aws_lambda_function" "backend" {
       NEWS_TABLE          = aws_dynamodb_table.news.name
       CONTRIBUTIONS_TABLE = aws_dynamodb_table.contributions.name
       CONTACTS_TABLE      = aws_dynamodb_table.contacts.name
+      LEDGER_TABLE        = aws_dynamodb_table.ledger.name
       CONTACT_EMAIL       = var.contact_email
       CONTRIBUTE_EMAIL    = var.contribute_email
       ADMIN_PASSWORD      = var.admin_password
@@ -613,6 +634,20 @@ resource "aws_apigatewayv2_route" "get_contributions" {
 resource "aws_apigatewayv2_route" "post_contact" {
   api_id    = aws_apigatewayv2_api.backend.id
   route_key = "POST /api/contact"
+  target    = "integrations/${aws_apigatewayv2_integration.lambda.id}"
+}
+
+# --- Self-improvement ledger (public) ---
+
+resource "aws_apigatewayv2_route" "post_self_improving_telemetry" {
+  api_id    = aws_apigatewayv2_api.backend.id
+  route_key = "POST /api/v1/self-improving/telemetry"
+  target    = "integrations/${aws_apigatewayv2_integration.lambda.id}"
+}
+
+resource "aws_apigatewayv2_route" "get_self_improving_ledger" {
+  api_id    = aws_apigatewayv2_api.backend.id
+  route_key = "GET /api/v1/self-improving/ledger"
   target    = "integrations/${aws_apigatewayv2_integration.lambda.id}"
 }
 

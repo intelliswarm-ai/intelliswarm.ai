@@ -13,6 +13,7 @@ const {
   handleCreateImprovementIssue,
   handleDeleteContribution,
 } = require('./handlers/contribute');
+const { handleTelemetryReport, handlePublicLedger } = require('./handlers/ledger');
 const { handleContact } = require('./handlers/contact');
 const { requireAdmin, handleLogin, handleLogout, handleAuthCheck } = require('./handlers/admin-auth');
 
@@ -60,6 +61,15 @@ app.post('/api/news', async (req, res) => {
 // --- Contributions ---
 app.post('/api/contribute', async (req, res) => {
   sendResult(res, await handleContribute(storage.contributions, req.body));
+});
+
+// --- Self-Improvement Telemetry & Public Ledger ---
+app.post('/api/v1/self-improving/telemetry', async (req, res) => {
+  sendResult(res, await handleTelemetryReport(storage.ledger, req.body));
+});
+
+app.get('/api/v1/self-improving/ledger', setPublicCache, async (req, res) => {
+  sendResult(res, await handlePublicLedger(storage.ledger));
 });
 
 // --- Admin Auth ---

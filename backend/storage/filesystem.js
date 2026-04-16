@@ -83,4 +83,41 @@ function createContactFileStorage(dirPath) {
   };
 }
 
-module.exports = { createNewsFileStorage, createContributionFileStorage, createContactFileStorage };
+function createLedgerFileStorage(dirPath) {
+  if (!fs.existsSync(dirPath)) {
+    fs.mkdirSync(dirPath, { recursive: true });
+  }
+
+  function keyOf(installationId, reportDate) {
+    return `${installationId}__${reportDate}.json`;
+  }
+
+  return {
+    async putDailyRollup(record) {
+      const filename = keyOf(record.installationId, record.reportDate);
+      fs.writeFileSync(
+        path.join(dirPath, filename),
+        JSON.stringify(record, null, 2)
+      );
+    },
+    async listDailyRollups(sinceIsoDate) {
+      const files = fs.readdirSync(dirPath).filter((f) => f.endsWith('.json'));
+      const results = [];
+      for (const f of files) {
+        const parts = f.replace(/\.json$/, '').split('__');
+        if (parts.length !== 2) continue;
+        const reportDate = parts[1];
+        if (sinceIsoDate && reportDate < sinceIsoDate) continue;
+        results.push(JSON.parse(fs.readFileSync(path.join(dirPath, f), 'utf8')));
+      }
+      return results;
+    },
+  };
+}
+
+module.exports = {
+  createNewsFileStorage,
+  createContributionFileStorage,
+  createContactFileStorage,
+  createLedgerFileStorage,
+};

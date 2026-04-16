@@ -40,7 +40,7 @@ export class NewsComponent implements OnInit {
 
   async fetchNews(): Promise<void> {
     try {
-      const response = await fetch('/api/news');
+      const response = await fetch('/assets/data/news.json');
       if (!response.ok) throw new Error('Failed to load news');
       const data = await response.json();
       this.allNews = data.news;

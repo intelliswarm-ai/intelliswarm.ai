@@ -110,4 +110,51 @@ function createContactDynamoStorage(tableName) {
   };
 }
 
-module.exports = { createNewsDynamoStorage, createContributionDynamoStorage, createContactDynamoStorage };
+function createLedgerDynamoStorage(tableName) {
+  tableName = tableName || process.env.LEDGER_TABLE || 'intelliswarm-ledger';
+
+  // Schema: partition key = installationId#reportDate, enforces idempotent overwrite
+  function rollupKey(record) {
+    return `${record.installationId}#${record.reportDate}`;
+  }
+
+  return {
+    async putDailyRollup(record) {
+      const { PutCommand } = require('@aws-sdk/lib-dynamodb');
+      await getDdb().send(
+        new PutCommand({
+          TableName: tableName,
+          Item: { rollupKey: rollupKey(record), ...record },
+        })
+      );
+    },
+    async listDailyRollups(sinceIsoDate) {
+      const { ScanCommand } = require('@aws-sdk/lib-dynamodb');
+      // Scan is acceptable here because the ledger table has bounded size
+      // (30-day reporting window × N installations). If N grows > 10k, switch
+      // to a GSI on reportDate and Query instead.
+      const filter = sinceIsoDate
+        ? {
+            FilterExpression: '#d >= :since',
+            ExpressionAttributeNames: { '#d': 'reportDate' },
+            ExpressionAttributeValues: { ':since': sinceIsoDate },
+          }
+        : {};
+      const result = await getDdb().send(
+        new ScanCommand({ TableName: tableName, ...filter })
+      );
+      return (result.Items || []).map((item) => {
+        // Strip the DynamoDB-specific composite key before returning
+        const { rollupKey: _key, ...rest } = item;
+        return rest;
+      });
+    },
+  };
+}
+
+module.exports = {
+  createNewsDynamoStorage,
+  createContributionDynamoStorage,
+  createContactDynamoStorage,
+  createLedgerDynamoStorage,
+};
