@@ -1,4 +1,4 @@
-cre#!/usr/bin/env node
+#!/usr/bin/env node
 /**
  * Copies backend/data/news.json into the Angular build so /news is served
  * as a static asset (no Lambda, no DynamoDB). Run before `ng build`.
