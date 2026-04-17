@@ -29,7 +29,7 @@ interface IssueInfo {
   createdAt: string;
 }
 
-type RepoKey = 'swarm-ai' | 'swarm-ai-examples' | 'swarm-ai-skills';
+type RepoKey = 'swarm-ai' | 'swarm-ai-examples' | 'swarm-ai-examples-enterprise' | 'swarm-ai-skills';
 
 interface Improvement {
   category: string;
@@ -70,7 +70,7 @@ export class AdminComponent implements OnInit {
   issueCreating: Record<number, boolean> = {};
   issueError: Record<number, string> = {};
   issueRepoSelection: Record<number, RepoKey> = {};
-  repoOptions: RepoKey[] = ['swarm-ai', 'swarm-ai-examples', 'swarm-ai-skills'];
+  repoOptions: RepoKey[] = ['swarm-ai', 'swarm-ai-examples', 'swarm-ai-examples-enterprise', 'swarm-ai-skills'];
 
   // Delete state
   deleteLoading = false;

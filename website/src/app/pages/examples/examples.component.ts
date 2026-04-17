@@ -11,6 +11,7 @@ interface Example {
   diagram: string; // Mermaid-style ASCII flow
   features: string[];
   source: string;
+  repo?: 'apache' | 'enterprise'; // default: 'apache'
 }
 
 @Component({
@@ -75,6 +76,17 @@ export class ExamplesComponent implements OnInit {
       source: 'self-improving-agent-learning'
     },
     {
+      id: 'selfevolving',
+      title: 'Self-Evolving Swarm',
+      category: 'Advanced',
+      process: 'SELF_IMPROVING',
+      agents: ['Technology Analyst', 'Market Analyst', 'Risk Analyst'],
+      description: 'Transparent self-evolution: the swarm discovers a better architecture and applies it automatically on the next run. Configured as SEQUENTIAL, Swarm.kickoff() reads evolution history from H2 and transparently switches to PARALLEL — zero code changes needed.',
+      diagram: 'Run 1: [Tech] ──► [Market] ──► [Risk]  (SEQUENTIAL)\n  └── observes: PROCESS_SUITABILITY\n  └── persists: PROCESS_TYPE_CHANGE → H2\n\nRun 2: Swarm.kickoff() reads H2\n  ┌─ [Tech]   ─┐\n  ├─ [Market] ─┤  (PARALLEL — evolved!)\n  └─ [Risk]   ─┘',
+      features: ['Transparent evolution', 'H2 persistent learning', 'Process type optimization', 'EvolutionAdvisor on kickoff()'],
+      source: 'self-evolving-swarm'
+    },
+    {
       id: 'enterprise',
       title: 'Governed Enterprise Workflow',
       category: 'Enterprise',
@@ -83,7 +95,8 @@ export class ExamplesComponent implements OnInit {
       description: 'Production-grade workflow with multi-tenancy (tenant-scoped memory/quotas), budget tracking ($5 cap, 500K token limit), and human-in-the-loop approval gates between research and writing phases.',
       diagram: 'Tenant: acme-research | Budget: $5.00 / 500K tokens\n\nResearch Analyst ──► [APPROVAL GATE] ──► Report Writer\n                     │ auto-approve    │\n                     │ after 5s        │\n                     └─────────────────┘\n──► Budget Snapshot logged',
       features: ['Multi-tenancy', 'Budget HARD_STOP/WARN', 'Approval gates', 'Tenant quotas'],
-      source: 'enterprise-self-improving-with-governance'
+      source: 'enterprise-self-improving-with-governance',
+      repo: 'enterprise'
     },
     {
       id: 'competitive',
@@ -425,7 +438,8 @@ export class ExamplesComponent implements OnInit {
       description: 'Enterprise-grade workflow with SPI extension points (AuditSink, LicenseProvider, MeteringSink), multi-tenancy isolation, and human-in-the-loop approval gates.',
       diagram: '[Researcher] ──► [Approval Gate] ──► [Writer]\n     │                                    │\n     +── AuditSink ─── MeteringSink ──────+\n     +── TenantContext ── BudgetTracker ──+',
       features: ['SPI extension points', 'AuditSink', 'LicenseProvider', 'MeteringSink', 'Multi-tenancy'],
-      source: 'enterprise-governance-spi-hooks'
+      source: 'enterprise-governance-spi-hooks',
+      repo: 'enterprise'
     },
     {
       id: 'auditedresearch',

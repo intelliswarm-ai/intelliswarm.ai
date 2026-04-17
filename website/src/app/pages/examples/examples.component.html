@@ -34,9 +34,10 @@
           <span class="category-badge">{{ex.category}}</span>
           <span class="process-badge">{{ex.process}}</span>
         </div>
-        <a [href]="'https://github.com/intelliswarm-ai/swarm-ai-examples/tree/main/' + ex.source"
+        <a [href]="(ex.repo === 'enterprise' ? 'https://github.com/intelliswarm-ai/swarm-ai-examples-enterprise' : 'https://github.com/intelliswarm-ai/swarm-ai-examples') + '/tree/main/' + ex.source"
            target="_blank" rel="noopener noreferrer" class="source-link">
           <span class="material-icons">code</span> Source
+          <span *ngIf="ex.repo === 'enterprise'" class="enterprise-badge">BSL</span>
         </a>
       </div>
 
