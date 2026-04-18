@@ -1,0 +1,200 @@
+<div class="trace-player" [class.swarm]="accent === 'swarm'" [class.baseline]="accent === 'baseline'">
+
+  <header class="tp-header">
+    <div class="tp-title">
+      <span class="tp-badge">{{ accent === 'swarm' ? 'SwarmAI' : 'Raw LLM' }}</span>
+      <h3>{{ title }}</h3>
+      <p>{{ subtitle }}</p>
+    </div>
+    <div class="tp-metrics">
+      <div class="tp-metric">
+        <span class="tp-metric-val">{{ livingTokens | number }}</span>
+        <span class="tp-metric-label">tokens</span>
+      </div>
+      <div class="tp-metric">
+        <span class="tp-metric-val">{{ costDisplay }}</span>
+        <span class="tp-metric-label">cost</span>
+      </div>
+      <div class="tp-metric" *ngIf="accent === 'swarm'">
+        <span class="tp-metric-val">{{ livingToolCalls }}</span>
+        <span class="tp-metric-label">tools</span>
+      </div>
+      <div class="tp-metric">
+        <span class="tp-metric-val">{{ elapsedSeconds }}s</span>
+        <span class="tp-metric-label">/ {{ totalSeconds }}s</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="tp-stream">
+
+    <ng-container *ngFor="let r of revealed; trackBy: trackByStep">
+      <ng-container *ngIf="isHeadline(r.step.kind)">
+
+        <!-- swarm_started -->
+        <div *ngIf="r.step.kind === 'swarm_started'" class="tp-row tp-system">
+          <span class="material-icons">hub</span>
+          <span>
+            Swarm started<ng-container *ngIf="r.step.process"> · process: <b>{{ r.step.process }}</b></ng-container><ng-container *ngIf="r.step.agentCount"> · {{ r.step.agentCount }} agent(s)</ng-container>
+          </span>
+        </div>
+
+        <!-- process_started -->
+        <div *ngIf="r.step.kind === 'process_started'" class="tp-row tp-task">
+          <span class="material-icons">settings</span>
+          <span>Process started<ng-container *ngIf="r.step.process"> · <b>{{ r.step.process }}</b></ng-container></span>
+        </div>
+
+        <!-- task_started -->
+        <div *ngIf="r.step.kind === 'task_started'" class="tp-row tp-task">
+          <span class="material-icons">playlist_play</span>
+          <span>
+            Task started<ng-container *ngIf="r.step.taskId"> · <b>{{ r.step.taskId }}</b></ng-container><ng-container *ngIf="r.step.agent"> → {{ r.step.agent }}</ng-container>
+          </span>
+        </div>
+
+        <!-- agent_started -->
+        <div *ngIf="r.step.kind === 'agent_started'" class="tp-row tp-agent-start"
+             [attr.data-agent-color]="agentColorIndex(r.step.agent)">
+          <span class="tp-avatar">{{ agentInitial(r.step.agent) }}</span>
+          <span><b>{{ r.step.agent }}</b><span class="tp-agent-role" *ngIf="r.step.role"> — {{ r.step.role }}</span></span>
+        </div>
+
+        <!-- agent_message -->
+        <div *ngIf="r.step.kind === 'agent_message'" class="tp-row tp-agent-msg"
+             [attr.data-agent-color]="agentColorIndex(r.step.agent)">
+          <span class="tp-avatar">{{ agentInitial(r.step.agent) }}</span>
+          <div class="tp-bubble">
+            <span class="tp-bubble-agent">{{ r.step.agent }}</span>
+            <div class="tp-bubble-text">{{ r.step.content }}</div>
+          </div>
+        </div>
+
+        <!-- agent_delegate -->
+        <div *ngIf="r.step.kind === 'agent_delegate'" class="tp-row tp-delegate">
+          <span class="material-icons">arrow_forward</span>
+          <span><b>{{ r.step.fromAgent }}</b> delegates to <b>{{ r.step.toAgent }}</b>: {{ r.step.task }}</span>
+        </div>
+
+        <!-- iteration_started -->
+        <div *ngIf="r.step.kind === 'iteration_started'" class="tp-row tp-iter">
+          <span class="material-icons">loop</span>
+          <span>Iteration <b>#{{ r.step.round }}</b></span>
+        </div>
+
+        <!-- tool_call -->
+        <div *ngIf="r.step.kind === 'tool_call'" class="tp-row tp-tool"
+             [class.tp-tool-running]="r.progress < 1"
+             [class.tp-tool-failed]="!!r.step.error">
+          <div class="tp-tool-head">
+            <span class="tp-tool-dot" [class.pulsing]="r.progress < 1"></span>
+            <span class="material-icons">build</span>
+            <span class="tp-tool-name">{{ r.step.tool }}</span>
+            <span class="tp-tool-meta">{{ r.progress < 1 ? 'calling…' : ((r.step.durationMs || 0) + 'ms') }}</span>
+          </div>
+          <div class="tp-tool-body" *ngIf="r.progress >= 1">
+            <div class="tp-tool-kv"><em>input:</em> <code>{{ toolInputSummary(r.step.input) }}</code></div>
+            <div class="tp-tool-kv" *ngIf="!r.step.error"><em>output:</em> <code>{{ toolInputSummary(r.step.output) }}</code></div>
+            <div class="tp-tool-err" *ngIf="r.step.error">{{ r.step.error }}</div>
+          </div>
+        </div>
+
+        <!-- tool_failed (standalone) -->
+        <div *ngIf="r.step.kind === 'tool_failed'" class="tp-row tp-fail">
+          <span class="material-icons">error_outline</span>
+          <span><b>{{ r.step.tool }}</b> failed — {{ r.step.error }}<span *ngIf="r.step.willRetry"> · will retry</span></span>
+        </div>
+
+        <!-- retry -->
+        <div *ngIf="r.step.kind === 'retry'" class="tp-row tp-retry">
+          <span class="material-icons">replay</span>
+          <span>Retry attempt {{ r.step.attempt }} ({{ r.step.reason }}, +{{ r.step.delayMs }}ms)</span>
+        </div>
+
+        <!-- fallback -->
+        <div *ngIf="r.step.kind === 'fallback'" class="tp-row tp-fallback">
+          <span class="material-icons">alt_route</span>
+          <span>Fallback: <b>{{ r.step.fromProvider }}</b> → <b>{{ r.step.toProvider }}</b></span>
+        </div>
+
+        <!-- llm_request — metrics row only. The response content is rendered as the
+             subsequent agent_message bubble so we don't duplicate the text twice per turn. -->
+        <div *ngIf="r.step.kind === 'llm_request'" class="tp-row tp-llm" [class.pulsing]="r.progress < 1">
+          <div class="tp-llm-head">
+            <span class="material-icons">bolt</span>
+            <span class="tp-llm-model">{{ r.step.model || trace.model }}</span>
+            <span class="tp-llm-meta" *ngIf="r.step.agent"> · {{ r.step.agent }}</span>
+            <span class="tp-llm-tok">
+              in <b>{{ (r.step.promptTokens || 0) | number }}</b> · out
+              <b>{{ (((r.step.completionTokens || 0) * r.progress) | number:'1.0-0') }}</b>
+              <span class="tp-llm-cursor" *ngIf="r.progress < 1">▍</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- budget -->
+        <div *ngIf="r.step.kind === 'budget_warning'" class="tp-row tp-budget-warn">
+          <span class="material-icons">account_balance_wallet</span>
+          <span>Budget warning · {{ r.step.tokensUsed }}/{{ r.step.budget }} tokens</span>
+        </div>
+        <div *ngIf="r.step.kind === 'budget_exceeded'" class="tp-row tp-budget-halt">
+          <span class="material-icons">pan_tool</span>
+          <span>Budget exceeded ({{ r.step.mode }}) · {{ r.step.tokensUsed }}/{{ r.step.budget }}</span>
+        </div>
+
+        <!-- skill -->
+        <div *ngIf="r.step.kind === 'skill_generated'" class="tp-row tp-skill">
+          <span class="material-icons">auto_fix_high</span>
+          <span>Skill generated: <b>{{ r.step.skillName }}</b></span>
+        </div>
+
+        <!-- approval -->
+        <div *ngIf="r.step.kind === 'approval_requested'" class="tp-row tp-approval-req">
+          <span class="material-icons">gavel</span>
+          <span>Approval requested · {{ r.step.gateName }} — {{ r.step.rationale }}</span>
+        </div>
+        <div *ngIf="r.step.kind === 'approval_granted'" class="tp-row tp-approval-ok">
+          <span class="material-icons">check_circle</span>
+          <span>Approval granted by {{ r.step.approver }}</span>
+        </div>
+
+        <!-- agent_completed — compact status row (the actual text is in the preceding agent_message bubble) -->
+        <div *ngIf="r.step.kind === 'agent_completed'" class="tp-row tp-task-done">
+          <span class="material-icons">task_alt</span>
+          <span>
+            Agent <b>{{ r.step.agent }}</b> done<ng-container *ngIf="r.step.turns"> · {{ r.step.turns }} turn(s)</ng-container><ng-container *ngIf="r.step.totalTokens"> · {{ r.step.totalTokens | number }} tokens</ng-container>
+          </span>
+        </div>
+
+        <!-- task_completed -->
+        <div *ngIf="r.step.kind === 'task_completed'" class="tp-row tp-task-done">
+          <span class="material-icons">check</span>
+          <span>Task complete<ng-container *ngIf="r.step.taskId"> · <b>{{ r.step.taskId }}</b></ng-container></span>
+        </div>
+
+        <!-- swarm_completed -->
+        <div *ngIf="r.step.kind === 'swarm_completed'" class="tp-row tp-done">
+          <span class="material-icons">done_all</span>
+          <span>Swarm completed<ng-container *ngIf="r.step.outcome"> · outcome: {{ r.step.outcome }}</ng-container></span>
+        </div>
+
+      </ng-container>
+    </ng-container>
+
+  </div>
+
+  <section class="tp-final" *ngIf="finalProgress > 0">
+    <div class="tp-final-label">
+      <span class="material-icons">auto_awesome</span>
+      Final output
+    </div>
+    <!-- Stream as plain text during reveal, render as markdown once complete -->
+    <pre class="tp-final-content tp-final-streaming"
+         *ngIf="finalProgress < 1"
+         [class.streaming]="true">{{ revealedFinal() }}<span class="tp-llm-cursor">▍</span></pre>
+    <div class="tp-final-content tp-final-rendered"
+         *ngIf="finalProgress >= 1"
+         [innerHTML]="renderedFinalHtml()"></div>
+  </section>
+
+</div>

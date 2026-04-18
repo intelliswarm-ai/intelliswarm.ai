@@ -46,12 +46,14 @@
 
 .nav-links {
   display: flex;
-  gap: 32px;
+  gap: 18px;
+  flex-wrap: nowrap;
 
   a {
     color: rgba(255, 255, 255, 0.7);
     text-decoration: none;
-    font-size: 16px;
+    font-size: 14px;
+    white-space: nowrap;
     transition: color 0.3s ease;
 
     &:hover, &.active {
@@ -435,9 +437,13 @@
 }
 
 // =============================================
-// Mobile styles
+// Mobile / small-laptop styles
+//
+// Breakpoint raised from 768px → 1100px because the desktop nav has 10+ items.
+// On a 1366px laptop there's not enough horizontal room for logo + 10 links +
+// right-actions at 14px font, so we collapse to the hamburger earlier.
 // =============================================
-@media (max-width: 768px) {
+@media (max-width: 1100px) {
   .nav-links {
     display: none;
   }
@@ -457,7 +463,9 @@
   .mobile-menu {
     display: flex;
   }
+}
 
+@media (max-width: 768px) {
   .logo-container .logo {
     .logo-icon {
       height: 28px;

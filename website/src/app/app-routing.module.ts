@@ -19,6 +19,8 @@ import { NewsComponent } from './pages/news/news.component';
 import { AdminComponent } from './pages/admin/admin.component';
 import { BlogListComponent } from './pages/blog/blog-list/blog-list.component';
 import { BlogPostComponent } from './pages/blog/blog-post/blog-post.component';
+import { DemosListComponent } from './pages/demos/demos-list/demos-list.component';
+import { DemoDetailComponent } from './pages/demos/demo-detail/demo-detail.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -39,6 +41,8 @@ const routes: Routes = [
   { path: 'news', component: NewsComponent },
   { path: 'blog', component: BlogListComponent },
   { path: 'blog/:slug', component: BlogPostComponent },
+  { path: 'demos', component: DemosListComponent },
+  { path: 'demos/:slug', component: DemoDetailComponent },
   { path: 'admin/contributions', component: AdminComponent },
   { path: '**', redirectTo: '/home' },
 ];

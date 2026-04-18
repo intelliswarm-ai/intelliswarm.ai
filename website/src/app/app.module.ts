@@ -47,6 +47,9 @@ import { NewsComponent } from './pages/news/news.component';
 import { AdminComponent } from './pages/admin/admin.component';
 import { BlogListComponent } from './pages/blog/blog-list/blog-list.component';
 import { BlogPostComponent } from './pages/blog/blog-post/blog-post.component';
+import { DemosListComponent } from './pages/demos/demos-list/demos-list.component';
+import { DemoDetailComponent } from './pages/demos/demo-detail/demo-detail.component';
+import { TracePlayerComponent } from './pages/demos/trace-player/trace-player.component';
 
 @NgModule({
   declarations: [
@@ -83,6 +86,9 @@ import { BlogPostComponent } from './pages/blog/blog-post/blog-post.component';
     AdminComponent,
     BlogListComponent,
     BlogPostComponent,
+    DemosListComponent,
+    DemoDetailComponent,
+    TracePlayerComponent,
   ],
   imports: [
     BrowserModule,

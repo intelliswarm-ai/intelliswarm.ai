@@ -1,0 +1,160 @@
+<div class="detail-container" *ngIf="!loading && !notFound && meta; else stateTpl">
+
+  <nav class="breadcrumbs">
+    <a routerLink="/demos">← All demos</a>
+  </nav>
+
+  <div class="detail-header">
+    <div class="header-badges">
+      <span class="category-badge">{{ meta.category }}</span>
+      <span class="process-badge">{{ meta.process }}</span>
+      <span class="valueadd-badge" *ngIf="meta.valueAddScore >= 80">+{{ meta.valueAddScore }} ValueAdd</span>
+      <span class="framework-badge" *ngIf="frameworkVersionForDisplay">
+        <span class="material-icons">inventory_2</span>
+        swarm-ai <b>v{{ frameworkVersionForDisplay }}</b>
+      </span>
+    </div>
+    <h1>{{ meta.title }}</h1>
+    <p class="asymmetry">
+      <span class="material-icons">compare_arrows</span>
+      {{ meta.asymmetryClaim }}
+    </p>
+  </div>
+
+  <section class="prompt-block" *ngIf="prompt">
+    <div class="prompt-label">Prompt (both sides)</div>
+    <pre class="prompt-text">{{ prompt }}</pre>
+  </section>
+
+  <section class="controls">
+    <div class="models">
+      <span class="ctrl-label">Model</span>
+      <button *ngFor="let run of meta.availableRuns"
+              class="model-chip"
+              [class.active]="run.model === selectedModel"
+              [class.canonical]="run.canonical"
+              (click)="selectModel(run.model)">
+        <span *ngIf="run.canonical" class="material-icons canonical-icon" title="Canonical recording">star</span>
+        {{ run.model }}
+      </button>
+    </div>
+
+    <div class="playback">
+      <button class="btn-icon" (click)="togglePlay()" [attr.aria-label]="isPlaying ? 'Pause' : 'Play'">
+        <span class="material-icons">{{ isPlaying ? 'pause' : 'play_arrow' }}</span>
+      </button>
+      <button class="btn-icon" (click)="replay()" aria-label="Replay from start">
+        <span class="material-icons">replay</span>
+      </button>
+      <button class="btn-icon" (click)="skipToEnd()" aria-label="Skip to end">
+        <span class="material-icons">skip_next</span>
+      </button>
+
+      <div class="speed-toggle">
+        <button *ngFor="let s of speedOptions"
+                class="speed-btn"
+                [class.active]="speed === s"
+                (click)="setSpeed(s)">{{ s }}×</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="scrubber-wrap">
+    <input type="range" class="scrubber"
+           [min]="0" [max]="maxDuration" step="10"
+           [value]="currentTimeMs"
+           (input)="seek($event)"
+           aria-label="Seek" />
+    <div class="scrub-fill" [style.width.%]="progressPct"></div>
+  </div>
+
+  <section class="split" *ngIf="swarmTrace && baselineTrace">
+    <app-trace-player
+      class="split-side swarm"
+      [trace]="swarmTrace"
+      [elapsedMs]="currentTimeMs"
+      [title]="meta.title"
+      [subtitle]="'SwarmAI workflow · ' + meta.process"
+      accent="swarm"></app-trace-player>
+
+    <app-trace-player
+      class="split-side baseline"
+      [trace]="baselineTrace"
+      [elapsedMs]="currentTimeMs"
+      [title]="meta.title"
+      [subtitle]="'Raw ' + baselineTrace.modelDisplayName + ' — no tools, no memory'"
+      accent="baseline"></app-trace-player>
+  </section>
+
+  <section class="pending-recording" *ngIf="traceMissing">
+    <span class="material-icons">hourglass_empty</span>
+    <div>
+      <h3>Recording pending</h3>
+      <p>
+        This demo hasn't been run against <b>{{ selectedModel }}</b> yet — we only publish
+        real transcripts on this site. No simulated or hand-edited traces.
+      </p>
+      <p class="small">
+        Source example: <code>swarm-ai-examples/{{ meta.sourceExample }}</code> ·
+        Framework: <code>{{ meta.frameworkVersion }}</code>
+      </p>
+    </div>
+  </section>
+
+  <section class="delta-strip" *ngIf="swarmTrace && baselineTrace">
+    <div class="delta">
+      <span class="delta-label">Δ tokens (swarm − baseline)</span>
+      <span class="delta-val">{{ tokenDelta }}</span>
+    </div>
+    <div class="delta">
+      <span class="delta-label">Δ cost</span>
+      <span class="delta-val">{{ costDelta }}</span>
+    </div>
+    <div class="delta">
+      <span class="delta-label">Δ wall-time</span>
+      <span class="delta-val">{{ wallTimeDelta }}</span>
+    </div>
+    <div class="delta">
+      <span class="delta-label">Asymmetry</span>
+      <span class="delta-val positive">
+        swarm succeeds · baseline
+        {{ baselineTrace.metrics.toolCalls === 0 ? 'cannot reach tools' : 'hedged' }}
+      </span>
+    </div>
+  </section>
+
+  <section class="analysis-block" *ngIf="analysisHtml">
+    <div class="analysis-label">
+      <span class="material-icons">insights</span>
+      What you're gaining
+    </div>
+    <div class="analysis-content" [innerHTML]="analysisHtml"></div>
+  </section>
+
+  <section class="workflow-block" *ngIf="workflow">
+    <details>
+      <summary>
+        <span class="material-icons">code</span>
+        <span>Workflow YAML</span>
+      </summary>
+      <pre class="workflow-text">{{ workflow }}</pre>
+    </details>
+  </section>
+
+  <section class="repro-note">
+    <p>
+      <span class="material-icons">verified</span>
+      Reproducible — model version, temperature, seed, framework git SHA, and
+      hashes of prompt + workflow are embedded in every trace. Re-run to diff
+      against this recording.
+    </p>
+  </section>
+
+</div>
+
+<ng-template #stateTpl>
+  <div class="state-panel" *ngIf="loading">Loading demo…</div>
+  <div class="state-panel error" *ngIf="notFound">
+    Demo not found. <a routerLink="/demos">Back to demos</a>
+  </div>
+</ng-template>

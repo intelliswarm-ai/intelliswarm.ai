@@ -1,0 +1,75 @@
+<div class="demos-container">
+
+  <section class="demos-hero">
+    <div class="hero-badge">
+      <span class="badge-icon">&#x1F3AC;</span>
+      <span>Prerecorded · Real traces · Zero cost per visit</span>
+    </div>
+    <h1 class="hero-title">
+      SwarmAI <span class="gradient-text">vs.</span> raw LLM
+    </h1>
+    <p class="hero-description">
+      Same prompt. Same model. Left panel runs through the SwarmAI framework.
+      Right panel is a plain chat-completion call. Every number shown comes
+      from a real recorded execution — scrub, pause, compare.
+    </p>
+  </section>
+
+  <section class="filter-section" *ngIf="categories.length > 1">
+    <button *ngFor="let cat of categories"
+            class="filter-btn"
+            [class.active]="selectedCategory === cat"
+            (click)="selectCategory(cat)">
+      {{ cat }}
+    </button>
+  </section>
+
+  <section class="demos-grid" *ngIf="!loading; else loadingTpl">
+    <a *ngFor="let demo of filteredDemos"
+       class="demo-card"
+       [routerLink]="['/demos', demo.slug]">
+
+      <header class="demo-card-header">
+        <span class="category-badge">{{ demo.category }}</span>
+        <span class="process-badge">{{ demo.process }}</span>
+        <span class="valueadd-badge" *ngIf="demo.valueAddScore >= 80" title="Measured asymmetry score vs raw LLM">
+          +{{ demo.valueAddScore }} ValueAdd
+        </span>
+      </header>
+
+      <h3 class="demo-title">{{ demo.title }}</h3>
+      <p class="demo-summary">{{ demo.summary }}</p>
+
+      <p class="asymmetry">
+        <span class="material-icons">compare_arrows</span>
+        {{ demo.asymmetryClaim }}
+      </p>
+
+      <footer class="demo-card-footer">
+        <div class="model-chips">
+          <span *ngFor="let m of modelChips(demo)" class="model-chip">{{ m }}</span>
+        </div>
+        <span class="play-cta">
+          <span class="material-icons">play_arrow</span> Play
+        </span>
+      </footer>
+    </a>
+
+    <div class="empty-state" *ngIf="filteredDemos.length === 0">
+      No demos in <strong>{{ selectedCategory }}</strong> yet.
+    </div>
+  </section>
+
+  <ng-template #loadingTpl>
+    <div class="loading">Loading demos…</div>
+  </ng-template>
+
+  <section class="demos-note">
+    <p>
+      <span class="material-icons">verified</span>
+      Every trace is reproducible. Recordings pin model version, framework git SHA,
+      temperature, and seed — see <a href="https://github.com/intelliswarm-ai/swarm-ai" target="_blank" rel="noopener">swarm-ai</a>
+      for the recorder.
+    </p>
+  </section>
+</div>

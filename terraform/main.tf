@@ -195,6 +195,27 @@ data "aws_cloudfront_cache_policy" "caching_optimized" {
   name = "Managed-CachingOptimized"
 }
 
+resource "aws_cloudfront_function" "rewrite_index_html" {
+  name    = "intelliswarm-rewrite-index-html"
+  runtime = "cloudfront-js-2.0"
+  comment = "Rewrite extensionless URIs to /index.html so prerendered SPA routes serve their own HTML (fixes LinkedIn/og-tag scraping)."
+  publish = true
+  code    = <<-EOT
+    function handler(event) {
+      var request = event.request;
+      var uri = request.uri;
+
+      if (uri.endsWith('/')) {
+        request.uri = uri + 'index.html';
+      } else if (!uri.split('/').pop().includes('.')) {
+        request.uri = uri + '/index.html';
+      }
+
+      return request;
+    }
+  EOT
+}
+
 resource "aws_cloudfront_distribution" "website" {
   enabled             = true
   is_ipv6_enabled     = true
@@ -237,6 +258,11 @@ resource "aws_cloudfront_distribution" "website" {
     cached_methods         = ["GET", "HEAD"]
     compress               = true
     cache_policy_id        = data.aws_cloudfront_cache_policy.caching_optimized.id
+
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.rewrite_index_html.arn
+    }
   }
 
   # --- /api/* behavior: proxy to API Gateway (no caching, forward cookies) ---
@@ -492,14 +518,14 @@ resource "null_resource" "lambda_staging" {
   depends_on = [null_resource.backend_deps]
 
   triggers = {
-    lambda_handler = filemd5("${path.module}/../backend/lambda.js")
-    package_json   = filemd5("${path.module}/../backend/package.json")
-    health_handler = filemd5("${path.module}/../backend/handlers/health.js")
-    news_handler   = filemd5("${path.module}/../backend/handlers/news.js")
+    lambda_handler  = filemd5("${path.module}/../backend/lambda.js")
+    package_json    = filemd5("${path.module}/../backend/package.json")
+    health_handler  = filemd5("${path.module}/../backend/handlers/health.js")
+    news_handler    = filemd5("${path.module}/../backend/handlers/news.js")
     contrib_handler = filemd5("${path.module}/../backend/handlers/contribute.js")
     ledger_handler  = filemd5("${path.module}/../backend/handlers/ledger.js")
-    storage_index  = filemd5("${path.module}/../backend/storage/index.js")
-    storage_dynamo = filemd5("${path.module}/../backend/storage/dynamodb.js")
+    storage_index   = filemd5("${path.module}/../backend/storage/index.js")
+    storage_dynamo  = filemd5("${path.module}/../backend/storage/dynamodb.js")
     contact_handler = filemd5("${path.module}/../backend/handlers/contact.js")
     admin_auth      = filemd5("${path.module}/../backend/handlers/admin-auth.js")
   }
@@ -710,14 +736,14 @@ resource "aws_apigatewayv2_stage" "default" {
   access_log_settings {
     destination_arn = aws_cloudwatch_log_group.api_gw.arn
     format = jsonencode({
-      requestId      = "$context.requestId"
-      ip             = "$context.identity.sourceIp"
-      requestTime    = "$context.requestTime"
-      httpMethod     = "$context.httpMethod"
-      routeKey       = "$context.routeKey"
-      status         = "$context.status"
-      protocol       = "$context.protocol"
-      responseLength = "$context.responseLength"
+      requestId        = "$context.requestId"
+      ip               = "$context.identity.sourceIp"
+      requestTime      = "$context.requestTime"
+      httpMethod       = "$context.httpMethod"
+      routeKey         = "$context.routeKey"
+      status           = "$context.status"
+      protocol         = "$context.protocol"
+      responseLength   = "$context.responseLength"
       integrationError = "$context.integrationErrorMessage"
     })
   }
