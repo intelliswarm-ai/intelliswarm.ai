@@ -50,6 +50,8 @@ import { BlogPostComponent } from './pages/blog/blog-post/blog-post.component';
 import { DemosListComponent } from './pages/demos/demos-list/demos-list.component';
 import { DemoDetailComponent } from './pages/demos/demo-detail/demo-detail.component';
 import { TracePlayerComponent } from './pages/demos/trace-player/trace-player.component';
+import { ToolsComponent } from './pages/tools/tools.component';
+import { ToolDetailComponent } from './pages/tools/tool-detail/tool-detail.component';
 
 @NgModule({
   declarations: [
@@ -89,6 +91,8 @@ import { TracePlayerComponent } from './pages/demos/trace-player/trace-player.co
     DemosListComponent,
     DemoDetailComponent,
     TracePlayerComponent,
+    ToolsComponent,
+    ToolDetailComponent,
   ],
   imports: [
     BrowserModule,

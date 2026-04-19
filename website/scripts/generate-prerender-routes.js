@@ -31,6 +31,7 @@ const STATIC_ROUTES = [
   '/news',
   '/docs',
   '/examples',
+  '/tools',
   '/contribute',
 ];
 
@@ -54,11 +55,27 @@ function demoRoutes() {
   return idx.demos.map(slug => `/demos/${slug}`);
 }
 
+function toolRoutes() {
+  const idx = readJsonSafe(path.join(ASSETS_DIR, 'tools', 'index.json'));
+  if (!idx || !Array.isArray(idx.groups)) return [];
+  const ids = [];
+  idx.groups.forEach(g => {
+    if (!Array.isArray(g.tools)) return;
+    g.tools.forEach(t => {
+      if (t && typeof t.id === 'string' && t.id.length > 0) {
+        ids.push(t.id);
+      }
+    });
+  });
+  return ids.map(id => `/tools/${id}`);
+}
+
 function main() {
   const routes = [
     ...STATIC_ROUTES,
     ...blogRoutes(),
     ...demoRoutes(),
+    ...toolRoutes(),
   ];
 
   // De-dupe while preserving order

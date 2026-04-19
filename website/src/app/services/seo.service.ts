@@ -21,7 +21,7 @@ export class SeoService {
   private readonly siteTitle = 'IntelliSwarm.AI';
   private readonly siteUrl = 'https://intelliswarm.ai';
   private readonly defaultDescription =
-    'Enterprise-grade AI agent orchestration for Java. Self-improving multi-agent workflows with 7 process types, YAML DSL, and 26 built-in tools.';
+    'Enterprise-grade AI agent orchestration for Java. Self-improving multi-agent workflows with 7 process types, YAML DSL, and 38 built-in tools.';
   private readonly defaultImage = `${this.siteUrl}/assets/img/IntelliSwarm_AI_Logo.jpg`;
 
   constructor(

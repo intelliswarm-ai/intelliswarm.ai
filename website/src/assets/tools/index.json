@@ -1,0 +1,1218 @@
+{
+  "schemaVersion": 2,
+  "repoUrl": "https://github.com/intelliswarm-ai/swarm-ai",
+  "repoBlobBase": "https://github.com/intelliswarm-ai/swarm-ai/blob/main/",
+  "description": "Canonical catalog of built-in tools shipped with the SwarmAI framework. Consumed by the website's /tools page and published to the CDN so third-party clients can fetch the same catalog.",
+  "groups": [
+    {
+      "id": "web-http",
+      "titleLead": "Web &",
+      "titleHighlight": "HTTP",
+      "accent": "Reach the open web",
+      "tools": [
+        {
+          "id": "web_search",
+          "title": "Web Search",
+          "tagline": "Search the web for news, market analysis, and reference information.",
+          "content": "Search the web for news, market analysis, and reference information. Returns ranked results with titles, snippets, and source URLs — ready for citation in agent outputs.",
+          "overview": "Looks things up on the web, the way you'd Google a topic. Give it a question, company name, or ticker, and it brings back a short list of the most relevant news and articles — so the agent can work from what's happening right now instead of only what it already knew.",
+          "description": "Routes each query across any configured search providers — AlphaVantage, NewsAPI, Polygon, Finnhub, Google Programmable Search, Bing — and falls back to the next one if the first returns nothing. Results come back ranked with a title, snippet, and source URL per entry, so agents can quote and cite them directly.",
+          "example": {
+            "prompt": "Find recent news about Tesla's earnings.",
+            "call": "web_search(query=\"Tesla earnings\")",
+            "result": "a ranked list of the latest articles — title, snippet, and source URL for each."
+          },
+          "codeSnippet": "# market-research.yaml\nname: market-research-crew\nprocess: SEQUENTIAL\n\nagents:\n  - id: researcher\n    role: Market Research Analyst\n    goal: Surface fresh news on target tickers\n    tools:\n      - web_search\n\ntasks:\n  - id: market-research-task\n    agent: researcher\n    description: Find recent news on Tesla's Q4 earnings and summarize the top 3 stories with citations.",
+          "javaSnippet": "import ai.intelliswarm.swarmai.agent.Agent;\nimport ai.intelliswarm.swarmai.task.Task;\nimport ai.intelliswarm.swarmai.swarm.Swarm;\nimport ai.intelliswarm.swarmai.swarm.SwarmOutput;\nimport ai.intelliswarm.swarmai.process.ProcessType;\nimport ai.intelliswarm.swarmai.tool.common.WebSearchTool;\nimport org.springframework.ai.chat.client.ChatClient;\nimport org.springframework.beans.factory.annotation.Autowired;\n\n@Autowired ChatClient chatClient;\n@Autowired WebSearchTool webSearchTool;\n\nAgent researcher = Agent.builder()\n    .role(\"Market Research Analyst\")\n    .goal(\"Surface fresh news on target tickers\")\n    .chatClient(chatClient)\n    .tool(webSearchTool)\n    .build();\n\nTask researcherTask = Task.builder()\n    .description(\"Find recent news on Tesla's Q4 earnings and summarize the top 3 stories with citations.\")\n    .agent(researcher)\n    .build();\n\nSwarmOutput result = Swarm.builder()\n    .agent(researcher)\n    .task(researcherTask)\n    .process(ProcessType.SEQUENTIAL)\n    .build()\n    .kickoff();",
+          "configuration": [
+            {
+              "key": "stock.search.alphavantage.api-key",
+              "description": "AlphaVantage key (defaults to 'demo'); also reads ALPHA_VANTAGE_API_KEY env.",
+              "required": false
+            },
+            {
+              "key": "stock.search.newsapi.api-key",
+              "description": "NewsAPI.org key for headline search.",
+              "required": false
+            },
+            {
+              "key": "stock.search.polygon.api-key",
+              "description": "Polygon.io key for market data.",
+              "required": false
+            },
+            {
+              "key": "stock.search.finnhub.api-key",
+              "description": "Finnhub key for financial news search.",
+              "required": false
+            },
+            {
+              "key": "stock.search.google.api-key",
+              "description": "Google Custom Search API key.",
+              "required": false
+            },
+            {
+              "key": "stock.search.google.search-engine-id",
+              "description": "Google Programmable Search Engine ID (cx).",
+              "required": false
+            },
+            {
+              "key": "stock.search.bing.api-key",
+              "description": "Bing Web Search API key.",
+              "required": false
+            }
+          ],
+          "workflows": [
+            "Stock news and market sentiment in finance crews",
+            "Real-time headline gathering for analyst agents",
+            "Competitive intel and company news scans",
+            "Multi-provider fallback for high reliability"
+          ],
+          "sourcePath": "swarmai-tools/src/main/java/ai/intelliswarm/swarmai/tool/common/WebSearchTool.java"
+        },
+        {
+          "id": "web_scrape",
+          "title": "Web Scrape",
+          "tagline": "Fetch a web page and extract clean structured content.",
+          "content": "Fetch any URL and extract clean title, body text, headings, links, and tables. Strips boilerplate and returns structured content agents can reason over directly.",
+          "overview": "Visits a web page and pulls out just the readable stuff — the headline, the article, and any tables — while ignoring the menus, ads, and footers. Think of it as handing the agent the clean version of the page.",
+          "description": "Does a plain HTTP fetch on the URL, parses the HTML, and extracts the title, body text, headings, tables, and optionally the link list. Supports a CSS selector so you can target a specific region of the page. It does not run JavaScript — for pages that need it, use the 'browse' tool instead.",
+          "example": {
+            "prompt": "Pull the article text from this blog post.",
+            "call": "web_scrape(url=\"https://example.com/blog/post\")",
+            "result": "the article's title, body text, and any tables — menus, ads, and footer stripped out."
+          },
+          "codeSnippet": "# content-harvest.yaml\nname: content-harvest-crew\nprocess: SEQUENTIAL\n\nagents:\n  - id: extractor\n    role: Content Extractor\n    goal: Pull clean article text from public web pages\n    tools:\n      - web_scrape\n\ntasks:\n  - id: content-harvest-task\n    agent: extractor\n    description: Visit the supplied URL and return just the body text, title, and any tables.",
+          "javaSnippet": "import ai.intelliswarm.swarmai.agent.Agent;\nimport ai.intelliswarm.swarmai.task.Task;\nimport ai.intelliswarm.swarmai.swarm.Swarm;\nimport ai.intelliswarm.swarmai.swarm.SwarmOutput;\nimport ai.intelliswarm.swarmai.process.ProcessType;\nimport ai.intelliswarm.swarmai.tool.common.WebScrapeTool;\nimport org.springframework.ai.chat.client.ChatClient;\nimport org.springframework.beans.factory.annotation.Autowired;\n\n@Autowired ChatClient chatClient;\n@Autowired WebScrapeTool webScrapeTool;\n\nAgent extractor = Agent.builder()\n    .role(\"Content Extractor\")\n    .goal(\"Pull clean article text from public web pages\")\n    .chatClient(chatClient)\n    .tool(webScrapeTool)\n    .build();\n\nTask extractorTask = Task.builder()\n    .description(\"Visit the supplied URL and return just the body text, title, and any tables.\")\n    .agent(extractor)\n    .build();\n\nSwarmOutput result = Swarm.builder()\n    .agent(extractor)\n    .task(extractorTask)\n    .process(ProcessType.SEQUENTIAL)\n    .build()\n    .kickoff();",
+          "configuration": [],
+          "workflows": [
+            "News article and blog extraction",
+            "Pulling structured tables off static pages",
+            "CSS-selector targeted scraping in research workflows",
+            "Lightweight alternative to 'browse' for non-JS pages"
+          ],
+          "sourcePath": "swarmai-tools/src/main/java/ai/intelliswarm/swarmai/tool/common/WebScrapeTool.java"
+        },
+        {
+          "id": "browse",
+          "title": "Headless Browser",
+          "tagline": "JavaScript-aware page rendering.",
+          "content": "JavaScript-aware page rendering for dynamic sites like Yahoo Finance, Google Finance, and SPAs. Handles client-side rendering where plain HTTP scrapes fall short.",
+          "overview": "Some modern websites (like Yahoo Finance or Google Finance) only show their content after the browser runs JavaScript. This tool opens the page in a real browser behind the scenes, waits for it to fully load, and hands the finished content to the agent.",
+          "description": "Launches a headless browser session, navigates to the URL, waits for the page to finish rendering (wait time is configurable), then extracts the visible text and tables as markdown. Slower and heavier than 'web_scrape' but necessary for modern sites whose content only appears after JavaScript runs.",
+          "example": {
+            "prompt": "What is Apple's current stock price on Yahoo Finance?",
+            "call": "browse(url=\"https://finance.yahoo.com/quote/AAPL\")",
+            "result": "the fully rendered page content, including numbers that Yahoo loads via JavaScript."
+          },
+          "codeSnippet": "# price-watch.yaml\nname: price-watch-crew\nprocess: SEQUENTIAL\n\nagents:\n  - id: scout\n    role: Market Data Scout\n    goal: Read live prices from JavaScript-heavy finance pages\n    tools:\n      - browse\n\ntasks:\n  - id: price-watch-task\n    agent: scout\n    description: Fetch AAPL's live quote from Yahoo Finance and report the spot price and day change.",
+          "javaSnippet": "import ai.intelliswarm.swarmai.agent.Agent;\nimport ai.intelliswarm.swarmai.task.Task;\nimport ai.intelliswarm.swarmai.swarm.Swarm;\nimport ai.intelliswarm.swarmai.swarm.SwarmOutput;\nimport ai.intelliswarm.swarmai.process.ProcessType;\nimport ai.intelliswarm.swarmai.tool.common.HeadlessBrowserTool;\nimport org.springframework.ai.chat.client.ChatClient;\nimport org.springframework.beans.factory.annotation.Autowired;\n\n@Autowired ChatClient chatClient;\n@Autowired HeadlessBrowserTool headlessBrowserTool;\n\nAgent scout = Agent.builder()\n    .role(\"Market Data Scout\")\n    .goal(\"Read live prices from JavaScript-heavy finance pages\")\n    .chatClient(chatClient)\n    .tool(headlessBrowserTool)\n    .build();\n\nTask scoutTask = Task.builder()\n    .description(\"Fetch AAPL's live quote from Yahoo Finance and report the spot price and day change.\")\n    .agent(scout)\n    .build();\n\nSwarmOutput result = Swarm.builder()\n    .agent(scout)\n    .task(scoutTask)\n    .process(ProcessType.SEQUENTIAL)\n    .build()\n    .kickoff();",
+          "configuration": [],
+          "workflows": [
+            "Yahoo/Google Finance scraping in stock-analysis crews",
+            "JS-rendered SPA content extraction",
+            "Dynamic dashboards or auth-free gated pages",
+            "Fallback when web_scrape returns empty content"
+          ],
+          "sourcePath": "swarmai-tools/src/main/java/ai/intelliswarm/swarmai/tool/common/HeadlessBrowserTool.java"
+        },
+        {
+          "id": "http_request",
+          "title": "HTTP Request",
+          "tagline": "Make authenticated REST calls.",
+          "content": "Make authenticated REST calls (GET, POST, PUT, DELETE, PATCH) with custom headers, query params, and bodies. The universal bridge for any API your agents need to reach.",
+          "overview": "Lets the agent talk to any online service. If there's an API somewhere — your own internal one, or a vendor's — this is the generic phone the agent uses to ask it for data or to send it something.",
+          "description": "Performs a single HTTP request with the specified method (GET/POST/PUT/DELETE/PATCH), custom headers, query parameters, and body. Optionally injects a bearer token for the Authorization header. Returns the raw response body so the agent can parse it with json_transform or xml_parse as needed.",
+          "example": {
+            "prompt": "Call our internal pricing API for customer 12345.",
+            "call": "http_request(method=\"GET\", url=\"https://api.internal/pricing/12345\", authToken=\"•••\")",
+            "result": "whatever response your API returns — typically a JSON payload the agent can read."
+          },
+          "codeSnippet": "# api-bridge.yaml\nname: api-bridge-crew\nprocess: SEQUENTIAL\n\nagents:\n  - id: integrator\n    role: API Integrator\n    goal: Call internal REST services on behalf of the crew\n    tools:\n      - http_request\n\ntasks:\n  - id: api-bridge-task\n    agent: integrator\n    description: GET https://api.internal/pricing/12345 with the supplied bearer token and return the response.",
+          "javaSnippet": "import ai.intelliswarm.swarmai.agent.Agent;\nimport ai.intelliswarm.swarmai.task.Task;\nimport ai.intelliswarm.swarmai.swarm.Swarm;\nimport ai.intelliswarm.swarmai.swarm.SwarmOutput;\nimport ai.intelliswarm.swarmai.process.ProcessType;\nimport ai.intelliswarm.swarmai.tool.common.HttpRequestTool;\nimport org.springframework.ai.chat.client.ChatClient;\nimport org.springframework.beans.factory.annotation.Autowired;\n\n@Autowired ChatClient chatClient;\n@Autowired HttpRequestTool httpRequestTool;\n\nAgent integrator = Agent.builder()\n    .role(\"API Integrator\")\n    .goal(\"Call internal REST services on behalf of the crew\")\n    .chatClient(chatClient)\n    .tool(httpRequestTool)\n    .build();\n\nTask integratorTask = Task.builder()\n    .description(\"GET https://api.internal/pricing/12345 with the supplied bearer token and return the response.\")\n    .agent(integrator)\n    .build();\n\nSwarmOutput result = Swarm.builder()\n    .agent(integrator)\n    .task(integratorTask)\n    .process(ProcessType.SEQUENTIAL)\n    .build()\n    .kickoff();",
+          "configuration": [],
+          "workflows": [
+            "Calling custom internal REST APIs from agents",
+            "Webhook integrations in orchestration crews",
+            "Bearer-authenticated API calls (POST/PUT)",
+            "API probing in integration or QA agents"
+          ],
+          "sourcePath": "swarmai-tools/src/main/java/ai/intelliswarm/swarmai/tool/common/HttpRequestTool.java"
+        }
+      ]
+    },
+    {
+      "id": "knowledge-research",
+      "titleLead": "Knowledge &",
+      "titleHighlight": "Research",
+      "accent": "Ground answers in trusted sources",
+      "tools": [
+        {
+          "id": "arxiv_search",
+          "title": "arXiv Search",
+          "tagline": "Query the arXiv preprint server.",
+          "content": "Query the arXiv preprint server across CS, physics, math, and biology. Returns papers with titles, authors, abstracts, and PDF links. No API key required.",
+          "overview": "Searches arXiv, the world's largest open library of scientific preprints. Great when you want the agent to pull recent papers on a topic — machine learning, physics, biology — and get back titles, authors, and links to the PDFs.",
+          "description": "Issues a query to the public arXiv API — either free-text across the full corpus or a direct ID lookup (e.g. '2308.12345'). Returns paper titles, authors, abstracts, submission dates, and direct PDF links. No API key is needed; rate limits apply as set by arXiv.",
+          "example": {
+            "prompt": "Find recent papers on retrieval-augmented generation.",
+            "call": "arxiv_search(query=\"retrieval-augmented generation\", maxResults=10)",
+            "result": "a list of preprints with titles, authors, abstracts, and direct PDF links."
+          },
+          "codeSnippet": "# literature-review.yaml\nname: literature-review-crew\nprocess: SEQUENTIAL\n\nagents:\n  - id: librarian\n    role: Research Librarian\n    goal: Find recent preprints relevant to the research question\n    tools:\n      - arxiv_search\n\ntasks:\n  - id: literature-review-task\n    agent: librarian\n    description: Search arXiv for 'retrieval-augmented generation' and return the top 10 papers with titles, authors, and PDF links.",
+          "javaSnippet": "import ai.intelliswarm.swarmai.agent.Agent;\nimport ai.intelliswarm.swarmai.task.Task;\nimport ai.intelliswarm.swarmai.swarm.Swarm;\nimport ai.intelliswarm.swarmai.swarm.SwarmOutput;\nimport ai.intelliswarm.swarmai.process.ProcessType;\nimport ai.intelliswarm.swarmai.tool.research.ArxivTool;\nimport org.springframework.ai.chat.client.ChatClient;\nimport org.springframework.beans.factory.annotation.Autowired;\n\n@Autowired ChatClient chatClient;\n@Autowired ArxivTool arxivTool;\n\nAgent librarian = Agent.builder()\n    .role(\"Research Librarian\")\n    .goal(\"Find recent preprints relevant to the research question\")\n    .chatClient(chatClient)\n    .tool(arxivTool)\n    .build();\n\nTask librarianTask = Task.builder()\n    .description(\"Search arXiv for 'retrieval-augmented generation' and return the top 10 papers with titles, authors, and PDF links.\")\n    .agent(librarian)\n    .build();\n\nSwarmOutput result = Swarm.builder()\n    .agent(librarian)\n    .task(librarianTask)\n    .process(ProcessType.SEQUENTIAL)\n    .build()\n    .kickoff();",
+          "configuration": [],
+          "workflows": [
+            "Academic literature review crews",
+            "Prior-art search for R&D agents",
+            "Fetch a specific preprint by arXiv ID",
+            "Scientific research demos (ML/physics)"
+          ],
+          "sourcePath": "swarmai-tools/src/main/java/ai/intelliswarm/swarmai/tool/research/ArxivTool.java"
+        },
+        {
+          "id": "wikipedia",
+          "title": "Wikipedia",
+          "tagline": "Factual grounding via the public Wikipedia API.",
+          "content": "Factual grounding via the public Wikipedia REST API. Supports summaries, keyword search, and full-article retrieval so agents can cite encyclopedic context.",
+          "overview": "Pulls facts straight from Wikipedia. Agents use it to get quick, trustworthy background on people, places, companies, or concepts before going deeper — and it works across dozens of languages.",
+          "description": "Calls the public Wikipedia REST API with one of three operations: 'summary' fetches a page's lead paragraph, 'search' matches keywords to page titles, and 'article' returns the full article text. Supports every Wikipedia language edition (en, de, zh, …).",
+          "example": {
+            "prompt": "Give me a short background on the Federal Reserve.",
+            "call": "wikipedia(title=\"Federal Reserve\", operation=\"summary\")",
+            "result": "a concise encyclopedic summary of the topic."
+          },
+          "codeSnippet": "# background-research.yaml\nname: background-research-crew\nprocess: SEQUENTIAL\n\nagents:\n  - id: analyst\n    role: Research Analyst\n    goal: Ground answers with trustworthy encyclopedic facts\n    tools:\n      - wikipedia\n\ntasks:\n  - id: background-research-task\n    agent: analyst\n    description: Fetch a Wikipedia summary for 'Federal Reserve' and extract its stated mandate.",
+          "javaSnippet": "import ai.intelliswarm.swarmai.agent.Agent;\nimport ai.intelliswarm.swarmai.task.Task;\nimport ai.intelliswarm.swarmai.swarm.Swarm;\nimport ai.intelliswarm.swarmai.swarm.SwarmOutput;\nimport ai.intelliswarm.swarmai.process.ProcessType;\nimport ai.intelliswarm.swarmai.tool.research.WikipediaTool;\nimport org.springframework.ai.chat.client.ChatClient;\nimport org.springframework.beans.factory.annotation.Autowired;\n\n@Autowired ChatClient chatClient;\n@Autowired WikipediaTool wikipediaTool;\n\nAgent analyst = Agent.builder()\n    .role(\"Research Analyst\")\n    .goal(\"Ground answers with trustworthy encyclopedic facts\")\n    .chatClient(chatClient)\n    .tool(wikipediaTool)\n    .build();\n\nTask analystTask = Task.builder()\n    .description(\"Fetch a Wikipedia summary for 'Federal Reserve' and extract its stated mandate.\")\n    .agent(analyst)\n    .build();\n\nSwarmOutput result = Swarm.builder()\n    .agent(analyst)\n    .task(analystTask)\n    .process(ProcessType.SEQUENTIAL)\n    .build()\n    .kickoff();",
+          "configuration": [
+            {
+              "key": "swarmai.tools.wikipedia.user-agent",
+              "description": "User-Agent header sent to Wikipedia REST API. Defaults to 'SwarmAI/1.0 (https://intelliswarm.ai; contact@intelliswarm.ai)'.",
+              "required": false
+            }
+          ],
+          "workflows": [
+            "Factual grounding for named entities",
+            "Biographies and historical context",
+            "Multi-lingual knowledge lookup (en/de/zh/…)",
+            "Disambiguation before deeper research"
+          ],
+          "sourcePath": "swarmai-tools/src/main/java/ai/intelliswarm/swarmai/tool/research/WikipediaTool.java"
+        },
+        {
+          "id": "wolfram_alpha",
+          "title": "Wolfram Alpha",
+          "tagline": "Computational knowledge engine.",
+          "content": "Computational knowledge engine for math, science, units, currencies, and formulas. Returns short answers or full step-by-step solution pods with a free Wolfram AppID.",
+          "overview": "The fact-and-math engine behind services like Siri. Ask it to compute an expression, convert units, or look up a scientific constant and it returns a precise answer instead of the language model guessing.",
+          "description": "Sends the query to the Wolfram Alpha API and returns either a short one-line answer (the 'short answer' endpoint) or the full structured response with multiple solution pods (the 'full results' endpoint). Good for deterministic math, unit conversion, currency rates, and scientific lookups. Requires a free Wolfram AppID.",
+          "example": {
+            "prompt": "What's the derivative of x³ + 2x² − 5x?",
+            "call": "wolfram_alpha(query=\"derivative of x^3 + 2x^2 - 5x\")",
+            "result": "3x² + 4x − 5, with optional step-by-step working."
+          },
+          "codeSnippet": "# quant.yaml\nname: quant-crew\nprocess: SEQUENTIAL\n\nagents:\n  - id: quant\n    role: Quant Analyst\n    goal: Answer mathematical sub-questions with certainty\n    tools:\n      - wolfram_alpha\n\ntasks:\n  - id: quant-task\n    agent: quant\n    description: Compute the derivative of x^3 + 2x^2 - 5x step by step.",
+          "javaSnippet": "import ai.intelliswarm.swarmai.agent.Agent;\nimport ai.intelliswarm.swarmai.task.Task;\nimport ai.intelliswarm.swarmai.swarm.Swarm;\nimport ai.intelliswarm.swarmai.swarm.SwarmOutput;\nimport ai.intelliswarm.swarmai.process.ProcessType;\nimport ai.intelliswarm.swarmai.tool.research.WolframAlphaTool;\nimport org.springframework.ai.chat.client.ChatClient;\nimport org.springframework.beans.factory.annotation.Autowired;\n\n@Autowired ChatClient chatClient;\n@Autowired WolframAlphaTool wolframAlphaTool;\n\nAgent quant = Agent.builder()\n    .role(\"Quant Analyst\")\n    .goal(\"Answer mathematical sub-questions with certainty\")\n    .chatClient(chatClient)\n    .tool(wolframAlphaTool)\n    .build();\n\nTask quantTask = Task.builder()\n    .description(\"Compute the derivative of x^3 + 2x^2 - 5x step by step.\")\n    .agent(quant)\n    .build();\n\nSwarmOutput result = Swarm.builder()\n    .agent(quant)\n    .task(quantTask)\n    .process(ProcessType.SEQUENTIAL)\n    .build()\n    .kickoff();",
+          "configuration": [
+            {
+              "key": "WOLFRAM_APPID",
+              "description": "Wolfram Alpha app ID from developer.wolframalpha.com. Read from env or the 'app_id' parameter.",
+              "required": true
+            },
+            {
+              "key": "swarmai.tools.wolfram.app-id",
+              "description": "Spring property alternative to the env var.",
+              "required": false
+            }
+          ],
+          "workflows": [
+            "Math/calculus solving in reasoning agents",
+            "Unit conversion and physical constants",
+            "Computable factual answers (planetary data, chemistry)",
+            "Verifier pass on numeric LLM claims"
+          ],
+          "sourcePath": "swarmai-tools/src/main/java/ai/intelliswarm/swarmai/tool/research/WolframAlphaTool.java"
+        },
+        {
+          "id": "openweathermap",
+          "title": "OpenWeatherMap",
+          "tagline": "Current conditions and 5-day forecasts.",
+          "content": "Current conditions and 5-day / 3-hour forecasts by city or lat/lon. Metric, imperial, or standard units — useful whenever weather is an input signal to a workflow.",
+          "overview": "Looks up today's weather and the five-day forecast for any city or coordinate. Useful whenever weather might influence a decision — travel planning, event scheduling, field operations.",
+          "description": "Calls the OpenWeatherMap API to return either current conditions or a 5-day forecast at 3-hour intervals. Accepts a city name or (lat, lon) coordinates and returns temperature, humidity, wind, and a short description. Units can be metric, imperial, or Kelvin-based 'standard'.",
+          "example": {
+            "prompt": "What's the 5-day forecast for Zurich?",
+            "call": "openweathermap(city=\"Zurich\", forecast=true, units=\"metric\")",
+            "result": "current conditions plus a 5-day / 3-hour forecast in metric units."
+          },
+          "codeSnippet": "# ops-planning.yaml\nname: ops-planning-crew\nprocess: SEQUENTIAL\n\nagents:\n  - id: planner\n    role: Operations Planner\n    goal: Factor weather into scheduling decisions\n    tools:\n      - openweathermap\n\ntasks:\n  - id: ops-planning-task\n    agent: planner\n    description: Get the 5-day forecast for Zurich and flag any day with more than 70% chance of precipitation.",
+          "javaSnippet": "import ai.intelliswarm.swarmai.agent.Agent;\nimport ai.intelliswarm.swarmai.task.Task;\nimport ai.intelliswarm.swarmai.swarm.Swarm;\nimport ai.intelliswarm.swarmai.swarm.SwarmOutput;\nimport ai.intelliswarm.swarmai.process.ProcessType;\nimport ai.intelliswarm.swarmai.tool.data.OpenWeatherMapTool;\nimport org.springframework.ai.chat.client.ChatClient;\nimport org.springframework.beans.factory.annotation.Autowired;\n\n@Autowired ChatClient chatClient;\n@Autowired OpenWeatherMapTool openWeatherMapTool;\n\nAgent planner = Agent.builder()\n    .role(\"Operations Planner\")\n    .goal(\"Factor weather into scheduling decisions\")\n    .chatClient(chatClient)\n    .tool(openWeatherMapTool)\n    .build();\n\nTask plannerTask = Task.builder()\n    .description(\"Get the 5-day forecast for Zurich and flag any day with more than 70% chance of precipitation.\")\n    .agent(planner)\n    .build();\n\nSwarmOutput result = Swarm.builder()\n    .agent(planner)\n    .task(plannerTask)\n    .process(ProcessType.SEQUENTIAL)\n    .build()\n    .kickoff();",
+          "configuration": [
+            {
+              "key": "OPENWEATHER_API_KEY",
+              "description": "OpenWeatherMap API key. Read from env or the 'api_key' parameter.",
+              "required": true
+            },
+            {
+              "key": "swarmai.tools.openweather.api-key",
+              "description": "Spring property alternative to the env var.",
+              "required": false
+            }
+          ],
+          "workflows": [
+            "Travel and logistics planning agents",
+            "Event-ops agents for outdoor scheduling",
+            "5-day forecasts for field-work crews",
+            "City conditions in smart-assistant demos"
+          ],
+          "sourcePath": "swarmai-tools/src/main/java/ai/intelliswarm/swarmai/tool/data/OpenWeatherMapTool.java"
+        }
+      ]
+    },
+    {
+      "id": "finance-markets",
+      "titleLead": "Finance &",
+      "titleHighlight": "Markets",
+      "accent": "Institutional-grade data",
+      "tools": [
+        {
+          "id": "financial_data",
+          "title": "Financial Data (Finnhub)",
+          "tagline": "Structured financials, ratios, and insider transactions.",
+          "content": "Income statements, balance sheets, cash flow, key ratios (P/E, P/B, ROE, margins), and insider transactions for any public company — US or foreign — as citation-tagged markdown.",
+          "overview": "Pulls the numbers behind a public company — revenue, profits, balance-sheet items, key ratios, insider trading — from the Finnhub data service. Give it a ticker like AAPL and it hands the agent a ready-to-read financial summary.",
+          "description": "Queries Finnhub by ticker and aggregates the income statement, balance sheet, cash flow, derived ratios (P/E, P/B, ROE, net and gross margin), and the most recent insider transactions into a single markdown report. Each fact is tagged with its source so downstream report generation can cite them.",
+          "example": {
+            "prompt": "Show me Apple's latest income statement and key ratios.",
+            "call": "financial_data(ticker=\"AAPL\")",
+            "result": "a citation-tagged markdown report with revenue, margins, P/E, ROE, and insider activity."
+          },
+          "codeSnippet": "# equity-research.yaml\nname: equity-research-crew\nprocess: SEQUENTIAL\n\nagents:\n  - id: analyst\n    role: Equity Analyst\n    goal: Build fundamentals profiles for public companies\n    tools:\n      - financial_data\n\ntasks:\n  - id: equity-research-task\n    agent: analyst\n    description: Pull the most recent income statement, balance sheet, and key ratios for AAPL.",
+          "javaSnippet": "import ai.intelliswarm.swarmai.agent.Agent;\nimport ai.intelliswarm.swarmai.task.Task;\nimport ai.intelliswarm.swarmai.swarm.Swarm;\nimport ai.intelliswarm.swarmai.swarm.SwarmOutput;\nimport ai.intelliswarm.swarmai.process.ProcessType;\nimport ai.intelliswarm.swarmai.tool.common.FinancialDataTool;\nimport org.springframework.ai.chat.client.ChatClient;\nimport org.springframework.beans.factory.annotation.Autowired;\n\n@Autowired ChatClient chatClient;\n@Autowired FinancialDataTool financialDataTool;\n\nAgent analyst = Agent.builder()\n    .role(\"Equity Analyst\")\n    .goal(\"Build fundamentals profiles for public companies\")\n    .chatClient(chatClient)\n    .tool(financialDataTool)\n    .build();\n\nTask analystTask = Task.builder()\n    .description(\"Pull the most recent income statement, balance sheet, and key ratios for AAPL.\")\n    .agent(analyst)\n    .build();\n\nSwarmOutput result = Swarm.builder()\n    .agent(analyst)\n    .task(analystTask)\n    .process(ProcessType.SEQUENTIAL)\n    .build()\n    .kickoff();",
+          "configuration": [
+            {
+              "key": "FINNHUB_API_KEY",
+              "description": "Finnhub API key used for income statement, balance sheet, cash flow, metrics, and insider feeds.",
+              "required": true
+            },
+            {
+              "key": "finnhub.api-key",
+              "description": "Spring property alternative to FINNHUB_API_KEY.",
+              "required": false
+            }
+          ],
+          "workflows": [
+            "Equity research crews producing citation-tagged reports",
+            "Foreign-issuer analysis where SEC XBRL is sparse",
+            "Insider-transaction monitoring",
+            "Quarterly revenue/margin trend summaries"
+          ],
+          "sourcePath": "swarmai-tools/src/main/java/ai/intelliswarm/swarmai/tool/common/FinancialDataTool.java"
+        },
+        {
+          "id": "sec_filings",
+          "title": "SEC Filings",
+          "tagline": "Analyze SEC filings by ticker.",
+          "content": "Ticker-to-CIK lookup and analysis of 10-K, 10-Q, 8-K, DEF 14A, 20-F, 6-K, 13G/13D, and S-1/F-1/424B filings. Generates comprehensive regulatory reports for due diligence.",
+          "overview": "Reads the official filings that every U.S.-listed company is legally required to publish: annual reports, quarterly reports, major-event disclosures, and more. Gives the agent the same primary-source material that regulators and professional analysts work from.",
+          "description": "Looks up the company's CIK from its ticker, downloads filings from SEC EDGAR, parses the key sections, and returns a structured summary. Covers domestic forms (10-K, 10-Q, 8-K, DEF 14A), foreign-issuer forms (20-F, 6-K), ownership filings (13G, 13D), and registrations (S-1, F-1, 424B).",
+          "example": {
+            "prompt": "Pull Microsoft's most recent 10-K filing.",
+            "call": "sec_filings(ticker=\"MSFT\", filingType=\"10-K\")",
+            "result": "the filing text with risk factors, MD&A, and financial statements extracted."
+          },
+          "codeSnippet": "# regulatory-research.yaml\nname: regulatory-research-crew\nprocess: SEQUENTIAL\n\nagents:\n  - id: compliance\n    role: Compliance Researcher\n    goal: Source regulatory filings directly from SEC EDGAR\n    tools:\n      - sec_filings\n\ntasks:\n  - id: regulatory-research-task\n    agent: compliance\n    description: Fetch Microsoft's most recent 10-K and extract the Risk Factors section.",
+          "javaSnippet": "import ai.intelliswarm.swarmai.agent.Agent;\nimport ai.intelliswarm.swarmai.task.Task;\nimport ai.intelliswarm.swarmai.swarm.Swarm;\nimport ai.intelliswarm.swarmai.swarm.SwarmOutput;\nimport ai.intelliswarm.swarmai.process.ProcessType;\nimport ai.intelliswarm.swarmai.tool.common.SECFilingsTool;\nimport org.springframework.ai.chat.client.ChatClient;\nimport org.springframework.beans.factory.annotation.Autowired;\n\n@Autowired ChatClient chatClient;\n@Autowired SECFilingsTool sECFilingsTool;\n\nAgent compliance = Agent.builder()\n    .role(\"Compliance Researcher\")\n    .goal(\"Source regulatory filings directly from SEC EDGAR\")\n    .chatClient(chatClient)\n    .tool(sECFilingsTool)\n    .build();\n\nTask complianceTask = Task.builder()\n    .description(\"Fetch Microsoft's most recent 10-K and extract the Risk Factors section.\")\n    .agent(compliance)\n    .build();\n\nSwarmOutput result = Swarm.builder()\n    .agent(compliance)\n    .task(complianceTask)\n    .process(ProcessType.SEQUENTIAL)\n    .build()\n    .kickoff();",
+          "configuration": [],
+          "workflows": [
+            "10-K / 10-Q risk-factor and MD&A extraction",
+            "8-K event analysis for earnings and M&A agents",
+            "Foreign-issuer 20-F / 6-K review",
+            "XBRL-backed revenue/EPS fact-checking"
+          ],
+          "sourcePath": "swarmai-tools/src/main/java/ai/intelliswarm/swarmai/tool/common/SECFilingsTool.java"
+        }
+      ]
+    },
+    {
+      "id": "security",
+      "titleLead": "Security &",
+      "titleHighlight": "Vuln Intel",
+      "accent": "Vulnerability intelligence",
+      "tools": [
+        {
+          "id": "cve_lookup",
+          "title": "CVE Lookup",
+          "tagline": "Query the NIST NVD CVE 2.0 database.",
+          "content": "Query the NIST NVD CVE 2.0 database by keyword or CVE ID. Returns descriptions, severity, CVSS scores, and affected products for threat triage and patch prioritization.",
+          "overview": "Checks the worldwide database of known software vulnerabilities. Drop in a CVE ID or a keyword and it returns what the vulnerability is, how severe it is, and which products it affects — essential for security reviews.",
+          "description": "Calls the NIST NVD 2.0 API with either a specific CVE ID or a free-text keyword. Returns the CVE ID, description, severity classification, CVSS v3 score, and the list of affected products (CPE matches). Results come straight from the authoritative database — no third-party enrichment.",
+          "example": {
+            "prompt": "What do you know about CVE-2021-44228?",
+            "call": "cve_lookup(id=\"CVE-2021-44228\")",
+            "result": "description of the Log4Shell vulnerability, CVSS 10.0, affected Log4j versions, and references."
+          },
+          "codeSnippet": "# security-triage.yaml\nname: security-triage-crew\nprocess: SEQUENTIAL\n\nagents:\n  - id: auditor\n    role: Security Auditor\n    goal: Assess the severity of known vulnerabilities\n    tools:\n      - cve_lookup\n\ntasks:\n  - id: security-triage-task\n    agent: auditor\n    description: Look up CVE-2021-44228 and summarize the impact, CVSS score, and affected versions.",
+          "javaSnippet": "import ai.intelliswarm.swarmai.agent.Agent;\nimport ai.intelliswarm.swarmai.task.Task;\nimport ai.intelliswarm.swarmai.swarm.Swarm;\nimport ai.intelliswarm.swarmai.swarm.SwarmOutput;\nimport ai.intelliswarm.swarmai.process.ProcessType;\nimport ai.intelliswarm.swarmai.tool.security.CVELookupTool;\nimport org.springframework.ai.chat.client.ChatClient;\nimport org.springframework.beans.factory.annotation.Autowired;\n\n@Autowired ChatClient chatClient;\n@Autowired CVELookupTool cVELookupTool;\n\nAgent auditor = Agent.builder()\n    .role(\"Security Auditor\")\n    .goal(\"Assess the severity of known vulnerabilities\")\n    .chatClient(chatClient)\n    .tool(cVELookupTool)\n    .build();\n\nTask auditorTask = Task.builder()\n    .description(\"Look up CVE-2021-44228 and summarize the impact, CVSS score, and affected versions.\")\n    .agent(auditor)\n    .build();\n\nSwarmOutput result = Swarm.builder()\n    .agent(auditor)\n    .task(auditorTask)\n    .process(ProcessType.SEQUENTIAL)\n    .build()\n    .kickoff();",
+          "configuration": [],
+          "workflows": [
+            "Security-audit crews reviewing dependencies",
+            "CVE-ID triage (e.g. CVE-2021-44228 Log4Shell)",
+            "Risk reports for SOC/appsec demos",
+            "Keyword scan for emerging vulnerabilities"
+          ],
+          "sourcePath": "swarmai-tools/src/main/java/ai/intelliswarm/swarmai/tool/security/CVELookupTool.java"
+        },
+        {
+          "id": "osv_lookup",
+          "title": "OSV Lookup",
+          "tagline": "Open-source vulnerability lookup.",
+          "content": "Open-source vulnerability lookup across npm, PyPI, Maven, and Go. Query by package and version to surface known vulns with affected version ranges and severity.",
+          "overview": "Checks whether a specific open-source library has any known security problems — for npm (JavaScript), PyPI (Python), Maven (Java), or Go packages. Useful right before upgrading a dependency or auditing a project.",
+          "description": "Queries the OSV.dev API with a package name, its ecosystem (npm, PyPI, Maven, Go), and optionally a specific version. Returns the list of matching vulnerabilities with their OSV IDs, affected version ranges, severity, and references. Passing a version narrows the result to issues that hit that exact build.",
+          "example": {
+            "prompt": "Does lodash 4.17.15 have any known vulnerabilities?",
+            "call": "osv_lookup(package=\"lodash\", ecosystem=\"npm\", version=\"4.17.15\")",
+            "result": "a list of vulnerabilities with IDs, severity, and the version ranges affected."
+          },
+          "codeSnippet": "# dependency-audit.yaml\nname: dependency-audit-crew\nprocess: SEQUENTIAL\n\nagents:\n  - id: auditor\n    role: Dependency Auditor\n    goal: Scan open-source libraries for known vulnerabilities\n    tools:\n      - osv_lookup\n\ntasks:\n  - id: dependency-audit-task\n    agent: auditor\n    description: Check whether lodash 4.17.15 on npm has any known vulnerabilities.",
+          "javaSnippet": "import ai.intelliswarm.swarmai.agent.Agent;\nimport ai.intelliswarm.swarmai.task.Task;\nimport ai.intelliswarm.swarmai.swarm.Swarm;\nimport ai.intelliswarm.swarmai.swarm.SwarmOutput;\nimport ai.intelliswarm.swarmai.process.ProcessType;\nimport ai.intelliswarm.swarmai.tool.security.OSVLookupTool;\nimport org.springframework.ai.chat.client.ChatClient;\nimport org.springframework.beans.factory.annotation.Autowired;\n\n@Autowired ChatClient chatClient;\n@Autowired OSVLookupTool oSVLookupTool;\n\nAgent auditor = Agent.builder()\n    .role(\"Dependency Auditor\")\n    .goal(\"Scan open-source libraries for known vulnerabilities\")\n    .chatClient(chatClient)\n    .tool(oSVLookupTool)\n    .build();\n\nTask auditorTask = Task.builder()\n    .description(\"Check whether lodash 4.17.15 on npm has any known vulnerabilities.\")\n    .agent(auditor)\n    .build();\n\nSwarmOutput result = Swarm.builder()\n    .agent(auditor)\n    .task(auditorTask)\n    .process(ProcessType.SEQUENTIAL)\n    .build()\n    .kickoff();",
+          "configuration": [],
+          "workflows": [
+            "SBOM / dependency scanning across Maven, npm, PyPI, Go",
+            "Supply-chain risk reports",
+            "Pre-upgrade vulnerability check for a specific version",
+            "Pairs with github_create_pr to auto-propose patched versions"
+          ],
+          "sourcePath": "swarmai-tools/src/main/java/ai/intelliswarm/swarmai/tool/security/OSVLookupTool.java"
+        },
+        {
+          "id": "github_create_pr",
+          "title": "GitHub PR",
+          "tagline": "Open a Pull Request with a patch or fix.",
+          "content": "Open a GitHub Pull Request with a patch or fix — owner, repo, title, body, head, base. Lets self-patching agents land their work safely behind human review.",
+          "overview": "Lets the agent open a Pull Request on GitHub. This is how self-fixing agents (say, one that patches a vulnerability) put their proposed change in front of a human reviewer, rather than silently editing code.",
+          "description": "Posts a 'Create pull request' request to the GitHub REST API. You supply owner, repo, title, body, head branch, and base branch; the tool returns the URL of the new PR. Requires a GitHub token with 'repo' write scope; flagged DANGEROUS in the framework's permission system because it modifies an external system.",
+          "example": {
+            "prompt": "Open a PR with the Log4j fix we just wrote.",
+            "call": "github_create_pr(owner=\"acme\", repo=\"webapp\", title=\"Bump log4j to 2.17\", head=\"fix/log4j\", base=\"main\")",
+            "result": "the URL of the newly created Pull Request."
+          },
+          "codeSnippet": "# remediation.yaml\nname: remediation-crew\nprocess: SEQUENTIAL\n\nagents:\n  - id: engineer\n    role: Remediation Engineer\n    goal: Land security patches as reviewable pull requests\n    tools:\n      - github_create_pr\n\ntasks:\n  - id: remediation-task\n    agent: engineer\n    description: Open a PR in acme/webapp titled 'Bump log4j to 2.17' from fix/log4j into main.",
+          "javaSnippet": "import ai.intelliswarm.swarmai.agent.Agent;\nimport ai.intelliswarm.swarmai.task.Task;\nimport ai.intelliswarm.swarmai.swarm.Swarm;\nimport ai.intelliswarm.swarmai.swarm.SwarmOutput;\nimport ai.intelliswarm.swarmai.process.ProcessType;\nimport ai.intelliswarm.swarmai.tool.security.GitHubPRTool;\nimport org.springframework.ai.chat.client.ChatClient;\nimport org.springframework.beans.factory.annotation.Autowired;\n\n@Autowired ChatClient chatClient;\n@Autowired GitHubPRTool gitHubPRTool;\n\nAgent engineer = Agent.builder()\n    .role(\"Remediation Engineer\")\n    .goal(\"Land security patches as reviewable pull requests\")\n    .chatClient(chatClient)\n    .tool(gitHubPRTool)\n    .build();\n\nTask engineerTask = Task.builder()\n    .description(\"Open a PR in acme/webapp titled 'Bump log4j to 2.17' from fix/log4j into main.\")\n    .agent(engineer)\n    .build();\n\nSwarmOutput result = Swarm.builder()\n    .agent(engineer)\n    .task(engineerTask)\n    .process(ProcessType.SEQUENTIAL)\n    .build()\n    .kickoff();",
+          "configuration": [
+            {
+              "key": "GITHUB_TOKEN",
+              "description": "GitHub personal access token with 'repo' scope. Used as Bearer auth to POST pull requests.",
+              "required": true
+            }
+          ],
+          "workflows": [
+            "Automated remediation agent (CVE/OSV finding → patch PR)",
+            "Docs or refactor agents that propose changes via PR",
+            "Release-notes or dependency-bump bots",
+            "Multi-repo security fix rollouts"
+          ],
+          "sourcePath": "swarmai-tools/src/main/java/ai/intelliswarm/swarmai/tool/security/GitHubPRTool.java"
+        }
+      ]
+    },
+    {
+      "id": "data-analysis",
+      "titleLead": "Data &",
+      "titleHighlight": "Analysis",
+      "accent": "Turn raw data into insight",
+      "tools": [
+        {
+          "id": "calculator",
+          "title": "Calculator",
+          "tagline": "Deterministic math for financial analysis.",
+          "content": "Deterministic math for financial analysis: P/E ratios, growth rates, valuation metrics, statistics. Removes arithmetic drift from LLM reasoning.",
+          "overview": "A reliable math evaluator. Language models are famously shaky at arithmetic, so this tool does the actual sums — ratios, growth rates, percentages — and returns the exact number.",
+          "description": "Parses and evaluates arithmetic expressions (addition, subtraction, multiplication, division, powers, parentheses) and returns the exact numeric result. Intended for day-to-day financial math — ratios, growth rates, percentages. For calculus or symbolic algebra, use Wolfram Alpha instead.",
+          "example": {
+            "prompt": "What's the P/E ratio if price is 190 and EPS is 6.13?",
+            "call": "calculator(expression=\"190 / 6.13\")",
+            "result": "30.9951…"
+          },
+          "codeSnippet": "# modeling.yaml\nname: modeling-crew\nprocess: SEQUENTIAL\n\nagents:\n  - id: modeler\n    role: Financial Modeler\n    goal: Do precise arithmetic without LLM drift\n    tools:\n      - calculator\n\ntasks:\n  - id: modeling-task\n    agent: modeler\n    description: Compute Apple's P/E ratio given price=190 and EPS=6.13.",
+          "javaSnippet": "import ai.intelliswarm.swarmai.agent.Agent;\nimport ai.intelliswarm.swarmai.task.Task;\nimport ai.intelliswarm.swarmai.swarm.Swarm;\nimport ai.intelliswarm.swarmai.swarm.SwarmOutput;\nimport ai.intelliswarm.swarmai.process.ProcessType;\nimport ai.intelliswarm.swarmai.tool.common.CalculatorTool;\nimport org.springframework.ai.chat.client.ChatClient;\nimport org.springframework.beans.factory.annotation.Autowired;\n\n@Autowired ChatClient chatClient;\n@Autowired CalculatorTool calculatorTool;\n\nAgent modeler = Agent.builder()\n    .role(\"Financial Modeler\")\n    .goal(\"Do precise arithmetic without LLM drift\")\n    .chatClient(chatClient)\n    .tool(calculatorTool)\n    .build();\n\nTask modelerTask = Task.builder()\n    .description(\"Compute Apple's P/E ratio given price=190 and EPS=6.13.\")\n    .agent(modeler)\n    .build();\n\nSwarmOutput result = Swarm.builder()\n    .agent(modeler)\n    .task(modelerTask)\n    .process(ProcessType.SEQUENTIAL)\n    .build()\n    .kickoff();",
+          "configuration": [],
+          "workflows": [
+            "P/E, P/B, ROE ratio math in finance crews",
+            "Growth-rate and CAGR computations",
+            "Safe arithmetic validation in analyst pipelines",
+            "Quick numeric expressions without invoking Wolfram"
+          ],
+          "sourcePath": "swarmai-tools/src/main/java/ai/intelliswarm/swarmai/tool/common/CalculatorTool.java"
+        },
+        {
+          "id": "data_analysis",
+          "title": "Data Analysis",
+          "tagline": "Identify patterns, trends, and insights.",
+          "content": "Analyze market data and competitor metrics to identify patterns, trends, outliers, and actionable insights that feed downstream agents or final reports.",
+          "overview": "Takes raw numbers or tables and spots the patterns inside — trends, outliers, comparisons. Typically the middle step of a workflow: gather data first, analyse it here, then write the findings up with the report generator.",
+          "description": "Feeds the supplied dataset to an analysis routine selected by the 'analysisType' parameter ('trend', 'outliers', 'comparison', 'summary') and returns a structured finding including the direction of the trend, notable data points, and a short narrative. Designed to sit between raw data ingestion and final report generation.",
+          "example": {
+            "prompt": "Find the trend in these quarterly revenue numbers.",
+            "call": "data_analysis(data=\"[22, 24, 28, 31]\", analysisType=\"trend\")",
+            "result": "a summary of the growth trajectory, pace of change, and any outliers."
+          },
+          "codeSnippet": "# insights.yaml\nname: insights-crew\nprocess: SEQUENTIAL\n\nagents:\n  - id: analyst\n    role: Insight Analyst\n    goal: Identify trends and outliers in numeric data\n    tools:\n      - data_analysis\n\ntasks:\n  - id: insights-task\n    agent: analyst\n    description: Given the quarterly revenue series [22, 24, 28, 31], describe the growth trajectory.",
+          "javaSnippet": "import ai.intelliswarm.swarmai.agent.Agent;\nimport ai.intelliswarm.swarmai.task.Task;\nimport ai.intelliswarm.swarmai.swarm.Swarm;\nimport ai.intelliswarm.swarmai.swarm.SwarmOutput;\nimport ai.intelliswarm.swarmai.process.ProcessType;\nimport ai.intelliswarm.swarmai.tool.common.DataAnalysisTool;\nimport org.springframework.ai.chat.client.ChatClient;\nimport org.springframework.beans.factory.annotation.Autowired;\n\n@Autowired ChatClient chatClient;\n@Autowired DataAnalysisTool dataAnalysisTool;\n\nAgent analyst = Agent.builder()\n    .role(\"Insight Analyst\")\n    .goal(\"Identify trends and outliers in numeric data\")\n    .chatClient(chatClient)\n    .tool(dataAnalysisTool)\n    .build();\n\nTask analystTask = Task.builder()\n    .description(\"Given the quarterly revenue series [22, 24, 28, 31], describe the growth trajectory.\")\n    .agent(analyst)\n    .build();\n\nSwarmOutput result = Swarm.builder()\n    .agent(analyst)\n    .task(analystTask)\n    .process(ProcessType.SEQUENTIAL)\n    .build()\n    .kickoff();",
+          "configuration": [],
+          "workflows": [
+            "Trend and pattern detection over market time-series",
+            "Competitor metric benchmarking",
+            "Insight summaries for executive-report agents",
+            "Exploratory analysis step before report_generator"
+          ],
+          "sourcePath": "swarmai-tools/src/main/java/ai/intelliswarm/swarmai/tool/common/DataAnalysisTool.java"
+        },
+        {
+          "id": "csv_analysis",
+          "title": "CSV Analysis",
+          "tagline": "Read and analyze CSV/TSV.",
+          "content": "Read and analyze CSV/TSV files: describe schemas, compute statistics, preview head/tail, filter rows, and count — ideal for tabular datasets without a full dataframe runtime.",
+          "overview": "Reads a spreadsheet file and lets the agent peek inside without needing a full data-science toolkit. It can describe the columns, compute basic statistics, preview rows, or filter them.",
+          "description": "Loads a CSV or TSV file (from a path or inline content) and applies one of five operations: 'describe' returns column schema and summary stats; 'stats' computes min/max/mean/stddev on numeric columns; 'head' previews the first N rows; 'filter' selects rows matching a column/value; 'count' returns the total row count.",
+          "example": {
+            "prompt": "Describe the columns in sales.csv.",
+            "call": "csv_analysis(path=\"sales.csv\", operation=\"describe\")",
+            "result": "column names, types, counts, min/max, mean, and standard deviation."
+          },
+          "codeSnippet": "# dataset-qa.yaml\nname: dataset-qa-crew\nprocess: SEQUENTIAL\n\nagents:\n  - id: inspector\n    role: Data Inspector\n    goal: Peek inside CSV datasets without a full data-science stack\n    tools:\n      - csv_analysis\n\ntasks:\n  - id: dataset-qa-task\n    agent: inspector\n    description: Describe the columns of sales.csv and preview the first 5 rows.",
+          "javaSnippet": "import ai.intelliswarm.swarmai.agent.Agent;\nimport ai.intelliswarm.swarmai.task.Task;\nimport ai.intelliswarm.swarmai.swarm.Swarm;\nimport ai.intelliswarm.swarmai.swarm.SwarmOutput;\nimport ai.intelliswarm.swarmai.process.ProcessType;\nimport ai.intelliswarm.swarmai.tool.common.CSVAnalysisTool;\nimport org.springframework.ai.chat.client.ChatClient;\nimport org.springframework.beans.factory.annotation.Autowired;\n\n@Autowired ChatClient chatClient;\n@Autowired CSVAnalysisTool cSVAnalysisTool;\n\nAgent inspector = Agent.builder()\n    .role(\"Data Inspector\")\n    .goal(\"Peek inside CSV datasets without a full data-science stack\")\n    .chatClient(chatClient)\n    .tool(cSVAnalysisTool)\n    .build();\n\nTask inspectorTask = Task.builder()\n    .description(\"Describe the columns of sales.csv and preview the first 5 rows.\")\n    .agent(inspector)\n    .build();\n\nSwarmOutput result = Swarm.builder()\n    .agent(inspector)\n    .task(inspectorTask)\n    .process(ProcessType.SEQUENTIAL)\n    .build()\n    .kickoff();",
+          "configuration": [],
+          "workflows": [
+            "Quick describe/stats on exported datasets",
+            "Column-filter and row-count checks in data crews",
+            "Head/peek of raw CSV before deeper processing",
+            "Ad-hoc CSV QA in analyst workflows"
+          ],
+          "sourcePath": "swarmai-tools/src/main/java/ai/intelliswarm/swarmai/tool/common/CSVAnalysisTool.java"
+        },
+        {
+          "id": "json_transform",
+          "title": "JSON Transform",
+          "tagline": "Parse, query, extract, and reshape JSON.",
+          "content": "Parse, query, extract, and reshape JSON using dot paths, flattening, and CSV conversion. The glue for chaining structured outputs between agents.",
+          "overview": "Most online services return data in a format called JSON. This tool lets the agent grab a specific field out of that reply, reshape it, or convert it to a spreadsheet — the plumbing that chains steps of a workflow together.",
+          "description": "Accepts a JSON payload and applies one of four operations: 'extract' pulls a single value at a dot-notation path (e.g. 'user.email'); 'query' returns all values matching a path; 'flatten' converts a nested object into a flat key-value map; 'to_csv' converts a JSON array of objects into a CSV string.",
+          "example": {
+            "prompt": "Pull the user's email out of this API response.",
+            "call": "json_transform(json=\"{…}\", operation=\"extract\", path=\"user.email\")",
+            "result": "the single value at that path — e.g. \"jane@example.com\"."
+          },
+          "codeSnippet": "# data-glue.yaml\nname: data-glue-crew\nprocess: SEQUENTIAL\n\nagents:\n  - id: shaper\n    role: Data Glue\n    goal: Reshape JSON between pipeline steps\n    tools:\n      - json_transform\n\ntasks:\n  - id: data-glue-task\n    agent: shaper\n    description: Extract the 'user.email' field from the supplied JSON payload.",
+          "javaSnippet": "import ai.intelliswarm.swarmai.agent.Agent;\nimport ai.intelliswarm.swarmai.task.Task;\nimport ai.intelliswarm.swarmai.swarm.Swarm;\nimport ai.intelliswarm.swarmai.swarm.SwarmOutput;\nimport ai.intelliswarm.swarmai.process.ProcessType;\nimport ai.intelliswarm.swarmai.tool.common.JSONTransformTool;\nimport org.springframework.ai.chat.client.ChatClient;\nimport org.springframework.beans.factory.annotation.Autowired;\n\n@Autowired ChatClient chatClient;\n@Autowired JSONTransformTool jSONTransformTool;\n\nAgent shaper = Agent.builder()\n    .role(\"Data Glue\")\n    .goal(\"Reshape JSON between pipeline steps\")\n    .chatClient(chatClient)\n    .tool(jSONTransformTool)\n    .build();\n\nTask shaperTask = Task.builder()\n    .description(\"Extract the 'user.email' field from the supplied JSON payload.\")\n    .agent(shaper)\n    .build();\n\nSwarmOutput result = Swarm.builder()\n    .agent(shaper)\n    .task(shaperTask)\n    .process(ProcessType.SEQUENTIAL)\n    .build()\n    .kickoff();",
+          "configuration": [],
+          "workflows": [
+            "Extracting fields from API responses with dot-paths",
+            "Flattening nested JSON for downstream tools",
+            "JSON → CSV conversion in ETL-style crews",
+            "Payload reshaping between http_request and report_generator"
+          ],
+          "sourcePath": "swarmai-tools/src/main/java/ai/intelliswarm/swarmai/tool/common/JSONTransformTool.java"
+        },
+        {
+          "id": "xml_parse",
+          "title": "XML Parse",
+          "tagline": "XPath queries and element listing.",
+          "content": "Parse XML via XPath queries, element listing, or text extraction. Handles SEC filings, RSS feeds, SOAP responses, and any legacy XML your workflow touches.",
+          "overview": "Reads XML, an older data format still used by things like news feeds, enterprise APIs, and regulatory filings. Pulls out specific pieces so the agent can work with them just like any other data.",
+          "description": "Accepts an XML document and applies one of three operations: 'xpath' evaluates an XPath 1.0 expression and returns matching values; 'elements' lists every element name and its path; 'text' extracts all visible text, stripping tags. Works on RSS/Atom feeds, SOAP responses, sitemaps, and regulatory XML.",
+          "example": {
+            "prompt": "Grab all the article titles from this RSS feed.",
+            "call": "xml_parse(xmlContent=\"…\", operation=\"xpath\", xpath=\"//item/title/text()\")",
+            "result": "a list of every `<title>` under `<item>` in the feed."
+          },
+          "codeSnippet": "# feed-reader.yaml\nname: feed-reader-crew\nprocess: SEQUENTIAL\n\nagents:\n  - id: reader\n    role: Feed Reader\n    goal: Parse XML feeds and enterprise responses\n    tools:\n      - xml_parse\n\ntasks:\n  - id: feed-reader-task\n    agent: reader\n    description: Return every <title> element from the supplied RSS feed.",
+          "javaSnippet": "import ai.intelliswarm.swarmai.agent.Agent;\nimport ai.intelliswarm.swarmai.task.Task;\nimport ai.intelliswarm.swarmai.swarm.Swarm;\nimport ai.intelliswarm.swarmai.swarm.SwarmOutput;\nimport ai.intelliswarm.swarmai.process.ProcessType;\nimport ai.intelliswarm.swarmai.tool.common.XMLParseTool;\nimport org.springframework.ai.chat.client.ChatClient;\nimport org.springframework.beans.factory.annotation.Autowired;\n\n@Autowired ChatClient chatClient;\n@Autowired XMLParseTool xMLParseTool;\n\nAgent reader = Agent.builder()\n    .role(\"Feed Reader\")\n    .goal(\"Parse XML feeds and enterprise responses\")\n    .chatClient(chatClient)\n    .tool(xMLParseTool)\n    .build();\n\nTask readerTask = Task.builder()\n    .description(\"Return every <title> element from the supplied RSS feed.\")\n    .agent(reader)\n    .build();\n\nSwarmOutput result = Swarm.builder()\n    .agent(reader)\n    .task(readerTask)\n    .process(ProcessType.SEQUENTIAL)\n    .build()\n    .kickoff();",
+          "configuration": [],
+          "workflows": [
+            "RSS/Atom feed parsing in research crews",
+            "SOAP / enterprise XML API integrations",
+            "XPath extraction from config or sitemap files",
+            "SEC XBRL / EDGAR XML snippet reading"
+          ],
+          "sourcePath": "swarmai-tools/src/main/java/ai/intelliswarm/swarmai/tool/common/XMLParseTool.java"
+        },
+        {
+          "id": "report_generator",
+          "title": "Report Generator",
+          "tagline": "Assemble polished reports.",
+          "content": "Assemble polished reports from research and analysis outputs. Structured sections, inline citations, and consistent formatting suitable for stakeholder delivery.",
+          "overview": "Takes everything the agents have gathered and analysed and turns it into a polished report with clear sections and citations. Usually the final step of a workflow — the deliverable a human actually reads.",
+          "description": "Takes raw findings plus a 'reportType' template ('executive_summary', 'due_diligence', 'research_report', …) and produces a structured document with sections, headings, and preserved citations from upstream tools. Output format can be markdown, HTML, or PDF.",
+          "example": {
+            "prompt": "Turn this analysis into a polished executive summary.",
+            "call": "report_generator(content=\"…\", reportType=\"executive_summary\", format=\"markdown\")",
+            "result": "a formatted markdown report with sections, headings, and citations."
+          },
+          "codeSnippet": "# executive-writing.yaml\nname: executive-writing-crew\nprocess: SEQUENTIAL\n\nagents:\n  - id: editor\n    role: Executive Editor\n    goal: Turn raw findings into polished reports\n    tools:\n      - report_generator\n\ntasks:\n  - id: executive-writing-task\n    agent: editor\n    description: Assemble a one-page executive summary from the supplied analysis output.",
+          "javaSnippet": "import ai.intelliswarm.swarmai.agent.Agent;\nimport ai.intelliswarm.swarmai.task.Task;\nimport ai.intelliswarm.swarmai.swarm.Swarm;\nimport ai.intelliswarm.swarmai.swarm.SwarmOutput;\nimport ai.intelliswarm.swarmai.process.ProcessType;\nimport ai.intelliswarm.swarmai.tool.common.ReportGeneratorTool;\nimport org.springframework.ai.chat.client.ChatClient;\nimport org.springframework.beans.factory.annotation.Autowired;\n\n@Autowired ChatClient chatClient;\n@Autowired ReportGeneratorTool reportGeneratorTool;\n\nAgent editor = Agent.builder()\n    .role(\"Executive Editor\")\n    .goal(\"Turn raw findings into polished reports\")\n    .chatClient(chatClient)\n    .tool(reportGeneratorTool)\n    .build();\n\nTask editorTask = Task.builder()\n    .description(\"Assemble a one-page executive summary from the supplied analysis output.\")\n    .agent(editor)\n    .build();\n\nSwarmOutput result = Swarm.builder()\n    .agent(editor)\n    .task(editorTask)\n    .process(ProcessType.SEQUENTIAL)\n    .build()\n    .kickoff();",
+          "configuration": [],
+          "workflows": [
+            "Final deliverable assembly in multi-agent crews",
+            "Executive summary / markdown report generation",
+            "Format-switching between markdown, HTML, PDF",
+            "Bundling data_analysis results into shareable docs"
+          ],
+          "sourcePath": "swarmai-tools/src/main/java/ai/intelliswarm/swarmai/tool/common/ReportGeneratorTool.java"
+        },
+        {
+          "id": "database_query",
+          "title": "SQL Database Query",
+          "tagline": "Read-only SELECT queries against a JDBC DataSource.",
+          "content": "Execute read-only SQL SELECT queries against the configured database and return results as a markdown table. Write verbs (INSERT/UPDATE/DELETE/DROP/ALTER/CREATE/TRUNCATE/GRANT/REVOKE/EXEC/CALL/MERGE) are hard-blocked.",
+          "overview": "Lets the agent look things up in your company database — but only to read, never to change anything. A safe way to give agents access to customer records, sales data, or any structured information you already store.",
+          "description": "Executes the supplied SQL against the Spring JDBC DataSource configured in your application. Allows SELECT only — any statement containing INSERT, UPDATE, DELETE, DROP, ALTER, CREATE, TRUNCATE, GRANT, REVOKE, EXEC, CALL, or MERGE is rejected before it runs. Auto-appends 'LIMIT 50' when missing, with a hard ceiling of 200 rows.",
+          "example": {
+            "prompt": "How many active customers do we have by country?",
+            "call": "database_query(query=\"SELECT country, COUNT(*) FROM customers WHERE status='active' GROUP BY country\")",
+            "result": "a markdown table with one row per country and its customer count."
+          },
+          "codeSnippet": "# analytics.yaml\nname: analytics-crew\nprocess: SEQUENTIAL\n\nagents:\n  - id: analyst\n    role: Analytics Agent\n    goal: Read operational data safely from the warehouse\n    tools:\n      - database_query\n\ntasks:\n  - id: analytics-task\n    agent: analyst\n    description: Count active customers per country using the customers table.",
+          "javaSnippet": "import ai.intelliswarm.swarmai.agent.Agent;\nimport ai.intelliswarm.swarmai.task.Task;\nimport ai.intelliswarm.swarmai.swarm.Swarm;\nimport ai.intelliswarm.swarmai.swarm.SwarmOutput;\nimport ai.intelliswarm.swarmai.process.ProcessType;\nimport ai.intelliswarm.swarmai.tool.common.DatabaseQueryTool;\nimport org.springframework.ai.chat.client.ChatClient;\nimport org.springframework.beans.factory.annotation.Autowired;\n\n@Autowired ChatClient chatClient;\n@Autowired DatabaseQueryTool databaseQueryTool;\n\nAgent analyst = Agent.builder()\n    .role(\"Analytics Agent\")\n    .goal(\"Read operational data safely from the warehouse\")\n    .chatClient(chatClient)\n    .tool(databaseQueryTool)\n    .build();\n\nTask analystTask = Task.builder()\n    .description(\"Count active customers per country using the customers table.\")\n    .agent(analyst)\n    .build();\n\nSwarmOutput result = Swarm.builder()\n    .agent(analyst)\n    .task(analystTask)\n    .process(ProcessType.SEQUENTIAL)\n    .build()\n    .kickoff();",
+          "configuration": [
+            {
+              "key": "spring.datasource.url",
+              "description": "JDBC URL of the target database.",
+              "required": true
+            },
+            {
+              "key": "spring.datasource.username",
+              "description": "Database user (read-only role strongly recommended).",
+              "required": true
+            },
+            {
+              "key": "spring.datasource.password",
+              "description": "Database password.",
+              "required": true
+            }
+          ],
+          "workflows": [
+            "Analytics agents pulling top-N rows for a quick sanity check",
+            "Support agents looking up a customer by email without full DB access",
+            "KPI aggregation (COUNT/SUM/GROUP BY) feeding into a generated report",
+            "Schema exploration via information_schema before deeper analysis"
+          ],
+          "sourcePath": "swarmai-tools/src/main/java/ai/intelliswarm/swarmai/tool/common/DatabaseQueryTool.java"
+        },
+        {
+          "id": "repo_query",
+          "title": "Spring Data Repository",
+          "tagline": "Invoke Spring Data repositories as agent tools.",
+          "content": "Exposes every Spring Data Repository bean (JpaRepository, CrudRepository, …) as an agent-callable tool. The team's existing finders and counters become tools the agent can invoke without writing new SQL.",
+          "overview": "Lets the agent call your existing Spring Data repositories directly — the methods your team already wrote (findByEmail, countActive, …) become tools the agent can invoke. Write methods are refused unless you explicitly allow them.",
+          "description": "Reflectively exposes every Spring Data Repository bean in the application context (JpaRepository, CrudRepository, etc.) as an agent-callable tool. Three operations: 'list_repositories' enumerates beans; 'list_methods' shows each repository's query methods; 'invoke' calls one with JSON-coerced arguments. Write methods (save/delete/update) are refused unless allow_writes=true.",
+          "example": {
+            "prompt": "Find all active customers whose email ends in @acme.com.",
+            "call": "repo_query(operation=\"invoke\", repository=\"CustomerRepository\", method=\"findByEmailEndingAndStatus\", args=[\"@acme.com\",\"ACTIVE\"])",
+            "result": "the list of matching Customer entities returned by the repository method."
+          },
+          "codeSnippet": "# customer-lookup.yaml\nname: customer-lookup-crew\nprocess: SEQUENTIAL\n\nagents:\n  - id: lookup\n    role: Customer Lookup Agent\n    goal: Query customer data through existing Spring Data repositories\n    tools:\n      - repo_query\n\ntasks:\n  - id: customer-lookup-task\n    agent: lookup\n    description: Use CustomerRepository.findByStatus('ACTIVE') to list all currently active customers.",
+          "javaSnippet": "import ai.intelliswarm.swarmai.agent.Agent;\nimport ai.intelliswarm.swarmai.task.Task;\nimport ai.intelliswarm.swarmai.swarm.Swarm;\nimport ai.intelliswarm.swarmai.swarm.SwarmOutput;\nimport ai.intelliswarm.swarmai.process.ProcessType;\nimport ai.intelliswarm.swarmai.tool.data.repository.SpringDataRepositoryTool;\nimport org.springframework.ai.chat.client.ChatClient;\nimport org.springframework.beans.factory.annotation.Autowired;\n\n@Autowired ChatClient chatClient;\n@Autowired SpringDataRepositoryTool springDataRepositoryTool;\n\nAgent lookup = Agent.builder()\n    .role(\"Customer Lookup Agent\")\n    .goal(\"Query customer data through existing Spring Data repositories\")\n    .chatClient(chatClient)\n    .tool(springDataRepositoryTool)\n    .build();\n\nTask lookupTask = Task.builder()\n    .description(\"Use CustomerRepository.findByStatus('ACTIVE') to list all currently active customers.\")\n    .agent(lookup)\n    .build();\n\nSwarmOutput result = Swarm.builder()\n    .agent(lookup)\n    .task(lookupTask)\n    .process(ProcessType.SEQUENTIAL)\n    .build()\n    .kickoff();",
+          "configuration": [
+            {
+              "key": "allow_writes",
+              "description": "Per-call flag that permits save/delete/update methods. Defaults to false — write methods are refused unless explicitly enabled.",
+              "required": false
+            }
+          ],
+          "workflows": [
+            "Let an agent query existing domain repositories without writing new SQL tools",
+            "Build read-only investigative agents on top of an existing Spring Boot app",
+            "Reuse hand-tuned finder methods (findBy…, countBy…) the team already maintains",
+            "Prototype CRUD workflows against a dev database with allow_writes enabled"
+          ],
+          "sourcePath": "swarmai-tools/src/main/java/ai/intelliswarm/swarmai/tool/data/repository/SpringDataRepositoryTool.java"
+        }
+      ]
+    },
+    {
+      "id": "file-io",
+      "titleLead": "File",
+      "titleHighlight": "I/O",
+      "accent": "Read, write, scan the filesystem",
+      "tools": [
+        {
+          "id": "file_read",
+          "title": "File Read",
+          "tagline": "Read files with optional line ranges.",
+          "content": "Read text, JSON, CSV, YAML, or XML files with optional line ranges. Lets agents ingest local artifacts without re-implementing parsers.",
+          "overview": "Opens a file on the computer and reads what's inside. Supports plain text, JSON, CSV, YAML, and XML files — so agents can pick up configuration, logs, or work saved from an earlier step.",
+          "description": "Opens the file at the supplied path and returns its contents as text, detecting the format from the extension (txt, json, csv, yaml, xml) for appropriate handling. Accepts optional 'offset' and 'limit' parameters to read just a line range — useful for large log files that would otherwise blow through the context window.",
+          "example": {
+            "prompt": "Read the first 50 lines of /var/log/app.log.",
+            "call": "file_read(path=\"/var/log/app.log\", limit=50)",
+            "result": "the first 50 lines of the log file."
+          },
+          "codeSnippet": "# log-inspection.yaml\nname: log-inspection-crew\nprocess: SEQUENTIAL\n\nagents:\n  - id: reader\n    role: Log Reader\n    goal: Pick up prior state from local files\n    tools:\n      - file_read\n\ntasks:\n  - id: log-inspection-task\n    agent: reader\n    description: Read the first 50 lines of /var/log/app.log.",
+          "javaSnippet": "import ai.intelliswarm.swarmai.agent.Agent;\nimport ai.intelliswarm.swarmai.task.Task;\nimport ai.intelliswarm.swarmai.swarm.Swarm;\nimport ai.intelliswarm.swarmai.swarm.SwarmOutput;\nimport ai.intelliswarm.swarmai.process.ProcessType;\nimport ai.intelliswarm.swarmai.tool.common.FileReadTool;\nimport org.springframework.ai.chat.client.ChatClient;\nimport org.springframework.beans.factory.annotation.Autowired;\n\n@Autowired ChatClient chatClient;\n@Autowired FileReadTool fileReadTool;\n\nAgent reader = Agent.builder()\n    .role(\"Log Reader\")\n    .goal(\"Pick up prior state from local files\")\n    .chatClient(chatClient)\n    .tool(fileReadTool)\n    .build();\n\nTask readerTask = Task.builder()\n    .description(\"Read the first 50 lines of /var/log/app.log.\")\n    .agent(reader)\n    .build();\n\nSwarmOutput result = Swarm.builder()\n    .agent(reader)\n    .task(readerTask)\n    .process(ProcessType.SEQUENTIAL)\n    .build()\n    .kickoff();",
+          "configuration": [],
+          "workflows": [
+            "Loading local datasets or configs into agents",
+            "Reading previously generated artifacts between crew steps",
+            "Ranged reads for large log or text files",
+            "Inspecting YAML/JSON configuration in DevOps demos"
+          ],
+          "sourcePath": "swarmai-tools/src/main/java/ai/intelliswarm/swarmai/tool/common/FileReadTool.java"
+        },
+        {
+          "id": "file_write",
+          "title": "File Write",
+          "tagline": "Write content to a file.",
+          "content": "Write content to a file in overwrite, append, or create-only modes. Persists reports, intermediate state, or generated code as part of a workflow.",
+          "overview": "Saves text to a file on the computer. Agents use it to keep a record of what they produced: a report, a generated piece of code, or notes for the next stage.",
+          "description": "Writes the supplied content to the file at the given path. Three modes are supported: 'overwrite' replaces any existing file; 'append' adds to the end of an existing file; 'create' fails if the file already exists. Parent directories are created automatically.",
+          "example": {
+            "prompt": "Save the generated report to /reports/q4-2026.md.",
+            "call": "file_write(path=\"/reports/q4-2026.md\", content=\"…\", mode=\"overwrite\")",
+            "result": "confirmation the file was written, with byte count."
+          },
+          "codeSnippet": "# archive.yaml\nname: archive-crew\nprocess: SEQUENTIAL\n\nagents:\n  - id: archiver\n    role: Report Archiver\n    goal: Persist generated outputs to disk\n    tools:\n      - file_write\n\ntasks:\n  - id: archive-task\n    agent: archiver\n    description: Save the generated report to /reports/q4-2026.md (overwrite if present).",
+          "javaSnippet": "import ai.intelliswarm.swarmai.agent.Agent;\nimport ai.intelliswarm.swarmai.task.Task;\nimport ai.intelliswarm.swarmai.swarm.Swarm;\nimport ai.intelliswarm.swarmai.swarm.SwarmOutput;\nimport ai.intelliswarm.swarmai.process.ProcessType;\nimport ai.intelliswarm.swarmai.tool.common.FileWriteTool;\nimport org.springframework.ai.chat.client.ChatClient;\nimport org.springframework.beans.factory.annotation.Autowired;\n\n@Autowired ChatClient chatClient;\n@Autowired FileWriteTool fileWriteTool;\n\nAgent archiver = Agent.builder()\n    .role(\"Report Archiver\")\n    .goal(\"Persist generated outputs to disk\")\n    .chatClient(chatClient)\n    .tool(fileWriteTool)\n    .build();\n\nTask archiverTask = Task.builder()\n    .description(\"Save the generated report to /reports/q4-2026.md (overwrite if present).\")\n    .agent(archiver)\n    .build();\n\nSwarmOutput result = Swarm.builder()\n    .agent(archiver)\n    .task(archiverTask)\n    .process(ProcessType.SEQUENTIAL)\n    .build()\n    .kickoff();",
+          "configuration": [],
+          "workflows": [
+            "Persisting generated reports to disk",
+            "Append-mode logging across agent steps",
+            "Writing intermediate artifacts (JSON, CSV) between tools",
+            "Saving code or patch output from code_execution"
+          ],
+          "sourcePath": "swarmai-tools/src/main/java/ai/intelliswarm/swarmai/tool/common/FileWriteTool.java"
+        },
+        {
+          "id": "directory_read",
+          "title": "Directory Read",
+          "tagline": "List files with glob filtering.",
+          "content": "List files and directories with glob filtering and recursive traversal. Agents can discover inputs dynamically instead of being handed explicit paths.",
+          "overview": "Lists the files inside a folder. Useful when the agent needs to discover what's available before reading anything, or scan a whole project for specific filenames.",
+          "description": "Lists the contents of a directory, optionally filtered by a glob pattern ('*.md', '**/*.java'). Setting 'recursive' to true walks the subtree as well. A 'maxResults' cap prevents oversized responses; the default is 500 entries.",
+          "example": {
+            "prompt": "List every Markdown file under the docs folder.",
+            "call": "directory_read(path=\"docs\", pattern=\"*.md\", recursive=true)",
+            "result": "the list of matching file paths."
+          },
+          "codeSnippet": "# project-scan.yaml\nname: project-scan-crew\nprocess: SEQUENTIAL\n\nagents:\n  - id: scout\n    role: Project Scout\n    goal: Discover files the crew should ingest\n    tools:\n      - directory_read\n\ntasks:\n  - id: project-scan-task\n    agent: scout\n    description: List every Markdown file under the docs/ directory recursively.",
+          "javaSnippet": "import ai.intelliswarm.swarmai.agent.Agent;\nimport ai.intelliswarm.swarmai.task.Task;\nimport ai.intelliswarm.swarmai.swarm.Swarm;\nimport ai.intelliswarm.swarmai.swarm.SwarmOutput;\nimport ai.intelliswarm.swarmai.process.ProcessType;\nimport ai.intelliswarm.swarmai.tool.common.DirectoryReadTool;\nimport org.springframework.ai.chat.client.ChatClient;\nimport org.springframework.beans.factory.annotation.Autowired;\n\n@Autowired ChatClient chatClient;\n@Autowired DirectoryReadTool directoryReadTool;\n\nAgent scout = Agent.builder()\n    .role(\"Project Scout\")\n    .goal(\"Discover files the crew should ingest\")\n    .chatClient(chatClient)\n    .tool(directoryReadTool)\n    .build();\n\nTask scoutTask = Task.builder()\n    .description(\"List every Markdown file under the docs/ directory recursively.\")\n    .agent(scout)\n    .build();\n\nSwarmOutput result = Swarm.builder()\n    .agent(scout)\n    .task(scoutTask)\n    .process(ProcessType.SEQUENTIAL)\n    .build()\n    .kickoff();",
+          "configuration": [],
+          "workflows": [
+            "Discovering inputs in a data-ingest crew",
+            "Glob-pattern search for source files in code-analysis agents",
+            "Recursive directory walks for docs indexing",
+            "Pre-flight listing before file_read / file_write"
+          ],
+          "sourcePath": "swarmai-tools/src/main/java/ai/intelliswarm/swarmai/tool/common/DirectoryReadTool.java"
+        },
+        {
+          "id": "pdf_read",
+          "title": "PDF Read",
+          "tagline": "Extract text from PDFs with page ranges.",
+          "content": "Extract text and metadata from PDFs with page-range support. Unlocks 10-Ks, research papers, contracts, and any document-first information source.",
+          "overview": "Reads PDF documents — annual reports, research papers, legal contracts — and extracts the text inside so the agent can summarise, search, or quote it. Works even for long multi-page documents.",
+          "description": "Opens the PDF at the supplied path using Apache PDFBox and extracts the text and basic metadata. Accepts optional 'startPage' and 'endPage' parameters to read just a range — useful for large documents that would otherwise blow through the context window.",
+          "example": {
+            "prompt": "Extract the first 5 pages of annual-report.pdf.",
+            "call": "pdf_read(path=\"annual-report.pdf\", startPage=1, endPage=5)",
+            "result": "the plain-text content of those pages plus basic metadata."
+          },
+          "codeSnippet": "# document-review.yaml\nname: document-review-crew\nprocess: SEQUENTIAL\n\nagents:\n  - id: analyst\n    role: Document Analyst\n    goal: Extract text from PDF documents\n    tools:\n      - pdf_read\n\ntasks:\n  - id: document-review-task\n    agent: analyst\n    description: Read pages 1-5 of annual-report.pdf and summarize the opening letter.",
+          "javaSnippet": "import ai.intelliswarm.swarmai.agent.Agent;\nimport ai.intelliswarm.swarmai.task.Task;\nimport ai.intelliswarm.swarmai.swarm.Swarm;\nimport ai.intelliswarm.swarmai.swarm.SwarmOutput;\nimport ai.intelliswarm.swarmai.process.ProcessType;\nimport ai.intelliswarm.swarmai.tool.common.PDFReadTool;\nimport org.springframework.ai.chat.client.ChatClient;\nimport org.springframework.beans.factory.annotation.Autowired;\n\n@Autowired ChatClient chatClient;\n@Autowired PDFReadTool pDFReadTool;\n\nAgent analyst = Agent.builder()\n    .role(\"Document Analyst\")\n    .goal(\"Extract text from PDF documents\")\n    .chatClient(chatClient)\n    .tool(pDFReadTool)\n    .build();\n\nTask analystTask = Task.builder()\n    .description(\"Read pages 1-5 of annual-report.pdf and summarize the opening letter.\")\n    .agent(analyst)\n    .build();\n\nSwarmOutput result = Swarm.builder()\n    .agent(analyst)\n    .task(analystTask)\n    .process(ProcessType.SEQUENTIAL)\n    .build()\n    .kickoff();",
+          "configuration": [],
+          "workflows": [
+            "Extracting research-paper text from PDFs fetched via arxiv_search",
+            "Annual-report / 10-K PDF ingestion for finance crews",
+            "Legal and contract review agents",
+            "Page-ranged reads on large PDFs to stay within context"
+          ],
+          "sourcePath": "swarmai-tools/src/main/java/ai/intelliswarm/swarmai/tool/common/PDFReadTool.java"
+        }
+      ]
+    },
+    {
+      "id": "developer-compute",
+      "titleLead": "Developer &",
+      "titleHighlight": "Compute",
+      "accent": "Execute code safely",
+      "tools": [
+        {
+          "id": "code_execution",
+          "title": "Code Execution",
+          "tagline": "Run code in a sandboxed runtime.",
+          "content": "Run JavaScript or shell snippets in a sandboxed runtime with timeout and safety restrictions. For one-off computation, data munging, or quick prototypes mid-workflow.",
+          "overview": "Runs a small snippet of JavaScript or shell code inside a safe sandbox. Handy when the agent needs to do a quick calculation or transform some data that's too complex for the calculator but too small for a full script.",
+          "description": "Executes the supplied snippet in either GraalVM JavaScript or /bin/sh, with a configurable timeout (default 30s, hard cap 60s). Dangerous commands and writes to system directories are blocked. Returns stdout combined with any return value from JavaScript execution.",
+          "example": {
+            "prompt": "Compute the compound return from these quarterly returns.",
+            "call": "code_execution(language=\"javascript\", code=\"returns.reduce((a,b)=>a*(1+b),1) - 1\")",
+            "result": "the computed number, returned as text."
+          },
+          "codeSnippet": "# compute-helper.yaml\nname: compute-helper-crew\nprocess: SEQUENTIAL\n\nagents:\n  - id: runner\n    role: Compute Helper\n    goal: Run small scripted transforms inline\n    tools:\n      - code_execution\n\ntasks:\n  - id: compute-helper-task\n    agent: runner\n    description: Compute the compound return for the returns array [0.03, 0.04, -0.01, 0.06].",
+          "javaSnippet": "import ai.intelliswarm.swarmai.agent.Agent;\nimport ai.intelliswarm.swarmai.task.Task;\nimport ai.intelliswarm.swarmai.swarm.Swarm;\nimport ai.intelliswarm.swarmai.swarm.SwarmOutput;\nimport ai.intelliswarm.swarmai.process.ProcessType;\nimport ai.intelliswarm.swarmai.tool.common.CodeExecutionTool;\nimport org.springframework.ai.chat.client.ChatClient;\nimport org.springframework.beans.factory.annotation.Autowired;\n\n@Autowired ChatClient chatClient;\n@Autowired CodeExecutionTool codeExecutionTool;\n\nAgent runner = Agent.builder()\n    .role(\"Compute Helper\")\n    .goal(\"Run small scripted transforms inline\")\n    .chatClient(chatClient)\n    .tool(codeExecutionTool)\n    .build();\n\nTask runnerTask = Task.builder()\n    .description(\"Compute the compound return for the returns array [0.03, 0.04, -0.01, 0.06].\")\n    .agent(runner)\n    .build();\n\nSwarmOutput result = Swarm.builder()\n    .agent(runner)\n    .task(runnerTask)\n    .process(ProcessType.SEQUENTIAL)\n    .build()\n    .kickoff();",
+          "configuration": [],
+          "workflows": [
+            "Data-transform snippets inside analyst agents",
+            "Quick scripted validations during reasoning",
+            "Sandboxed JS evaluation for formulas",
+            "Glue-code steps between other tools"
+          ],
+          "sourcePath": "swarmai-tools/src/main/java/ai/intelliswarm/swarmai/tool/common/CodeExecutionTool.java"
+        },
+        {
+          "id": "shell_command",
+          "title": "Shell Command",
+          "tagline": "Whitelisted shell commands.",
+          "content": "Execute a whitelisted set of shell commands (ls, cat, grep, git, ps, df, and more). Safe inspection of the environment without granting a full shell.",
+          "overview": "Lets the agent run a limited, pre-approved set of safe commands to inspect the computer it's running on — things like listing files or checking git status. Nothing that could change your system, just looking around.",
+          "description": "Runs the supplied command against a whitelist of read-only utilities — ls, cat, grep, git (read), ps, df, du, head, tail, wc, find, echo, pwd, env, date — with a configurable timeout (default 120s, hard cap 300s). Pipes and output redirection ('>', '>>') are blocked to prevent arbitrary file writes.",
+          "example": {
+            "prompt": "Show me the last 5 commits on this branch.",
+            "call": "shell_command(command=\"git log --oneline -5\")",
+            "result": "the commit hashes and subject lines from git log."
+          },
+          "codeSnippet": "# ops-inspection.yaml\nname: ops-inspection-crew\nprocess: SEQUENTIAL\n\nagents:\n  - id: inspector\n    role: Ops Inspector\n    goal: Inspect the runtime environment safely\n    tools:\n      - shell_command\n\ntasks:\n  - id: ops-inspection-task\n    agent: inspector\n    description: Show the last 5 commits on the current branch via git log.",
+          "javaSnippet": "import ai.intelliswarm.swarmai.agent.Agent;\nimport ai.intelliswarm.swarmai.task.Task;\nimport ai.intelliswarm.swarmai.swarm.Swarm;\nimport ai.intelliswarm.swarmai.swarm.SwarmOutput;\nimport ai.intelliswarm.swarmai.process.ProcessType;\nimport ai.intelliswarm.swarmai.tool.common.ShellCommandTool;\nimport org.springframework.ai.chat.client.ChatClient;\nimport org.springframework.beans.factory.annotation.Autowired;\n\n@Autowired ChatClient chatClient;\n@Autowired ShellCommandTool shellCommandTool;\n\nAgent inspector = Agent.builder()\n    .role(\"Ops Inspector\")\n    .goal(\"Inspect the runtime environment safely\")\n    .chatClient(chatClient)\n    .tool(shellCommandTool)\n    .build();\n\nTask inspectorTask = Task.builder()\n    .description(\"Show the last 5 commits on the current branch via git log.\")\n    .agent(inspector)\n    .build();\n\nSwarmOutput result = Swarm.builder()\n    .agent(inspector)\n    .task(inspectorTask)\n    .process(ProcessType.SEQUENTIAL)\n    .build()\n    .kickoff();",
+          "configuration": [],
+          "workflows": [
+            "git log/status inspection in devops agents",
+            "Filesystem triage (ls, df, ps) for ops crews",
+            "grep over project files during code review",
+            "Read-only system-introspection demos"
+          ],
+          "sourcePath": "swarmai-tools/src/main/java/ai/intelliswarm/swarmai/tool/common/ShellCommandTool.java"
+        }
+      ]
+    },
+    {
+      "id": "communication",
+      "titleLead": "Communication",
+      "titleHighlight": "",
+      "accent": "Close the loop with humans",
+      "tools": [
+        {
+          "id": "email",
+          "title": "Email",
+          "tagline": "Send transactional email from agents.",
+          "content": "Send transactional email from agent workflows — notifications, reports, approvals, or alerts. The last-mile delivery for long-running autonomous pipelines.",
+          "overview": "Sends an email from the agent. Use it to notify someone when a long-running task finishes, to deliver a generated report, or to flag an issue that needs a human's attention.",
+          "description": "Sends an email through the SMTP server configured via Spring Mail. Accepts 'to', 'subject', and 'body' (plus optional 'cc', 'bcc', 'attachments') and returns a confirmation with the message ID. Uses whatever SMTP credentials your Spring Boot application provides.",
+          "example": {
+            "prompt": "Email the quarterly report to our investors list.",
+            "call": "email(to=\"investors@example.com\", subject=\"Q4 2026 Report\", body=\"…\")",
+            "result": "confirmation of successful delivery with a message ID."
+          },
+          "codeSnippet": "# notification.yaml\nname: notification-crew\nprocess: SEQUENTIAL\n\nagents:\n  - id: notifier\n    role: Notification Agent\n    goal: Deliver crew output to stakeholders via email\n    tools:\n      - email\n\ntasks:\n  - id: notification-task\n    agent: notifier\n    description: Email the quarterly report to investors@example.com with subject 'Q4 2026 Report'.",
+          "javaSnippet": "import ai.intelliswarm.swarmai.agent.Agent;\nimport ai.intelliswarm.swarmai.task.Task;\nimport ai.intelliswarm.swarmai.swarm.Swarm;\nimport ai.intelliswarm.swarmai.swarm.SwarmOutput;\nimport ai.intelliswarm.swarmai.process.ProcessType;\nimport ai.intelliswarm.swarmai.tool.common.EmailTool;\nimport org.springframework.ai.chat.client.ChatClient;\nimport org.springframework.beans.factory.annotation.Autowired;\n\n@Autowired ChatClient chatClient;\n@Autowired EmailTool emailTool;\n\nAgent notifier = Agent.builder()\n    .role(\"Notification Agent\")\n    .goal(\"Deliver crew output to stakeholders via email\")\n    .chatClient(chatClient)\n    .tool(emailTool)\n    .build();\n\nTask notifierTask = Task.builder()\n    .description(\"Email the quarterly report to investors@example.com with subject 'Q4 2026 Report'.\")\n    .agent(notifier)\n    .build();\n\nSwarmOutput result = Swarm.builder()\n    .agent(notifier)\n    .task(notifierTask)\n    .process(ProcessType.SEQUENTIAL)\n    .build()\n    .kickoff();",
+          "configuration": [
+            {
+              "key": "SMTP_HOST",
+              "description": "SMTP server host (also exposed via spring.mail.host).",
+              "required": true
+            },
+            {
+              "key": "SMTP_USERNAME",
+              "description": "SMTP auth username (spring.mail.username).",
+              "required": true
+            },
+            {
+              "key": "SMTP_PASSWORD",
+              "description": "SMTP auth password (spring.mail.password).",
+              "required": true
+            },
+            {
+              "key": "spring.mail.port",
+              "description": "SMTP port (typically 587 or 465).",
+              "required": false
+            }
+          ],
+          "workflows": [
+            "Notification agents for completed reports",
+            "Alerting on monitoring thresholds",
+            "Sending generated executive summaries to stakeholders",
+            "Daily digest crews"
+          ],
+          "sourcePath": "swarmai-tools/src/main/java/ai/intelliswarm/swarmai/tool/common/EmailTool.java"
+        },
+        {
+          "id": "slack_webhook",
+          "title": "Slack Webhook",
+          "tagline": "Post messages to Slack via an incoming webhook.",
+          "content": "Post messages to a Slack channel via an incoming webhook URL. Supports markdown formatting and optional channel/username overrides. Perfect for real-time agent notifications.",
+          "overview": "Posts a message into a Slack channel. The fastest way for an agent to tell your team something important — an alert, a completed deployment, or a summary of what it just did.",
+          "description": "Posts the supplied message text (Slack-flavored markdown accepted) to a Slack Incoming Webhook URL. Optional 'channel' and 'username' overrides let you redirect without changing the webhook. Validates that the URL starts with https://hooks.slack.com/ and caps message length at 40,000 characters.",
+          "example": {
+            "prompt": "Post today's deployment summary to the #ops channel.",
+            "call": "slack_webhook(text=\"Deploy complete: v2.3.1 live in prod\")",
+            "result": "confirmation that Slack accepted the message."
+          },
+          "codeSnippet": "# team-alert.yaml\nname: team-alert-crew\nprocess: SEQUENTIAL\n\nagents:\n  - id: notifier\n    role: Team Notifier\n    goal: Broadcast updates to team Slack channels\n    tools:\n      - slack_webhook\n\ntasks:\n  - id: team-alert-task\n    agent: notifier\n    description: Post today's deployment summary to the #ops channel.",
+          "javaSnippet": "import ai.intelliswarm.swarmai.agent.Agent;\nimport ai.intelliswarm.swarmai.task.Task;\nimport ai.intelliswarm.swarmai.swarm.Swarm;\nimport ai.intelliswarm.swarmai.swarm.SwarmOutput;\nimport ai.intelliswarm.swarmai.process.ProcessType;\nimport ai.intelliswarm.swarmai.tool.common.SlackWebhookTool;\nimport org.springframework.ai.chat.client.ChatClient;\nimport org.springframework.beans.factory.annotation.Autowired;\n\n@Autowired ChatClient chatClient;\n@Autowired SlackWebhookTool slackWebhookTool;\n\nAgent notifier = Agent.builder()\n    .role(\"Team Notifier\")\n    .goal(\"Broadcast updates to team Slack channels\")\n    .chatClient(chatClient)\n    .tool(slackWebhookTool)\n    .build();\n\nTask notifierTask = Task.builder()\n    .description(\"Post today's deployment summary to the #ops channel.\")\n    .agent(notifier)\n    .build();\n\nSwarmOutput result = Swarm.builder()\n    .agent(notifier)\n    .task(notifierTask)\n    .process(ProcessType.SEQUENTIAL)\n    .build()\n    .kickoff();",
+          "configuration": [
+            {
+              "key": "slack.webhook.url",
+              "description": "Incoming webhook URL. Can also be passed per-call as 'webhook_url'. Must start with https://hooks.slack.com/.",
+              "required": true
+            }
+          ],
+          "workflows": [
+            "Alerting an engineering channel when a monitoring agent flags an anomaly",
+            "Posting research digests to a team channel",
+            "Deploy-complete messages with links to artifacts",
+            "On-call alerting when CVE lookups return critical matches"
+          ],
+          "sourcePath": "swarmai-tools/src/main/java/ai/intelliswarm/swarmai/tool/common/SlackWebhookTool.java"
+        }
+      ]
+    },
+    {
+      "id": "productivity",
+      "titleLead": "Productivity &",
+      "titleHighlight": "Collaboration",
+      "accent": "Wire agents into the tools your team already uses",
+      "tools": [
+        {
+          "id": "jira",
+          "title": "Jira Cloud",
+          "tagline": "Search, read, create, and comment on Jira issues.",
+          "content": "Search with JQL, fetch a specific issue, create new tickets, or add comments — all via the Jira Cloud REST API. Lets agents triage backlogs, file bugs, or post status updates.",
+          "overview": "Works with your Jira tickets. Agents can search the backlog, read a specific ticket, open new ones, or add comments — perfect for automating the small-but-tedious parts of project tracking.",
+          "description": "Talks to Jira Cloud via its REST API v3 using Basic auth (email + API token). Four operations are supported: 'search_issues' runs a JQL query; 'get_issue' fetches one ticket with its description and comments; 'create_issue' opens a new ticket with project, summary, issue type, and optional description; 'add_comment' appends a comment to an existing ticket.",
+          "example": {
+            "prompt": "File a bug ticket for the login issue we just found.",
+            "call": "jira(operation=\"create_issue\", project=\"ACME\", summary=\"Login fails for users with apostrophes in email\", issueType=\"Bug\")",
+            "result": "the new ticket's key (e.g. ACME-4217) and URL."
+          },
+          "codeSnippet": "# project-tracking.yaml\nname: project-tracking-crew\nprocess: SEQUENTIAL\n\nagents:\n  - id: tracker\n    role: Project Tracker\n    goal: Automate the boring parts of ticket management\n    tools:\n      - jira\n\ntasks:\n  - id: project-tracking-task\n    agent: tracker\n    description: Create a Bug ticket in the ACME project for the new login regression.",
+          "javaSnippet": "import ai.intelliswarm.swarmai.agent.Agent;\nimport ai.intelliswarm.swarmai.task.Task;\nimport ai.intelliswarm.swarmai.swarm.Swarm;\nimport ai.intelliswarm.swarmai.swarm.SwarmOutput;\nimport ai.intelliswarm.swarmai.process.ProcessType;\nimport ai.intelliswarm.swarmai.tool.productivity.JiraTool;\nimport org.springframework.ai.chat.client.ChatClient;\nimport org.springframework.beans.factory.annotation.Autowired;\n\n@Autowired ChatClient chatClient;\n@Autowired JiraTool jiraTool;\n\nAgent tracker = Agent.builder()\n    .role(\"Project Tracker\")\n    .goal(\"Automate the boring parts of ticket management\")\n    .chatClient(chatClient)\n    .tool(jiraTool)\n    .build();\n\nTask trackerTask = Task.builder()\n    .description(\"Create a Bug ticket in the ACME project for the new login regression.\")\n    .agent(tracker)\n    .build();\n\nSwarmOutput result = Swarm.builder()\n    .agent(tracker)\n    .task(trackerTask)\n    .process(ProcessType.SEQUENTIAL)\n    .build()\n    .kickoff();",
+          "configuration": [
+            {
+              "key": "JIRA_BASE_URL",
+              "description": "Your Atlassian Cloud base URL, e.g. https://yourdomain.atlassian.net.",
+              "required": true
+            },
+            {
+              "key": "JIRA_EMAIL",
+              "description": "Atlassian account email used as the Basic-auth username.",
+              "required": true
+            },
+            {
+              "key": "JIRA_API_TOKEN",
+              "description": "API token from id.atlassian.com/manage-profile/security/api-tokens.",
+              "required": true
+            }
+          ],
+          "workflows": [
+            "Sprint triage: JQL search for active tickets and summarize status",
+            "Pull a ticket (key + description + comments) as context for a planning agent",
+            "Auto-file bug tickets when a monitoring agent detects a regression",
+            "Post structured status updates as comments on existing tickets"
+          ],
+          "sourcePath": "swarmai-tools/src/main/java/ai/intelliswarm/swarmai/tool/productivity/JiraTool.java"
+        },
+        {
+          "id": "notion",
+          "title": "Notion Workspace",
+          "tagline": "Search, read, and query Notion pages and databases.",
+          "content": "Read-only access to Notion: keyword search across pages and databases, retrieve a specific page (metadata + block text), or query a database with filters and sorts. Grounds agents in team knowledge bases.",
+          "overview": "Reads your team's Notion pages and databases. Agents can look up documentation, runbooks, or project notes your team already maintains — so answers come from your own source of truth, not a generic guess.",
+          "description": "Talks to the Notion API with an internal-integration token. Three operations are supported: 'search' matches keywords across the workspace's pages and databases; 'get_page' returns the page metadata and rendered block text for one page ID; 'query_database' runs a filter/sort against a database ID. The integration must be explicitly shared with each target page or database in Notion's UI.",
+          "example": {
+            "prompt": "Pull our onboarding checklist page.",
+            "call": "notion(operation=\"get_page\", pageId=\"abc123…\")",
+            "result": "the page's title, properties, and block-level text content."
+          },
+          "codeSnippet": "# knowledge-lookup.yaml\nname: knowledge-lookup-crew\nprocess: SEQUENTIAL\n\nagents:\n  - id: reader\n    role: Knowledge Reader\n    goal: Ground answers in the team Notion knowledge base\n    tools:\n      - notion\n\ntasks:\n  - id: knowledge-lookup-task\n    agent: reader\n    description: Pull the content of the 'Onboarding Checklist' page.",
+          "javaSnippet": "import ai.intelliswarm.swarmai.agent.Agent;\nimport ai.intelliswarm.swarmai.task.Task;\nimport ai.intelliswarm.swarmai.swarm.Swarm;\nimport ai.intelliswarm.swarmai.swarm.SwarmOutput;\nimport ai.intelliswarm.swarmai.process.ProcessType;\nimport ai.intelliswarm.swarmai.tool.productivity.NotionTool;\nimport org.springframework.ai.chat.client.ChatClient;\nimport org.springframework.beans.factory.annotation.Autowired;\n\n@Autowired ChatClient chatClient;\n@Autowired NotionTool notionTool;\n\nAgent reader = Agent.builder()\n    .role(\"Knowledge Reader\")\n    .goal(\"Ground answers in the team Notion knowledge base\")\n    .chatClient(chatClient)\n    .tool(notionTool)\n    .build();\n\nTask readerTask = Task.builder()\n    .description(\"Pull the content of the 'Onboarding Checklist' page.\")\n    .agent(reader)\n    .build();\n\nSwarmOutput result = Swarm.builder()\n    .agent(reader)\n    .task(readerTask)\n    .process(ProcessType.SEQUENTIAL)\n    .build()\n    .kickoff();",
+          "configuration": [
+            {
+              "key": "NOTION_TOKEN",
+              "description": "Notion internal-integration token. The integration must be invited to each page or database the agent needs to read.",
+              "required": true
+            }
+          ],
+          "workflows": [
+            "Search a company knowledge base and pull the top hit for context",
+            "Retrieve a runbook page and summarize its steps for an on-call agent",
+            "Query a Projects database filtered by status=Active for planning",
+            "Digest weekly meeting notes matching a keyword"
+          ],
+          "sourcePath": "swarmai-tools/src/main/java/ai/intelliswarm/swarmai/tool/productivity/NotionTool.java"
+        }
+      ]
+    },
+    {
+      "id": "cloud-storage",
+      "titleLead": "Cloud &",
+      "titleHighlight": "Storage",
+      "accent": "Read and write objects in cloud storage",
+      "tools": [
+        {
+          "id": "s3_object",
+          "title": "AWS S3 Object Store",
+          "tagline": "List, read, write, head, and delete S3 objects.",
+          "content": "List objects under a prefix, read small text objects, upload generated artifacts, head metadata, or delete keys. Uses the AWS default credential chain — env vars, profile, or IAM role.",
+          "overview": "Works with files stored in Amazon S3, a very common place companies keep logs, reports, and shared data. Agents can list what's there, read small files, upload results, or clean up old items.",
+          "description": "Wraps the AWS SDK S3 client with five operations: 'list' enumerates objects under a prefix; 'read' returns a text object's body (capped at 1 MiB to protect the agent's context); 'write' uploads a text object; 'head' returns metadata without transferring the body; 'delete' removes an object. Uses the default AWS credential chain so it works from env vars, profiles, or IAM roles.",
+          "example": {
+            "prompt": "Upload this generated report to s3://reports/2026/.",
+            "call": "s3_object(operation=\"write\", bucket=\"reports\", key=\"2026/q4.md\", content=\"…\")",
+            "result": "the full s3:// URL of the uploaded object."
+          },
+          "codeSnippet": "# storage.yaml\nname: storage-crew\nprocess: SEQUENTIAL\n\nagents:\n  - id: storage\n    role: Storage Manager\n    goal: Manage generated artifacts in S3\n    tools:\n      - s3_object\n\ntasks:\n  - id: storage-task\n    agent: storage\n    description: Upload the generated report to s3://reports/2026/q4.md.",
+          "javaSnippet": "import ai.intelliswarm.swarmai.agent.Agent;\nimport ai.intelliswarm.swarmai.task.Task;\nimport ai.intelliswarm.swarmai.swarm.Swarm;\nimport ai.intelliswarm.swarmai.swarm.SwarmOutput;\nimport ai.intelliswarm.swarmai.process.ProcessType;\nimport ai.intelliswarm.swarmai.tool.cloud.S3Tool;\nimport org.springframework.ai.chat.client.ChatClient;\nimport org.springframework.beans.factory.annotation.Autowired;\n\n@Autowired ChatClient chatClient;\n@Autowired S3Tool s3Tool;\n\nAgent storage = Agent.builder()\n    .role(\"Storage Manager\")\n    .goal(\"Manage generated artifacts in S3\")\n    .chatClient(chatClient)\n    .tool(s3Tool)\n    .build();\n\nTask storageTask = Task.builder()\n    .description(\"Upload the generated report to s3://reports/2026/q4.md.\")\n    .agent(storage)\n    .build();\n\nSwarmOutput result = Swarm.builder()\n    .agent(storage)\n    .task(storageTask)\n    .process(ProcessType.SEQUENTIAL)\n    .build()\n    .kickoff();",
+          "configuration": [
+            {
+              "key": "AWS_REGION",
+              "description": "AWS region (also accepts AWS_DEFAULT_REGION). Used when no Spring override is set.",
+              "required": true
+            },
+            {
+              "key": "AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY",
+              "description": "AWS credentials via the default chain — or use AWS_PROFILE / IAM role / SSO. Any supported AWS auth works.",
+              "required": true
+            },
+            {
+              "key": "swarmai.tools.s3.endpoint-override",
+              "description": "Optional custom endpoint URL for LocalStack, MinIO, or other S3-compatible stores.",
+              "required": false
+            }
+          ],
+          "workflows": [
+            "Audit deploy buckets — list the last N uploaded artifacts under a prefix",
+            "Persist agent-generated reports to s3://reports/<date>/<slug>.md",
+            "Fetch prompt templates or small configs stored in S3",
+            "Clean up stale test fixtures by deleting a known key after a run"
+          ],
+          "sourcePath": "swarmai-tools/src/main/java/ai/intelliswarm/swarmai/tool/cloud/S3Tool.java"
+        }
+      ]
+    },
+    {
+      "id": "vector-rag",
+      "titleLead": "Vector &",
+      "titleHighlight": "RAG",
+      "accent": "Power retrieval-augmented agents",
+      "tools": [
+        {
+          "id": "semantic_search",
+          "title": "Semantic Vector Search",
+          "tagline": "Similarity search over any Spring AI VectorStore.",
+          "content": "Natural-language similarity search over any configured Spring AI VectorStore — Chroma, PGVector, Weaviate, Redis, and more. Returns ranked document chunks with similarity scores. Vendor-neutral RAG.",
+          "overview": "Finds documents by meaning, not by matching exact words — the search that powers modern AI assistants. Ask for 'how to onboard a new hire' and it can surface the onboarding guide even if that exact phrase isn't in the title.",
+          "description": "Wraps whatever Spring AI VectorStore bean is configured in your application — Chroma, PGVector, Weaviate, Redis, Milvus, or Qdrant — and performs a natural-language similarity search. The query string is embedded on the fly and matched against stored vectors. Returns up to 20 top-K chunks with similarity scores; an optional threshold filters out weak matches.",
+          "example": {
+            "prompt": "Find internal docs about how we onboard new hires.",
+            "call": "semantic_search(query=\"onboarding a new employee\", topK=5)",
+            "result": "the 5 most relevant document chunks with similarity scores."
+          },
+          "codeSnippet": "# rag-retrieval.yaml\nname: rag-retrieval-crew\nprocess: SEQUENTIAL\n\nagents:\n  - id: retriever\n    role: RAG Retriever\n    goal: Find the most relevant passages from the knowledge base\n    tools:\n      - semantic_search\n\ntasks:\n  - id: rag-retrieval-task\n    agent: retriever\n    description: Find the top 5 internal document chunks for the query 'onboarding a new employee'.",
+          "javaSnippet": "import ai.intelliswarm.swarmai.agent.Agent;\nimport ai.intelliswarm.swarmai.task.Task;\nimport ai.intelliswarm.swarmai.swarm.Swarm;\nimport ai.intelliswarm.swarmai.swarm.SwarmOutput;\nimport ai.intelliswarm.swarmai.process.ProcessType;\nimport ai.intelliswarm.swarmai.tool.common.SemanticSearchTool;\nimport org.springframework.ai.chat.client.ChatClient;\nimport org.springframework.beans.factory.annotation.Autowired;\n\n@Autowired ChatClient chatClient;\n@Autowired SemanticSearchTool semanticSearchTool;\n\nAgent retriever = Agent.builder()\n    .role(\"RAG Retriever\")\n    .goal(\"Find the most relevant passages from the knowledge base\")\n    .chatClient(chatClient)\n    .tool(semanticSearchTool)\n    .build();\n\nTask retrieverTask = Task.builder()\n    .description(\"Find the top 5 internal document chunks for the query 'onboarding a new employee'.\")\n    .agent(retriever)\n    .build();\n\nSwarmOutput result = Swarm.builder()\n    .agent(retriever)\n    .task(retrieverTask)\n    .process(ProcessType.SEQUENTIAL)\n    .build()\n    .kickoff();",
+          "configuration": [
+            {
+              "key": "VectorStore bean",
+              "description": "A Spring AI VectorStore bean must be configured (e.g. spring.ai.vectorstore.chroma.* or spring.ai.vectorstore.pgvector.*). The tool auto-wires whatever VectorStore is present.",
+              "required": true
+            }
+          ],
+          "workflows": [
+            "Retrieve top-K document chunks for RAG grounding",
+            "Threshold-filtered queries for high-confidence matches only",
+            "Local-first or self-hosted RAG over Chroma or PGVector",
+            "Blend with web_search — semantic_search for private docs, web_search for public"
+          ],
+          "sourcePath": "swarmai-tools/src/main/java/ai/intelliswarm/swarmai/tool/common/SemanticSearchTool.java"
+        },
+        {
+          "id": "pinecone",
+          "title": "Pinecone Vector Index",
+          "tagline": "Query, upsert, delete, and inspect Pinecone indexes.",
+          "content": "Direct Pinecone integration: nearest-neighbor query, batch upsert, delete by IDs, or stats inspection. Vectors must be pre-embedded — this tool is embedding-model-agnostic.",
+          "overview": "Pinecone is a managed vector database — the storage layer behind most 'ask my own documents' AI assistants. Your content gets pre-processed into numeric fingerprints (embeddings) once; this tool lets the agent instantly find the fingerprints most similar to any new question, so it can answer using your data instead of guessing.",
+          "description": "Four operations are exposed. 'query' runs a nearest-neighbor search and returns the most similar vectors with their metadata. 'upsert' writes new vectors (up to 100 per call). 'delete' removes vectors by ID (up to 1000 per call). 'stats' returns the index's total vector count and per-namespace breakdown. Embeddings must be generated elsewhere — this tool only manages stored vectors. Top-K is capped at 100 per query.",
+          "example": {
+            "prompt": "Find the 10 product descriptions most similar to this query embedding.",
+            "call": "pinecone(operation=\"query\", vector=[0.12, -0.34, …], topK=10)",
+            "result": "the 10 nearest-neighbor matches with IDs, scores, and metadata."
+          },
+          "codeSnippet": "# vector-search.yaml\nname: vector-search-crew\nprocess: SEQUENTIAL\n\nagents:\n  - id: searcher\n    role: Vector Searcher\n    goal: Retrieve nearest-neighbor matches for an embedded query\n    tools:\n      - pinecone\n\ntasks:\n  - id: vector-search-task\n    agent: searcher\n    description: Query the index with the supplied query vector and return the top 10 matches.",
+          "javaSnippet": "import ai.intelliswarm.swarmai.agent.Agent;\nimport ai.intelliswarm.swarmai.task.Task;\nimport ai.intelliswarm.swarmai.swarm.Swarm;\nimport ai.intelliswarm.swarmai.swarm.SwarmOutput;\nimport ai.intelliswarm.swarmai.process.ProcessType;\nimport ai.intelliswarm.swarmai.tool.vector.PineconeVectorTool;\nimport org.springframework.ai.chat.client.ChatClient;\nimport org.springframework.beans.factory.annotation.Autowired;\n\n@Autowired ChatClient chatClient;\n@Autowired PineconeVectorTool pineconeVectorTool;\n\nAgent searcher = Agent.builder()\n    .role(\"Vector Searcher\")\n    .goal(\"Retrieve nearest-neighbor matches for an embedded query\")\n    .chatClient(chatClient)\n    .tool(pineconeVectorTool)\n    .build();\n\nTask searcherTask = Task.builder()\n    .description(\"Query the index with the supplied query vector and return the top 10 matches.\")\n    .agent(searcher)\n    .build();\n\nSwarmOutput result = Swarm.builder()\n    .agent(searcher)\n    .task(searcherTask)\n    .process(ProcessType.SEQUENTIAL)\n    .build()\n    .kickoff();",
+          "configuration": [
+            {
+              "key": "PINECONE_API_KEY",
+              "description": "Pinecone API key from the Pinecone console.",
+              "required": true
+            },
+            {
+              "key": "PINECONE_INDEX_HOST",
+              "description": "Full index host URL (shown in the Pinecone console next to the index).",
+              "required": true
+            }
+          ],
+          "workflows": [
+            "Top-K retrieval for grounded LLM answers (classic RAG)",
+            "Ingest batches of freshly embedded knowledge-base chunks",
+            "Purge stale vectors when source documents are rotated",
+            "Capacity-planning reports from index fullness stats"
+          ],
+          "sourcePath": "swarmai-tools/src/main/java/ai/intelliswarm/swarmai/tool/vector/PineconeVectorTool.java"
+        }
+      ]
+    },
+    {
+      "id": "integrations",
+      "titleLead": "Integrations",
+      "titleHighlight": "",
+      "accent": "Reach any REST API described by a spec",
+      "tools": [
+        {
+          "id": "openapi_call",
+          "title": "OpenAPI Universal Client",
+          "tagline": "Turn any OpenAPI 3.x spec into callable operations.",
+          "content": "Point the agent at any OpenAPI 3.x spec and it can discover and invoke every operation. list_operations enumerates the spec; invoke calls a specific operationId with parameters. Covers any REST service you can describe.",
+          "overview": "If an API publishes a spec (a menu of what it can do), this tool reads the menu and can call any operation on it. One tool that becomes whatever API your agent needs to reach — no custom integration code required.",
+          "description": "Loads an OpenAPI 3.x spec from a URL or inline string (parsed once and cached). Two operations: 'list_operations' returns every operationId with its HTTP method, path, and parameter schema; 'invoke' calls a specific operationId with path/query/header/body parameters and an optional bearer token. Flagged DANGEROUS because any endpoint in the spec becomes reachable.",
+          "example": {
+            "prompt": "Create a new issue in our GitHub repo.",
+            "call": "openapi_call(spec_url=\"https://api.github.com/openapi.json\", operationId=\"issues/create\", params={…})",
+            "result": "the response from GitHub's API — the newly created issue."
+          },
+          "codeSnippet": "# api-gateway.yaml\nname: api-gateway-crew\nprocess: SEQUENTIAL\n\nagents:\n  - id: bot\n    role: Integration Bot\n    goal: Call any REST API described by an OpenAPI spec\n    tools:\n      - openapi_call\n\ntasks:\n  - id: api-gateway-task\n    agent: bot\n    description: Using the GitHub OpenAPI spec, create a new issue in acme/webapp titled 'Broken link on homepage'.",
+          "javaSnippet": "import ai.intelliswarm.swarmai.agent.Agent;\nimport ai.intelliswarm.swarmai.task.Task;\nimport ai.intelliswarm.swarmai.swarm.Swarm;\nimport ai.intelliswarm.swarmai.swarm.SwarmOutput;\nimport ai.intelliswarm.swarmai.process.ProcessType;\nimport ai.intelliswarm.swarmai.tool.integrations.OpenApiToolkit;\nimport org.springframework.ai.chat.client.ChatClient;\nimport org.springframework.beans.factory.annotation.Autowired;\n\n@Autowired ChatClient chatClient;\n@Autowired OpenApiToolkit openApiToolkit;\n\nAgent bot = Agent.builder()\n    .role(\"Integration Bot\")\n    .goal(\"Call any REST API described by an OpenAPI spec\")\n    .chatClient(chatClient)\n    .tool(openApiToolkit)\n    .build();\n\nTask botTask = Task.builder()\n    .description(\"Using the GitHub OpenAPI spec, create a new issue in acme/webapp titled 'Broken link on homepage'.\")\n    .agent(bot)\n    .build();\n\nSwarmOutput result = Swarm.builder()\n    .agent(bot)\n    .task(botTask)\n    .process(ProcessType.SEQUENTIAL)\n    .build()\n    .kickoff();",
+          "configuration": [
+            {
+              "key": "spec_url (per-call)",
+              "description": "URL to the OpenAPI 3.x spec (YAML or JSON). Cached per location. Preferred over inline spec.",
+              "required": false
+            },
+            {
+              "key": "spec (per-call)",
+              "description": "Inline spec contents (YAML or JSON) as an alternative to spec_url.",
+              "required": false
+            },
+            {
+              "key": "bearer_token (per-call)",
+              "description": "Optional bearer token passed as the Authorization header on invoke calls.",
+              "required": false
+            }
+          ],
+          "workflows": [
+            "Discover a partner API's operations before the agent invokes them",
+            "Drive a bespoke internal service without writing a dedicated tool",
+            "One-off integration with Stripe, GitHub, or any public REST API via its spec",
+            "Generate agent-readable API documentation with list_operations for prompt grounding"
+          ],
+          "sourcePath": "swarmai-tools/src/main/java/ai/intelliswarm/swarmai/tool/integrations/OpenApiToolkit.java"
+        }
+      ]
+    },
+    {
+      "id": "vision-media",
+      "titleLead": "Vision &",
+      "titleHighlight": "Media",
+      "accent": "Generate and read images",
+      "tools": [
+        {
+          "id": "image_generate",
+          "title": "Image Generation",
+          "tagline": "Create images from a text prompt.",
+          "content": "Generate images from a text description using OpenAI's DALL·E or gpt-image-1 models. Returns a hosted URL or base64 bytes and can save the result locally.",
+          "overview": "Turns a text description into an actual image, using OpenAI's DALL·E models. Tell it what you want — 'a minimalist product hero for a climate-tech launch' — and it renders the picture for the agent to deliver or hand off to another step.",
+          "description": "Calls the OpenAI Images API to generate images from a text prompt. Supports DALL-E 2, DALL-E 3, and gpt-image-1 with size, quality, style, and count options. Returns either a hosted URL or base64 bytes, and can optionally save the result to a local file path.",
+          "example": {
+            "prompt": "Create a minimalist hero image for our climate-tech launch.",
+            "call": "image_generate(prompt=\"Minimalist hero image, climate-tech product, soft gradient\", model=\"dall-e-3\", size=\"1792x1024\")",
+            "result": "a URL to the generated image (or base64 bytes), plus metadata."
+          },
+          "codeSnippet": "# creative-gen.yaml\nname: creative-gen-crew\nprocess: SEQUENTIAL\n\nagents:\n  - id: designer\n    role: Creative Generator\n    goal: Produce marketing images from campaign briefs\n    tools:\n      - image_generate\n\ntasks:\n  - id: creative-gen-task\n    agent: designer\n    description: Generate a minimalist hero image for the Q4 climate-tech launch, 1792x1024.",
+          "javaSnippet": "import ai.intelliswarm.swarmai.agent.Agent;\nimport ai.intelliswarm.swarmai.task.Task;\nimport ai.intelliswarm.swarmai.swarm.Swarm;\nimport ai.intelliswarm.swarmai.swarm.SwarmOutput;\nimport ai.intelliswarm.swarmai.process.ProcessType;\nimport ai.intelliswarm.swarmai.tool.vision.ImageGenerationTool;\nimport org.springframework.ai.chat.client.ChatClient;\nimport org.springframework.beans.factory.annotation.Autowired;\n\n@Autowired ChatClient chatClient;\n@Autowired ImageGenerationTool imageGenerationTool;\n\nAgent designer = Agent.builder()\n    .role(\"Creative Generator\")\n    .goal(\"Produce marketing images from campaign briefs\")\n    .chatClient(chatClient)\n    .tool(imageGenerationTool)\n    .build();\n\nTask designerTask = Task.builder()\n    .description(\"Generate a minimalist hero image for the Q4 climate-tech launch, 1792x1024.\")\n    .agent(designer)\n    .build();\n\nSwarmOutput result = Swarm.builder()\n    .agent(designer)\n    .task(designerTask)\n    .process(ProcessType.SEQUENTIAL)\n    .build()\n    .kickoff();",
+          "configuration": [
+            {
+              "key": "OPENAI_API_KEY",
+              "description": "OpenAI API key. Also exposed as swarmai.tools.image.api-key.",
+              "required": true
+            },
+            {
+              "key": "swarmai.tools.image.base-url",
+              "description": "Override the base URL for OpenAI-compatible providers (Azure OpenAI, gateway proxies).",
+              "required": false
+            }
+          ],
+          "workflows": [
+            "Generate marketing creatives or hero images from a campaign brief",
+            "Produce diagram or illustration variants for reports and slide decks",
+            "Create product visualizations from feature descriptions for design review",
+            "Quick concept images inside a broader content-generation crew"
+          ],
+          "sourcePath": "swarmai-tools/src/main/java/ai/intelliswarm/swarmai/tool/vision/ImageGenerationTool.java"
+        },
+        {
+          "id": "ocr",
+          "title": "OCR",
+          "tagline": "Extract text from images.",
+          "content": "Reads text out of PNG, JPEG, TIFF, BMP, or GIF images via Tesseract. Accepts a local path, URL, or inline base64 and supports multi-language models.",
+          "overview": "Reads the words out of an image. Hand it a photo, scanned document, or screenshot and it returns the text inside — useful for invoices, receipts, or any document that isn't already digital text.",
+          "description": "Uses Tesseract (via Tess4J) to extract text from PNG, JPEG, TIFF, BMP, or GIF images. Accepts a local path, a URL, or inline base64, and supports multi-language models such as 'eng+deu'. Requires the Tesseract binaries and language data files on the host system.",
+          "example": {
+            "prompt": "Extract the text from this scanned invoice.",
+            "call": "ocr(path=\"invoices/2026-q4.png\", languages=\"eng\")",
+            "result": "the plain-text contents of the image, with line breaks preserved."
+          },
+          "codeSnippet": "# document-ocr.yaml\nname: document-ocr-crew\nprocess: SEQUENTIAL\n\nagents:\n  - id: reader\n    role: Document Reader\n    goal: Extract text from scanned documents\n    tools:\n      - ocr\n\ntasks:\n  - id: document-ocr-task\n    agent: reader\n    description: Extract the text from invoices/2026-q4.png using English language data.",
+          "javaSnippet": "import ai.intelliswarm.swarmai.agent.Agent;\nimport ai.intelliswarm.swarmai.task.Task;\nimport ai.intelliswarm.swarmai.swarm.Swarm;\nimport ai.intelliswarm.swarmai.swarm.SwarmOutput;\nimport ai.intelliswarm.swarmai.process.ProcessType;\nimport ai.intelliswarm.swarmai.tool.vision.OcrTool;\nimport org.springframework.ai.chat.client.ChatClient;\nimport org.springframework.beans.factory.annotation.Autowired;\n\n@Autowired ChatClient chatClient;\n@Autowired OcrTool ocrTool;\n\nAgent reader = Agent.builder()\n    .role(\"Document Reader\")\n    .goal(\"Extract text from scanned documents\")\n    .chatClient(chatClient)\n    .tool(ocrTool)\n    .build();\n\nTask readerTask = Task.builder()\n    .description(\"Extract the text from invoices/2026-q4.png using English language data.\")\n    .agent(reader)\n    .build();\n\nSwarmOutput result = Swarm.builder()\n    .agent(reader)\n    .task(readerTask)\n    .process(ProcessType.SEQUENTIAL)\n    .build()\n    .kickoff();",
+          "configuration": [
+            {
+              "key": "swarmai.tools.ocr.tessdata-path",
+              "description": "Path to the Tesseract tessdata directory. Falls back to the TESSDATA_PREFIX env var and standard install locations.",
+              "required": false
+            }
+          ],
+          "workflows": [
+            "Extract text from scanned invoices, receipts, or contracts for downstream parsing",
+            "Transcribe screenshots of dashboards or error screens into structured bug reports",
+            "Pre-process historical document images before feeding them to analysis agents",
+            "Digitize whiteboard photos captured during team meetings"
+          ],
+          "sourcePath": "swarmai-tools/src/main/java/ai/intelliswarm/swarmai/tool/vision/OcrTool.java"
+        }
+      ]
+    },
+    {
+      "id": "messaging-streaming",
+      "titleLead": "Messaging &",
+      "titleHighlight": "Streaming",
+      "accent": "Publish events to the enterprise event bus",
+      "tools": [
+        {
+          "id": "kafka_produce",
+          "title": "Kafka Producer",
+          "tagline": "Publish events to a Kafka topic.",
+          "content": "Publish messages to a Kafka topic with optional key, headers, and partition. Supports SASL/SSL, idempotent delivery, and retry controls — the bridge from an agent workflow into your existing event bus.",
+          "overview": "Sends a message onto Kafka, the widely-used event bus that many companies run as the backbone of their systems. Lets agents publish events — decisions, alerts, state changes — so downstream services can react in real time.",
+          "description": "Publishes a string-valued message to a Kafka topic with optional key, headers, and partition. Accepts extra producer config (SASL, SSL, acks, compression) and enforces idempotent delivery with configurable retry and timeout controls.",
+          "example": {
+            "prompt": "Publish a 'deployment-complete' event to our releases topic.",
+            "call": "kafka_produce(topic=\"releases\", key=\"webapp\", value=\"{\\\"version\\\":\\\"2.3.1\\\",\\\"env\\\":\\\"prod\\\"}\")",
+            "result": "a confirmation with the offset and partition the record landed in."
+          },
+          "codeSnippet": "# event-publisher.yaml\nname: event-publisher-crew\nprocess: SEQUENTIAL\n\nagents:\n  - id: publisher\n    role: Event Publisher\n    goal: Publish workflow events to the enterprise event bus\n    tools:\n      - kafka_produce\n\ntasks:\n  - id: event-publisher-task\n    agent: publisher\n    description: Publish a 'deployment-complete' event to the 'releases' topic with the build metadata as payload.",
+          "javaSnippet": "import ai.intelliswarm.swarmai.agent.Agent;\nimport ai.intelliswarm.swarmai.task.Task;\nimport ai.intelliswarm.swarmai.swarm.Swarm;\nimport ai.intelliswarm.swarmai.swarm.SwarmOutput;\nimport ai.intelliswarm.swarmai.process.ProcessType;\nimport ai.intelliswarm.swarmai.tool.messaging.KafkaProducerTool;\nimport org.springframework.ai.chat.client.ChatClient;\nimport org.springframework.beans.factory.annotation.Autowired;\n\n@Autowired ChatClient chatClient;\n@Autowired KafkaProducerTool kafkaProducerTool;\n\nAgent publisher = Agent.builder()\n    .role(\"Event Publisher\")\n    .goal(\"Publish workflow events to the enterprise event bus\")\n    .chatClient(chatClient)\n    .tool(kafkaProducerTool)\n    .build();\n\nTask publisherTask = Task.builder()\n    .description(\"Publish a 'deployment-complete' event to the 'releases' topic with the build metadata as payload.\")\n    .agent(publisher)\n    .build();\n\nSwarmOutput result = Swarm.builder()\n    .agent(publisher)\n    .task(publisherTask)\n    .process(ProcessType.SEQUENTIAL)\n    .build()\n    .kickoff();",
+          "configuration": [
+            {
+              "key": "KAFKA_BOOTSTRAP_SERVERS",
+              "description": "Comma-separated list of Kafka bootstrap servers. Also exposed as swarmai.tools.kafka.bootstrap-servers or the per-call 'bootstrap_servers' parameter.",
+              "required": true
+            }
+          ],
+          "workflows": [
+            "Emit agent-generated signals and alerts onto the enterprise event bus",
+            "Fan out workflow state changes to downstream consumers in real time",
+            "Bridge a swarm's decisions into existing Kafka-based microservices",
+            "Publish audit events whenever a self-improving agent updates a skill"
+          ],
+          "sourcePath": "swarmai-tools/src/main/java/ai/intelliswarm/swarmai/tool/messaging/KafkaProducerTool.java"
+        }
+      ]
+    }
+  ]
+}

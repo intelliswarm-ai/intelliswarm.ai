@@ -21,6 +21,8 @@ import { BlogListComponent } from './pages/blog/blog-list/blog-list.component';
 import { BlogPostComponent } from './pages/blog/blog-post/blog-post.component';
 import { DemosListComponent } from './pages/demos/demos-list/demos-list.component';
 import { DemoDetailComponent } from './pages/demos/demo-detail/demo-detail.component';
+import { ToolsComponent } from './pages/tools/tools.component';
+import { ToolDetailComponent } from './pages/tools/tool-detail/tool-detail.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -29,6 +31,8 @@ const routes: Routes = [
   { path: 'conversations', component: ConversationsComponent },
   { path: 'examples', component: ExamplesComponent },
   { path: 'integrations', component: IntegrationsComponent },
+  { path: 'tools', component: ToolsComponent },
+  { path: 'tools/:id', component: ToolDetailComponent },
   { path: 'pricing', component: PricingComponent },
   { path: 'privacy-policy', component: PrivacyPolicyComponent },
   { path: 'terms-of-service', component: TermsOfServiceComponent },

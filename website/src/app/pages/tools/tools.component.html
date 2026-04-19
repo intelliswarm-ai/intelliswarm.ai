@@ -1,0 +1,74 @@
+<app-page-hero
+  [title]="'Built-in'"
+  [subtitle]="'Tools'"
+  [content]="
+    totalTools + '+ production-ready tools ship with SwarmAI out of the box — web search, SEC filings, CVE lookup, Wolfram Alpha, PDF reading, code execution, and more. Plug them into any agent workflow without writing integration glue.'
+  "
+></app-page-hero>
+
+<div class="feature-area tools-area mt-192">
+  <div class="container">
+    <ng-container *ngFor="let group of toolGroups; let gi = index">
+      <div class="row tools-group-header">
+        <div class="col-md-12">
+          <h2 class="title-2" [id]="group.id">
+            {{ group.titleLead }}<ng-container *ngIf="group.titleHighlight">
+              <span> {{ group.titleHighlight }}</span>
+            </ng-container>
+          </h2>
+          <p class="tools-group-accent">{{ group.accent }}</p>
+        </div>
+      </div>
+
+      <div class="row gy-4 tools-group-grid">
+        <div class="col-md-6 col-lg-4" *ngFor="let tool of group.tools; let ti = index">
+          <article class="tool-card">
+            <a
+              class="tool-card-link"
+              [routerLink]="['/tools', tool.id]"
+              [attr.aria-label]="'Open ' + tool.title + ' details'"
+            >
+              <img
+                class="tool-card-icon"
+                [src]="iconSrc(globalIndex(gi, ti))"
+                alt=""
+                width="64"
+                height="64"
+              />
+              <h3 class="tool-card-title">{{ tool.title }}</h3>
+              <p class="tool-card-content">{{ tool.tagline || tool.content }}</p>
+              <div class="tool-card-meta">
+                <span *ngIf="configCount(tool) > 0" class="tool-card-badge">
+                  {{ configCount(tool) }} config
+                </span>
+                <span *ngIf="workflowCount(tool) > 0" class="tool-card-badge tool-card-badge-soft">
+                  {{ workflowCount(tool) }} workflows
+                </span>
+              </div>
+              <span class="tool-card-cta">View details &rarr;</span>
+            </a>
+            <a
+              class="tool-card-github"
+              [href]="githubUrlFor(tool)"
+              target="_blank"
+              rel="noopener noreferrer"
+              [attr.aria-label]="'View ' + tool.title + ' source on GitHub'"
+            >View on GitHub</a>
+          </article>
+        </div>
+      </div>
+    </ng-container>
+
+    <div class="row tools-catalog-footer">
+      <div class="col-md-12">
+        <p class="tools-catalog-note">
+          All tool metadata is published as a JSON catalog over the IntelliSwarm CDN — fetch it at
+          <a [href]="publicCatalogUrl" target="_blank" rel="noopener noreferrer"><code>{{ publicCatalogUrl }}</code></a>
+          to power your own integrations.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-newsletter></app-newsletter>
