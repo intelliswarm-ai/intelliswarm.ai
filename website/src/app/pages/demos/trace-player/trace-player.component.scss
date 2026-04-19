@@ -417,27 +417,46 @@ $agent-palette: #6366f1, #ec4899, #10b981, #f97316, #06b6d4, #a855f7;
 @media (max-width: 640px) {
   .trace-player { font-size: 0.82rem; border-radius: 10px; }
 
+  // Stack the header: badge+title on top, metrics row beneath. Space-between
+  // + wrap fought the metrics into an unreadable cluster on narrow phones.
   .tp-header {
-    padding: 10px 12px;
-    gap: 8px;
-
-    .tp-title h3 { font-size: 0.88rem; }
-    .tp-title p  { font-size: 0.72rem; }
+    flex-direction: column;
+    align-items: stretch;
+    padding: 12px 14px;
+    gap: 10px;
   }
 
-  // Let metrics wrap into a grid instead of a single overflowing row. Three
-  // numeric chips fit neatly across a phone; four won't, but wrapping is fine.
-  .tp-metrics {
-    gap: 10px;
+  .tp-title {
     flex-wrap: wrap;
-    justify-content: flex-start;
+    gap: 6px 10px;
+
+    h3 { font-size: 0.92rem; line-height: 1.3; flex: 1 1 auto; min-width: 0; }
+    // Subtitle on its own line so it doesn't squeeze the title to a single word.
+    p  { font-size: 0.72rem; flex-basis: 100%; margin-top: -2px; }
+  }
+
+  // Render each stat as a small card on its own — 2-column grid so the chips
+  // don't squash into unreadable slivers. An odd trailing metric (baseline has
+  // 3 chips because "tools" is swarm-only) spans the full row instead of
+  // leaving a lopsided half-empty column.
+  .tp-metrics {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
     width: 100%;
   }
   .tp-metric {
     align-items: flex-start;
-    .tp-metric-val   { font-size: 0.85rem; }
-    .tp-metric-label { font-size: 0.6rem; }
+    padding: 8px 10px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 8px;
+    min-width: 0;
+
+    .tp-metric-val   { font-size: 0.92rem; }
+    .tp-metric-label { font-size: 0.62rem; letter-spacing: 0.05em; margin-top: 2px; }
   }
+  .tp-metric:last-child:nth-child(odd) { grid-column: 1 / -1; }
 
   .tp-stream { padding: 10px 12px 14px; gap: 6px; }
   .tp-row { padding: 5px 8px; }

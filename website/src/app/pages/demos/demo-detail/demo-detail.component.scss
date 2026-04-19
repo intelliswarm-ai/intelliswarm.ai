@@ -504,13 +504,31 @@
 
   .btn-icon { width: 38px; height: 38px; }
 
+  // Turn each Δ into a visible card tile — the dark strip had no separators
+  // between deltas, so on phones the labels and values ran together.
   .delta-strip {
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    padding: 12px 14px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    padding: 12px;
 
-    .delta-label { font-size: 0.6rem; }
-    .delta-val { font-size: 0.85rem; }
+    .delta {
+      padding: 8px 10px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      min-width: 0;
+    }
+    .delta-label {
+      font-size: 0.6rem;
+      margin-bottom: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .delta-val { font-size: 0.88rem; word-break: break-word; }
+
+    // Odd tail tile spans full width so we don't get a half-empty slot.
+    .delta:last-child:nth-child(odd) { grid-column: 1 / -1; }
   }
 
   .analysis-block {
@@ -536,6 +554,35 @@
         -webkit-overflow-scrolling: touch;
       }
       th, td { padding: 8px 10px; }
+
+      // The 5-column "## Metrics" table is always wider than a phone. Pin the
+      // first column (metric name) so it stays visible while the user pans
+      // horizontally across Swarm/Baseline × model — otherwise you see four
+      // numbers with no idea which row is which. The swarm/baseline column
+      // tints defined on the non-mobile rules still apply here; we just freeze
+      // column 1 and tighten the cell rhythm.
+      table:has(tr:first-child th:nth-child(5)) {
+        font-size: 0.78rem;
+
+        th, td { padding: 6px 8px; }
+
+        th:first-child, td:first-child {
+          position: sticky;
+          left: 0;
+          z-index: 1;
+          // Opaque backgrounds so scrolled-under numbers don't bleed through.
+          // Header cell uses the same pale grey as other header cells; body
+          // cells use white to stand out against the tinted swarm/baseline
+          // columns to their right.
+          background: #fff;
+          color: #0f172a;
+          font-weight: 700;
+          text-align: left;
+          min-width: 86px;
+          border-right: 2px solid #cbd5e1;
+        }
+        thead th:first-child { background: #f8fafc; }
+      }
 
       pre, code { font-size: 0.8rem; }
     }
