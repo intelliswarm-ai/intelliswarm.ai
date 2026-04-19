@@ -412,3 +412,52 @@ $agent-palette: #6366f1, #ec4899, #10b981, #f97316, #06b6d4, #a855f7;
 
   hr { border: none; border-top: 1px solid $c-border; margin: 14px 0; }
 }
+
+/* ---------- mobile polish ---------- */
+@media (max-width: 640px) {
+  .trace-player { font-size: 0.82rem; border-radius: 10px; }
+
+  .tp-header {
+    padding: 10px 12px;
+    gap: 8px;
+
+    .tp-title h3 { font-size: 0.88rem; }
+    .tp-title p  { font-size: 0.72rem; }
+  }
+
+  // Let metrics wrap into a grid instead of a single overflowing row. Three
+  // numeric chips fit neatly across a phone; four won't, but wrapping is fine.
+  .tp-metrics {
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    width: 100%;
+  }
+  .tp-metric {
+    align-items: flex-start;
+    .tp-metric-val   { font-size: 0.85rem; }
+    .tp-metric-label { font-size: 0.6rem; }
+  }
+
+  .tp-stream { padding: 10px 12px 14px; gap: 6px; }
+  .tp-row { padding: 5px 8px; }
+
+  .tp-tool-head, .tp-llm-head { padding: 7px 10px; font-size: 0.78rem; }
+  .tp-tool-body, .tp-llm-stream { font-size: 0.72rem; }
+
+  .tp-final { padding: 12px 14px 14px; max-height: 50%; }
+  .tp-final-content { padding: 12px 13px; font-size: 0.8rem; }
+
+  .tp-final-rendered {
+    h1 { font-size: 1.08rem; }
+    h2 { font-size: 1rem; }
+    h3 { font-size: 0.92rem; }
+    table { font-size: 0.76rem; }
+    th, td { padding: 5px 8px; }
+  }
+
+  .tp-agent-msg .tp-bubble {
+    padding: 7px 10px;
+    .tp-bubble-text { font-size: 0.82rem; max-height: 220px; }
+  }
+}

@@ -838,15 +838,16 @@ resource "null_resource" "backend_deps" {
 resource "null_resource" "frontend_build" {
   triggers = {
     # Hash of all Angular source files (ts/html/scss/css/json) — any change triggers rebuild
-    src_hash     = sha256(join("", [for f in fileset("${path.module}/../website/src", "**/*.{ts,html,scss,css,json,md}") : filesha256("${path.module}/../website/src/${f}")]))
-    package      = filemd5("${path.module}/../website/package.json")
-    angular_json = filemd5("${path.module}/../website/angular.json")
-    blog_script  = filemd5("${path.module}/../website/scripts/generate-blog-index.js")
+    src_hash        = sha256(join("", [for f in fileset("${path.module}/../website/src", "**/*.{ts,html,scss,css,json,md}") : filesha256("${path.module}/../website/src/${f}")]))
+    package         = filemd5("${path.module}/../website/package.json")
+    angular_json    = filemd5("${path.module}/../website/angular.json")
+    blog_script     = filemd5("${path.module}/../website/scripts/generate-blog-index.js")
+    prerender_script = filemd5("${path.module}/../website/scripts/generate-prerender-routes.js")
   }
 
   provisioner "local-exec" {
     working_dir = "${path.module}/../website"
-    command     = "npm install && node scripts/generate-blog-index.js && npx ng build --configuration production"
+    command     = "npm install && node scripts/generate-blog-index.js && node scripts/generate-prerender-routes.js && npx ng build --configuration production"
   }
 }
 

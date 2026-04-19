@@ -211,13 +211,7 @@ function main() {
     JSON.stringify({ posts }, null, 2)
   );
 
-  // Generate prerender-routes.txt for Angular prerendering
-  const ROUTES_FILE = path.join(__dirname, '..', 'prerender-routes.txt');
-  const blogRoutes = posts.map(p => `/blog/${p.slug}`);
-  fs.writeFileSync(ROUTES_FILE, blogRoutes.join('\n') + '\n');
-
   console.log(`Blog index generated: ${posts.length} post(s)`);
-  console.log(`Prerender routes written: ${blogRoutes.length} blog route(s)`);
 }
 
 main();

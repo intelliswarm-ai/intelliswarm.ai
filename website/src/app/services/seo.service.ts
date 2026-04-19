@@ -1,6 +1,6 @@
-import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
-import { isPlatformBrowser, DOCUMENT } from '@angular/common';
+import { DOCUMENT } from '@angular/common';
 import { Router } from '@angular/router';
 
 export interface SeoConfig {
@@ -28,7 +28,6 @@ export class SeoService {
     private meta: Meta,
     private titleService: Title,
     private router: Router,
-    @Inject(PLATFORM_ID) private platformId: object,
     @Inject(DOCUMENT) private doc: Document
   ) {}
 
@@ -115,10 +114,12 @@ export class SeoService {
   }
 
   private setCanonicalUrl(url: string): void {
-    if (!isPlatformBrowser(this.platformId)) return;
-    let link: HTMLLinkElement | null = this.doc.querySelector('link[rel="canonical"]');
+    // Must run during SSR too — crawlers (LinkedIn, Google) trust the
+    // canonical tag over og:url, so a stale canonical pointing at "/" will
+    // collapse every per-page preview back to the homepage.
+    let link = this.doc.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
     if (!link) {
-      link = this.doc.createElement('link');
+      link = this.doc.createElement('link') as HTMLLinkElement;
       link.setAttribute('rel', 'canonical');
       this.doc.head.appendChild(link);
     }

@@ -65,6 +65,10 @@ if (-not $SkipBuild) {
     node scripts/generate-blog-index.js
     if ($LASTEXITCODE -ne 0) { Write-Host "Blog index generation failed!" -ForegroundColor Red; exit 1 }
 
+    Write-Host "Generating prerender routes..." -ForegroundColor Yellow
+    node scripts/generate-prerender-routes.js
+    if ($LASTEXITCODE -ne 0) { Write-Host "Prerender routes generation failed!" -ForegroundColor Red; exit 1 }
+
     Write-Host "Building Angular production bundle..." -ForegroundColor Yellow
     npm run build
     if ($LASTEXITCODE -ne 0) { Write-Host "Build failed!" -ForegroundColor Red; exit 1 }

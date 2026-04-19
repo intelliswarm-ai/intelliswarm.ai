@@ -1,2 +1,10 @@
+/home
+/blog
+/demos
+/news
+/docs
+/examples
+/contribute
 /blog/introducing-swarmai-framework
 /blog/why-we-built-intelliswarm
+/demos/stock-market-analysis
