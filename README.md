@@ -1,6 +1,6 @@
 # intelliswarm.ai
 
-Marketing site and resume-chat backend for **IntelliSwarm.ai** — the company behind [SwarmAI](https://github.com/intelliswarm-ai/swarm-ai), an open-source Spring AI agentic framework for Java.
+Website for **IntelliSwarm.ai** — the org behind [SwarmAI](https://github.com/intelliswarm-ai/swarm-ai), an open-source Spring AI agentic framework for Java.
 
 ## Repository layout
 
