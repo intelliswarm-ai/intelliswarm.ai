@@ -63,7 +63,7 @@ export class DocsComponent implements OnInit {
 
   modules = [
     { name: 'swarmai-core', description: 'Agents, tasks, processes, state, skills, memory, knowledge, budget, governance, observability' },
-    { name: 'swarmai-tools', description: '24 built-in tools: web search, PDF, CSV, shell, HTTP, email, SEC filings' },
+    { name: 'swarmai-tools', description: '26 built-in tools: web search, PDF, CSV, shell, HTTP, email, SEC filings, CVE/OSV lookup, GitHub PR' },
     { name: 'swarmai-dsl', description: 'YAML DSL parser & compiler for declarative workflow definitions' },
     { name: 'swarmai-rl', description: 'Lightweight RL: contextual bandits, Thompson sampling, heuristic policies' },
     { name: 'swarmai-enterprise', description: 'Multi-tenancy, deep RL (DQN), advanced governance, RBAC, audit, billing' },
