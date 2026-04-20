@@ -25,7 +25,7 @@ export class ExamplesComponent implements OnInit {
   ngOnInit(): void {
     this.seo.update({
       title: 'Examples',
-      description: 'Explore 50+ SwarmAI workflow examples: hierarchical research, parallel analysis, self-improving pipelines, swarm audits, and composite enterprise workflows.',
+      description: 'Explore 50+ SwarmAI workflow examples: hierarchical research, parallel analysis, swarm audits, and composite enterprise workflows.',
       keywords: 'AI agent examples, multi-agent workflow, SwarmAI examples, Java AI tutorial',
     });
   }
@@ -66,7 +66,7 @@ export class ExamplesComponent implements OnInit {
     },
     {
       id: 'selfimproving',
-      title: 'Self-Improving Analysis',
+      title: 'Dynamic Skill Generation',
       category: 'Advanced',
       process: 'SELF_IMPROVING',
       agents: ['Analyst', 'Reviewer'],
@@ -104,8 +104,8 @@ export class ExamplesComponent implements OnInit {
       category: 'Advanced',
       process: 'SWARM',
       agents: ['Discovery Agent', 'Research Agent', 'Synthesis Agent'],
-      description: 'Distributed fan-out pattern. Discovery phase identifies competitor targets, then parallel self-improving agents research each target independently. A coordinator synthesizes all findings into a master report.',
-      diagram: 'Discovery ──► [Target A, Target B, Target C]\n  ├──► Self-Improving Agent (A) ──┐\n  ├──► Self-Improving Agent (B) ──┤──► Coordinator ──► Master Report\n  └──► Self-Improving Agent (C) ──┘',
+      description: 'Distributed fan-out pattern. Discovery phase identifies competitor targets, then parallel agents research each target independently. A coordinator synthesizes all findings into a master report.',
+      diagram: 'Discovery ──► [Target A, Target B, Target C]\n  ├──► Research Agent (A) ──┐\n  ├──► Research Agent (B) ──┤──► Coordinator ──► Master Report\n  └──► Research Agent (C) ──┘',
       features: ['Distributed fan-out', 'Parallel sub-swarms', 'Shared skill registry', 'Master synthesis'],
       source: 'competitive-research-parallel-swarm'
     },
@@ -192,9 +192,9 @@ export class ExamplesComponent implements OnInit {
       category: 'Enterprise',
       process: 'SWARM',
       agents: ['Scanner', 'Exploit Analyst', 'Report Writer'],
-      description: 'Swarm-based security testing. Scanner discovers targets, parallel agents assess each target independently with self-improving capabilities, coordinator produces a comprehensive security report.',
-      diagram: 'Scanner ──► [Target 1, Target 2, ...]\n  ├──► Self-Improving Agent ──┐\n  ├──► Self-Improving Agent ──┤──► Security Report\n  └──► Self-Improving Agent ──┘',
-      features: ['SWARM process', 'Parallel security agents', 'Self-improving analysis', 'Comprehensive report'],
+      description: 'Swarm-based security testing. Scanner discovers targets, parallel agents assess each target independently, coordinator produces a comprehensive security report.',
+      diagram: 'Scanner ──► [Target 1, Target 2, ...]\n  ├──► Exploit Agent ──┐\n  ├──► Exploit Agent ──┤──► Security Report\n  └──► Exploit Agent ──┘',
+      features: ['SWARM process', 'Parallel security agents', 'Coverage enforcement', 'Comprehensive report'],
       source: 'security-penetration-testing-swarm'
     },
 
@@ -410,8 +410,8 @@ export class ExamplesComponent implements OnInit {
       category: 'Advanced',
       process: 'SWARM',
       agents: ['Discovery Agent', 'Research Agent', 'Synthesis Agent'],
-      description: 'Distributed fan-out pattern. Discovery phase identifies competitor targets, then parallel self-improving agents research each independently. Coordinator synthesizes into a master report.',
-      diagram: 'Discovery ──► [Target A, Target B, Target C]\n  ├──► Self-Improving Agent (A) ──┐\n  ├──► Self-Improving Agent (B) ──┤──► Coordinator ──► Master Report\n  └──► Self-Improving Agent (C) ──┘',
+      description: 'Distributed fan-out pattern. Discovery phase identifies competitor targets, then parallel agents research each independently. Coordinator synthesizes into a master report.',
+      diagram: 'Discovery ──► [Target A, Target B, Target C]\n  ├──► Research Agent (A) ──┐\n  ├──► Research Agent (B) ──┤──► Coordinator ──► Master Report\n  └──► Research Agent (C) ──┘',
       features: ['Distributed fan-out', 'Parallel sub-swarms', 'Shared skill registry', 'Master synthesis'],
       source: 'competitive-research-parallel-swarm'
     },
@@ -483,7 +483,7 @@ export class ExamplesComponent implements OnInit {
       category: 'Advanced',
       process: 'SELF_IMPROVING',
       agents: ['Analyst', 'Reviewer'],
-      description: 'Self-improving workflow powered by a Deep Q-Network (DQN) policy engine. The RL agent learns optimal strategies for task execution through experience replay and neural network optimization.',
+      description: 'Iterative workflow powered by a Deep Q-Network (DQN) policy engine. The RL agent learns optimal strategies for task execution through experience replay and neural network optimization.',
       diagram: 'Analyst ──► Reviewer ──► DQN Policy\n  ▲                         │\n  └── optimize strategy ────┘',
       features: ['DQN policy engine', 'Experience replay', 'Neural network', 'Reinforcement learning'],
       source: 'deep-reinforcement-learning-dqn'

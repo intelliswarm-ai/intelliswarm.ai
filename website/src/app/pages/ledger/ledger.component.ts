@@ -21,10 +21,10 @@ export class LedgerComponent implements OnInit {
 
   ngOnInit(): void {
     this.seo.update({
-      title: 'Community Investment Ledger',
+      title: 'Community Ledger',
       description:
-        'Live public counter of tokens invested, proposals generated, and improvements shipped by the SwarmAI community. The compounding collective intelligence of every deployment.',
-      keywords: 'SwarmAI ledger, community investment, self-improvement, open source metrics',
+        'Aggregated opt-in telemetry from SwarmAI deployments: counters for tokens invested, proposals generated, and improvements recorded. Counters only — no workflow content.',
+      keywords: 'SwarmAI ledger, open source metrics',
     });
     this.load();
   }

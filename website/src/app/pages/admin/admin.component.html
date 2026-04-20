@@ -36,10 +36,10 @@
     <div class="header-row">
       <div>
         <h1>
-          <span>Self-Improvement </span><span class="gradient-text">Contributions</span>
+          <span>Improvement </span><span class="gradient-text">Contributions</span>
         </h1>
         <p class="admin-description">
-          Improvements submitted by SwarmAI deployments worldwide.
+          Opt-in submissions from SwarmAI deployments.
         </p>
       </div>
       <button class="logout-btn" (click)="logout()">Logout</button>
@@ -83,7 +83,7 @@
   <!-- Empty State -->
   <div class="empty-state" *ngIf="!loading && !error && contributions.length === 0">
     <h3>No contributions yet</h3>
-    <p>When SwarmAI deployments submit self-improvement data, they'll appear here.</p>
+    <p>When SwarmAI deployments submit improvement data, they'll appear here.</p>
   </div>
 
   <!-- Contributions Table -->

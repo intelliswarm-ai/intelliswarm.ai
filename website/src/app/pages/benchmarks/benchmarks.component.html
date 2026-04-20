@@ -59,7 +59,6 @@
           <tr>
             <th>Framework</th>
             <th>Language</th>
-            <th>Self-Improving</th>
             <th>Governance</th>
             <th>Budget Tracking</th>
             <th>Multi-Tenant</th>
@@ -71,7 +70,6 @@
           <tr *ngFor="let c of competitors" [class.highlight]="c.name === 'SwarmAI'">
             <td><strong>{{c.name}}</strong></td>
             <td>{{c.language}}</td>
-            <td [class.yes]="c.selfImproving" [class.no]="!c.selfImproving">{{c.selfImproving ? 'Yes' : 'No'}}</td>
             <td [class.yes]="c.governance" [class.no]="!c.governance">{{c.governance ? 'Yes' : 'No'}}</td>
             <td [class.yes]="c.budget" [class.no]="!c.budget">{{c.budget ? 'Yes' : 'No'}}</td>
             <td [class.yes]="c.multiTenant" [class.no]="!c.multiTenant">{{c.multiTenant ? 'Yes' : 'No'}}</td>

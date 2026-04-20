@@ -2,12 +2,11 @@
 
   <section class="hero-section">
     <h1>
-      <span class="gradient-text">Community Investment Ledger</span>
+      <span class="gradient-text">Community Ledger</span>
     </h1>
     <p class="hero-description">
-      Every SwarmAI deployment that opts in reports a daily rollup of how much
-      its workflows spent on framework self-improvement — and what those tokens
-      produced. Aggregated across the community. No workflow content, no user data.
+      Aggregated opt-in telemetry from SwarmAI deployments. Counters only —
+      no workflow content, no user data.
     </p>
   </section>
 
@@ -24,8 +23,8 @@
 
     <div *ngSwitchCase="'empty'" class="status-panel">
       <p>
-        No deployments have reported yet. Enable opt-in telemetry in your
-        SwarmAI deployment with
+        No deployments have reported yet. Telemetry is opt-in; enable it in
+        your SwarmAI deployment with
         <code>swarmai.self-improving.telemetry-enabled=true</code> to contribute.
       </p>
     </div>

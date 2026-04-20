@@ -909,35 +909,6 @@
             "Post structured status updates as comments on existing tickets"
           ],
           "sourcePath": "swarmai-tools/src/main/java/ai/intelliswarm/swarmai/tool/productivity/JiraTool.java"
-        },
-        {
-          "id": "notion",
-          "title": "Notion Workspace",
-          "tagline": "Search, read, and query Notion pages and databases.",
-          "content": "Read-only access to Notion: keyword search across pages and databases, retrieve a specific page (metadata + block text), or query a database with filters and sorts. Grounds agents in team knowledge bases.",
-          "overview": "Reads your team's Notion pages and databases. Agents can look up documentation, runbooks, or project notes your team already maintains — so answers come from your own source of truth, not a generic guess.",
-          "description": "Talks to the Notion API with an internal-integration token. Three operations are supported: 'search' matches keywords across the workspace's pages and databases; 'get_page' returns the page metadata and rendered block text for one page ID; 'query_database' runs a filter/sort against a database ID. The integration must be explicitly shared with each target page or database in Notion's UI.",
-          "example": {
-            "prompt": "Pull our onboarding checklist page.",
-            "call": "notion(operation=\"get_page\", pageId=\"abc123…\")",
-            "result": "the page's title, properties, and block-level text content."
-          },
-          "codeSnippet": "# knowledge-lookup.yaml\nname: knowledge-lookup-crew\nprocess: SEQUENTIAL\n\nagents:\n  - id: reader\n    role: Knowledge Reader\n    goal: Ground answers in the team Notion knowledge base\n    tools:\n      - notion\n\ntasks:\n  - id: knowledge-lookup-task\n    agent: reader\n    description: Pull the content of the 'Onboarding Checklist' page.",
-          "javaSnippet": "import ai.intelliswarm.swarmai.agent.Agent;\nimport ai.intelliswarm.swarmai.task.Task;\nimport ai.intelliswarm.swarmai.swarm.Swarm;\nimport ai.intelliswarm.swarmai.swarm.SwarmOutput;\nimport ai.intelliswarm.swarmai.process.ProcessType;\nimport ai.intelliswarm.swarmai.tool.productivity.NotionTool;\nimport org.springframework.ai.chat.client.ChatClient;\nimport org.springframework.beans.factory.annotation.Autowired;\n\n@Autowired ChatClient chatClient;\n@Autowired NotionTool notionTool;\n\nAgent reader = Agent.builder()\n    .role(\"Knowledge Reader\")\n    .goal(\"Ground answers in the team Notion knowledge base\")\n    .chatClient(chatClient)\n    .tool(notionTool)\n    .build();\n\nTask readerTask = Task.builder()\n    .description(\"Pull the content of the 'Onboarding Checklist' page.\")\n    .agent(reader)\n    .build();\n\nSwarmOutput result = Swarm.builder()\n    .agent(reader)\n    .task(readerTask)\n    .process(ProcessType.SEQUENTIAL)\n    .build()\n    .kickoff();",
-          "configuration": [
-            {
-              "key": "NOTION_TOKEN",
-              "description": "Notion internal-integration token. The integration must be invited to each page or database the agent needs to read.",
-              "required": true
-            }
-          ],
-          "workflows": [
-            "Search a company knowledge base and pull the top hit for context",
-            "Retrieve a runbook page and summarize its steps for an on-call agent",
-            "Query a Projects database filtered by status=Active for planning",
-            "Digest weekly meeting notes matching a keyword"
-          ],
-          "sourcePath": "swarmai-tools/src/main/java/ai/intelliswarm/swarmai/tool/productivity/NotionTool.java"
         }
       ]
     },
@@ -1145,35 +1116,6 @@
             "Quick concept images inside a broader content-generation crew"
           ],
           "sourcePath": "swarmai-tools/src/main/java/ai/intelliswarm/swarmai/tool/vision/ImageGenerationTool.java"
-        },
-        {
-          "id": "ocr",
-          "title": "OCR",
-          "tagline": "Extract text from images.",
-          "content": "Reads text out of PNG, JPEG, TIFF, BMP, or GIF images via Tesseract. Accepts a local path, URL, or inline base64 and supports multi-language models.",
-          "overview": "Reads the words out of an image. Hand it a photo, scanned document, or screenshot and it returns the text inside — useful for invoices, receipts, or any document that isn't already digital text.",
-          "description": "Uses Tesseract (via Tess4J) to extract text from PNG, JPEG, TIFF, BMP, or GIF images. Accepts a local path, a URL, or inline base64, and supports multi-language models such as 'eng+deu'. Requires the Tesseract binaries and language data files on the host system.",
-          "example": {
-            "prompt": "Extract the text from this scanned invoice.",
-            "call": "ocr(path=\"invoices/2026-q4.png\", languages=\"eng\")",
-            "result": "the plain-text contents of the image, with line breaks preserved."
-          },
-          "codeSnippet": "# document-ocr.yaml\nname: document-ocr-crew\nprocess: SEQUENTIAL\n\nagents:\n  - id: reader\n    role: Document Reader\n    goal: Extract text from scanned documents\n    tools:\n      - ocr\n\ntasks:\n  - id: document-ocr-task\n    agent: reader\n    description: Extract the text from invoices/2026-q4.png using English language data.",
-          "javaSnippet": "import ai.intelliswarm.swarmai.agent.Agent;\nimport ai.intelliswarm.swarmai.task.Task;\nimport ai.intelliswarm.swarmai.swarm.Swarm;\nimport ai.intelliswarm.swarmai.swarm.SwarmOutput;\nimport ai.intelliswarm.swarmai.process.ProcessType;\nimport ai.intelliswarm.swarmai.tool.vision.OcrTool;\nimport org.springframework.ai.chat.client.ChatClient;\nimport org.springframework.beans.factory.annotation.Autowired;\n\n@Autowired ChatClient chatClient;\n@Autowired OcrTool ocrTool;\n\nAgent reader = Agent.builder()\n    .role(\"Document Reader\")\n    .goal(\"Extract text from scanned documents\")\n    .chatClient(chatClient)\n    .tool(ocrTool)\n    .build();\n\nTask readerTask = Task.builder()\n    .description(\"Extract the text from invoices/2026-q4.png using English language data.\")\n    .agent(reader)\n    .build();\n\nSwarmOutput result = Swarm.builder()\n    .agent(reader)\n    .task(readerTask)\n    .process(ProcessType.SEQUENTIAL)\n    .build()\n    .kickoff();",
-          "configuration": [
-            {
-              "key": "swarmai.tools.ocr.tessdata-path",
-              "description": "Path to the Tesseract tessdata directory. Falls back to the TESSDATA_PREFIX env var and standard install locations.",
-              "required": false
-            }
-          ],
-          "workflows": [
-            "Extract text from scanned invoices, receipts, or contracts for downstream parsing",
-            "Transcribe screenshots of dashboards or error screens into structured bug reports",
-            "Pre-process historical document images before feeding them to analysis agents",
-            "Digitize whiteboard photos captured during team meetings"
-          ],
-          "sourcePath": "swarmai-tools/src/main/java/ai/intelliswarm/swarmai/tool/vision/OcrTool.java"
         }
       ]
     },
@@ -1208,7 +1150,7 @@
             "Emit agent-generated signals and alerts onto the enterprise event bus",
             "Fan out workflow state changes to downstream consumers in real time",
             "Bridge a swarm's decisions into existing Kafka-based microservices",
-            "Publish audit events whenever a self-improving agent updates a skill"
+            "Publish audit events whenever an agent updates a skill"
           ],
           "sourcePath": "swarmai-tools/src/main/java/ai/intelliswarm/swarmai/tool/messaging/KafkaProducerTool.java"
         }

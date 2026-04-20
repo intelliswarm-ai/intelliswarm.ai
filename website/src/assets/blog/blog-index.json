@@ -2,7 +2,7 @@
   "posts": [
     {
       "slug": "introducing-swarmai-framework",
-      "title": "Introducing SwarmAI: A Self-Improving Multi-Agent Orchestration Framework for Java",
+      "title": "Introducing SwarmAI: A Multi-Agent Orchestration Framework for Java",
       "date": "2026-04-11",
       "author": "IntelliSwarm Team",
       "tags": [
@@ -11,17 +11,16 @@
         "multi-agent",
         "spring-boot",
         "reinforcement-learning",
-        "enterprise",
-        "self-improving"
+        "enterprise"
       ],
       "category": "announcement",
-      "summary": "We built the first Java-native multi-agent framework that improves itself. 8 process types, RL-driven decisions, enterprise governance, and a 10% self-improvement loop — here's why we built it and how it works.",
+      "summary": "A Java-native multi-agent framework with 7 process types, RL-driven decisions, and enterprise governance — here's why we built it and how it works.",
       "coverImage": "",
-      "readingTime": 9
+      "readingTime": 8
     },
     {
       "slug": "why-we-built-intelliswarm",
-      "title": "Why We Built IntelliSwarm.ai — Engineering a Self-Improving Multi-Agent Framework",
+      "title": "Why We Built IntelliSwarm.ai — Engineering a Multi-Agent Framework for Java",
       "date": "2026-04-11",
       "author": "IntelliSwarm Team",
       "tags": [
@@ -32,7 +31,7 @@
         "spring-boot"
       ],
       "category": "engineering",
-      "summary": "The story behind IntelliSwarm.ai — why we chose Java, how we designed 7 process types, and what makes a self-improving agent framework different from the rest.",
+      "summary": "The story behind IntelliSwarm.ai — why we chose Java, how we designed 7 process types, and how the framework stacks up against LangGraph, CrewAI, and LangChain4J.",
       "coverImage": "",
       "readingTime": 4
     }

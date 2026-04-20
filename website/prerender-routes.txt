@@ -39,11 +39,9 @@
 /tools/email
 /tools/slack_webhook
 /tools/jira
-/tools/notion
 /tools/s3_object
 /tools/semantic_search
 /tools/pinecone
 /tools/openapi_call
 /tools/image_generate
-/tools/ocr
 /tools/kafka_produce

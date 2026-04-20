@@ -1,11 +1,11 @@
 ---
-title: Why We Built IntelliSwarm.ai — Engineering a Self-Improving Multi-Agent Framework
+title: Why We Built IntelliSwarm.ai — Engineering a Multi-Agent Framework for Java
 slug: why-we-built-intelliswarm
 date: 2026-04-11
 author: IntelliSwarm Team
 tags: [architecture, engineering, multi-agent, java, spring-boot]
 category: engineering
-summary: The story behind IntelliSwarm.ai — why we chose Java, how we designed 7 process types, and what makes a self-improving agent framework different from the rest.
+summary: The story behind IntelliSwarm.ai — why we chose Java, how we designed 7 process types, and how the framework stacks up against LangGraph, CrewAI, and LangChain4J.
 coverImage: 
 ---
 
@@ -41,49 +41,13 @@ A manager agent creates execution plans, delegates to specialist workers, and sy
 Execute-review-refine loops that repeat until a reviewer agent approves the output or max iterations are reached. Essential for content generation, code review, and quality assurance workflows.
 
 ### Self-Improving
-This is where IntelliSwarm.ai diverges from every other framework. Self-improving workflows detect capability gaps at runtime and **generate new skills dynamically**. The reinforcement learning module tracks which skills succeed and routes future decisions accordingly.
+Extends the iterative process with dynamic skill generation. When the reviewer flags a capability gap (something no existing tool can do), the framework generates a new skill, validates it in a sandbox, registers it in the skill registry, and re-executes.
 
 ### Swarm
-Distributed fan-out with parallel self-improving agents per target. Think of a security audit that spawns one agent per service in your microservices architecture, each independently discovering and adapting.
+Distributed fan-out with parallel agents per target. Think of a security audit that spawns one agent per service in your microservices architecture, each working independently.
 
 ### Composite
 Chain any of the above into a pipeline: `Parallel → Hierarchical → Iterative`. This is the meta-process that makes complex enterprise workflows possible without custom code.
-
-## The Self-Improvement Loop
-
-The most technically interesting piece of IntelliSwarm.ai is the self-improvement loop. Here's how it works:
-
-```java
-@Component
-public class SelfImprovementEngine {
-    
-    public SkillResult executeWithLearning(Task task, Agent agent) {
-        // 1. Attempt execution with current skills
-        ExecutionResult result = agent.execute(task);
-        
-        // 2. If capability gap detected, generate new skill
-        if (result.hasCapabilityGap()) {
-            Skill newSkill = skillGenerator.generate(
-                task.getContext(), 
-                result.getGapDescription()
-            );
-            agent.getSkillRegistry().register(newSkill);
-            
-            // 3. Re-execute with new skill
-            result = agent.execute(task);
-        }
-        
-        // 4. Update RL policy based on outcome
-        reinforcementLearner.updatePolicy(
-            task, agent, result
-        );
-        
-        return result.toSkillResult();
-    }
-}
-```
-
-The 10% investment rule means every workflow invests 10% of its budget into self-improvement. Over time, the framework accumulates domain-specific skills that make subsequent runs faster and more accurate.
 
 ## Enterprise Features That Matter
 

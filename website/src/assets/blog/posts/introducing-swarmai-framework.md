@@ -1,11 +1,11 @@
 ---
-title: "Introducing SwarmAI: A Self-Improving Multi-Agent Orchestration Framework for Java"
+title: "Introducing SwarmAI: A Multi-Agent Orchestration Framework for Java"
 slug: introducing-swarmai-framework
 date: 2026-04-11
 author: IntelliSwarm Team
-tags: [open-source, java, multi-agent, spring-boot, reinforcement-learning, enterprise, self-improving]
+tags: [open-source, java, multi-agent, spring-boot, reinforcement-learning, enterprise]
 category: announcement
-summary: "We built the first Java-native multi-agent framework that improves itself. 8 process types, RL-driven decisions, enterprise governance, and a 10% self-improvement loop — here's why we built it and how it works."
+summary: "A Java-native multi-agent framework with 7 process types, RL-driven decisions, and enterprise governance — here's why we built it and how it works."
 coverImage: 
 ---
 
@@ -15,7 +15,7 @@ In early 2025, the multi-agent landscape looked like this: LangChain, CrewAI, Au
 
 Meanwhile, Java runs 90% of enterprise backends. Spring Boot is the de-facto standard for production services. But if you wanted to orchestrate AI agents in the JVM ecosystem, your options were essentially "write it yourself."
 
-We built SwarmAI to close that gap. Not a thin wrapper around LLM APIs — a production-grade orchestration framework with governance, observability, self-improvement, and the kind of reliability guarantees that enterprises expect from their infrastructure.
+We built SwarmAI to close that gap. Not a thin wrapper around LLM APIs — a production-grade orchestration framework with governance, observability, and the kind of reliability guarantees that enterprises expect from their infrastructure.
 
 Today, we're open-sourcing it. **1,128 tests passing. 70,000+ lines of code. 11 Maven modules. Apache 2.0 for core.**
 
@@ -73,30 +73,18 @@ swarm:
       tasks: [draft_report, review_report]
 ```
 
-## The 10% Self-Improvement Loop
+## Dynamic Skill Generation
 
-This is the feature that doesn't exist anywhere else, and it's the one we're most excited about.
+When an agent hits a capability gap at runtime, SwarmAI's skill generation pipeline can produce a new tool on the fly:
 
-Every SwarmAI workflow reserves 10% of its token budget for **framework-level self-improvement**. Not prompt tuning. Not RAG. Actual structural improvements to how the framework operates.
-
-Here's the pipeline:
-
-1. **Workflow executes** (90% of budget)
-2. **Gap detection** — If an agent can't complete a task, the `SkillGapAnalyzer` identifies what's missing
-3. **Skill generation** — The LLM writes a new tool in Groovy, complete with input schema and test cases
-4. **Validation** — The skill runs in a sandbox. Security scan. Test execution. Deduplication check against existing skills
-5. **Registration** — Valid skills enter the registry as CANDIDATE, graduate to ACTIVE after 5+ successful uses with 70%+ success rate
-6. **10% phase** — The `ImprovementCollector` extracts structural observations from execution traces, the `PatternExtractor` generalizes them into `GenericRule` objects, and the `ImprovementClassifier` routes them to three tiers:
-
-- **Tier 1** — Auto-merge (convergence defaults, token routing hints)
-- **Tier 2** — PR review (new tool patterns, process optimizations)
-- **Tier 3** — Architecture proposals (new process types, API changes)
-
-The critical design constraint: **GenericRule objects must be domain-agnostic.** The rule "3+ sequential tasks with >40% average token spend -> reduce maxTurns" is valid. The rule "financial analysis pipeline -> optimize prompts" is not. This enables cross-domain applicability — improvements discovered by a security audit workflow benefit a research pipeline.
+1. **Gap detection** — If an agent can't complete a task, the `SkillGapAnalyzer` identifies what's missing
+2. **Skill generation** — The LLM writes a new tool in Groovy, complete with input schema and test cases
+3. **Validation** — The skill runs in a sandbox. Security scan. Test execution. Deduplication check against existing skills
+4. **Registration** — Valid skills enter the registry as CANDIDATE, graduate to ACTIVE after sustained successful use
 
 ## Reinforcement Learning, Not Heuristics
 
-Three decisions in the self-improving loop are genuinely hard:
+Three decisions in the iterative loop are genuinely hard:
 
 - **Should we generate a skill?** (expensive, might not help)
 - **Should we stop iterating?** (premature stopping wastes potential; late stopping wastes tokens)
@@ -238,13 +226,12 @@ This isn't theoretical — it's designed for use cases like auditing 10,000+ mic
 
 The multi-agent pattern is moving from experiment to infrastructure. The frameworks that win will be the ones that treat agents like production services — with governance, observability, reliability, and cost controls.
 
-We built SwarmAI for the Java ecosystem because that's where enterprise production runs. We built self-improvement into the framework because agents that get better over time compound their value. We built governance in from day one because trust is the prerequisite for enterprise adoption.
+We built SwarmAI for the Java ecosystem because that's where enterprise production runs. We built governance in from day one because trust is the prerequisite for enterprise adoption.
 
 **The framework is open-source and available now:**
 
 - [GitHub Repository](https://github.com/intelliswarm-ai/swarm-ai)
 - [Getting Started Guide](https://github.com/intelliswarm-ai/swarm-ai/blob/main/GETTING_STARTED.md)
-- [Self-Improving Workflows Deep Dive](https://github.com/intelliswarm-ai/swarm-ai/blob/main/docs/SELF_IMPROVING_WORKFLOWS.md)
 - [RL Benchmark Results](https://github.com/intelliswarm-ai/swarm-ai/blob/main/docs/benchmarks/BENCHMARK_RESULTS.md)
 
 We'd love your feedback, contributions, and hard questions. File an issue, open a PR, or just tell us what we got wrong — that's how frameworks get better.

@@ -27,8 +27,8 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.seo.update({
       title: 'Enterprise AI Agent Orchestration for Java',
-      description: 'The only self-improving, multi-agent orchestration framework for Java. 7 process types, YAML DSL, built-in governance, budget tracking, and 38 tools. Powered by Spring AI & Spring Boot.',
-      keywords: 'AI agent orchestration, Java, Spring Boot, multi-agent framework, self-improving AI, YAML DSL, enterprise AI',
+      description: 'Enterprise-grade multi-agent orchestration framework for Java. 7 process types, YAML DSL, built-in governance, budget tracking, and 38 tools. Powered by Spring AI & Spring Boot.',
+      keywords: 'AI agent orchestration, Java, Spring Boot, multi-agent framework, YAML DSL, enterprise AI',
     });
 
     // Fetch latest version from Maven Central (browser only — skip during SSR)

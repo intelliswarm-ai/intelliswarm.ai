@@ -12,7 +12,7 @@ export class DocsComponent implements OnInit {
   ngOnInit(): void {
     this.seo.update({
       title: 'Documentation',
-      description: 'Everything you need to build, deploy, and scale AI agent workflows with SwarmAI. Getting started, YAML DSL, self-improving workflows, enterprise features, and module reference.',
+      description: 'Everything you need to build, deploy, and scale AI agent workflows with SwarmAI. Getting started, YAML DSL, enterprise features, and module reference.',
       keywords: 'SwarmAI documentation, AI agent tutorial, YAML DSL guide, Spring Boot AI docs',
     });
   }
@@ -30,13 +30,6 @@ export class DocsComponent implements OnInit {
       description: 'Define workflows declaratively in YAML. Zero Java code required.',
       link: 'https://github.com/intelliswarm-ai/swarm-ai/blob/main/GETTING_STARTED.md#yaml-dsl',
       tag: 'Guide'
-    },
-    {
-      title: 'Self-Improving Workflows',
-      icon: 'auto_fix_high',
-      description: 'Dynamic skill generation, RL-powered decisions, and convergence detection.',
-      link: 'https://github.com/intelliswarm-ai/swarm-ai/blob/main/docs/SELF_IMPROVING_WORKFLOWS.md',
-      tag: 'Deep Dive'
     },
     {
       title: 'Enterprise Features',
