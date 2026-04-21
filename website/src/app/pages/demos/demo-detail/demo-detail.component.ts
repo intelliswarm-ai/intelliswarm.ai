@@ -247,6 +247,12 @@ export class DemoDetailComponent implements OnInit, OnDestroy {
     return (d > 0 ? '+' : '') + (d / 1000).toFixed(1) + 's';
   }
 
+  get sourceExampleUrl(): string {
+    const path = this.meta?.sourceExample;
+    if (!path) return '';
+    return `https://github.com/intelliswarm-ai/swarm-ai-examples/tree/main/${path}`;
+  }
+
   get frameworkVersionForDisplay(): string {
     // Prefer the framework version actually embedded in the loaded swarm trace,
     // then the per-run override from meta.availableRuns[], then the demo-level

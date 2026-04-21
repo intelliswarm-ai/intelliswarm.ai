@@ -13,6 +13,16 @@
         <span class="material-icons">inventory_2</span>
         swarm-ai <b>v{{ frameworkVersionForDisplay }}</b>
       </span>
+      <a *ngIf="sourceExampleUrl"
+         class="source-badge"
+         [href]="sourceExampleUrl"
+         target="_blank"
+         rel="noopener noreferrer"
+         [title]="'View example code on GitHub: swarm-ai-examples/' + meta.sourceExample">
+        <span class="material-icons">code</span>
+        Example code <b>swarm-ai-examples/{{ meta.sourceExample }}</b>
+        <span class="material-icons external">open_in_new</span>
+      </a>
     </div>
     <h1>{{ meta.title }}</h1>
     <p class="asymmetry">
@@ -95,7 +105,13 @@
         real transcripts on this site. No simulated or hand-edited traces.
       </p>
       <p class="small">
-        Source example: <code>swarm-ai-examples/{{ meta.sourceExample }}</code> ·
+        Source example:
+        <a *ngIf="sourceExampleUrl; else plainSource"
+           [href]="sourceExampleUrl"
+           target="_blank"
+           rel="noopener noreferrer"><code>swarm-ai-examples/{{ meta.sourceExample }}</code></a>
+        <ng-template #plainSource><code>swarm-ai-examples/{{ meta.sourceExample }}</code></ng-template>
+        ·
         Framework: <code>{{ meta.frameworkVersion }}</code>
       </p>
     </div>
